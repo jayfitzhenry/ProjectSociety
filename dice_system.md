@@ -71,6 +71,8 @@ Modifiers either **add** dice (`+dice`) or **minus** dice (`-dice`). In both cas
 | 🧬 **Player trait** | Any roll the trait covers | `+1` |
 | 🎯 **Aiming** | Hit rolls | `+1` |
 | 🟢 **Easy test** | Non-combat tests | `+1` |
+| 🧰 **Tool** (one per roll; see [Equipment](equipment.md#-tools)) | Tests the tool covers | `+1` |
+| 🤝 **Help** (one helper; see [Character Creation](character_creation.md#-helping)) | Tests the helper's trait covers | `+1` |
 | 💥 **Critical hit** | The **wound** roll that follows a critical **hit** roll | `+1` |
 
 ### ⬇️ `-dice` (Disadvantage)
@@ -78,7 +80,8 @@ Modifiers either **add** dice (`+dice`) or **minus** dice (`-dice`). In both cas
 | Source | Applies to | Modifier |
 | :--- | :--- | :---: |
 | 📏 **Long range** (target more than half the weapon's range away) | Hit rolls (shooting) | `-1` |
-| 🧱 **Cover** (part of the target is hidden; 🟡 proposed in [Actions](actions.md#-position-cover-sight-and-melee)) | Hit rolls (shooting) | `-1` |
+| 🧱 **Cover** (part of the target is hidden, or it's in darkness; 🟡 proposed in [Actions](actions.md#-position-cover-sight-and-melee)) | Hit rolls (shooting) | `-1` |
+| 💨 **Smoke** (shooting through a [smoke canister](equipment.md#-consumables)'s cloud; separate from cover) | Hit rolls (shooting) | `-1` |
 | 🛡️ **Target's armour** | Wound rolls | `-1` to `-2` *(armour rating)* |
 | 🔴 **Hard test** | Non-combat tests | `-1` |
 | 🩸 **Shaken** | All of that character's rolls until the end of combat | `-1` per stack, **max `-3`** *(further results deal 1 wound)* |

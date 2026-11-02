@@ -4,6 +4,7 @@
 // exposure_and_trust.md. When a rule changes in a .md file, update it here too.
 
 export const RULE_DOCS = [
+  { id: 'getting_started', title: 'Getting Started', icon: '🧭' },
   { id: 'dice_system', title: 'Dice System', icon: '🎲' },
   { id: 'character_creation', title: 'Character Creation', icon: '🧰' },
   { id: 'actions', title: 'Actions', icon: '🏃' },

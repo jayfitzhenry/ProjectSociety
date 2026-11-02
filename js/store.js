@@ -15,6 +15,7 @@ export function freshCrew() {
     waterCut: false,
     cisternUsed: 0, // Homecomings without water already covered by the Cistern
     safehouseUsed: false,
+    startChosen: false, // the free third starting tier has been picked
     confidantUsed: false,
     debt: false, // Hardship event 3: next Need doubled
     forceRaid: false, // Hardship event 2: raid check next Homecoming
@@ -37,6 +38,11 @@ function migrate(s) {
   (s.characters || []).forEach((c) => {
     c.talents = [...new Set((c.talents || []).map((t) => talentById(t)?.id).filter(Boolean))];
   });
+  // Saves from before startChosen existed: the free starting tier was offered only while the log was empty.
+  if (s.crew && s.crew.startChosen === undefined) {
+    const built = Object.values(s.crew.projects || {}).reduce((a, v) => a + v, 0);
+    s.crew.startChosen = !(built === 2 && !(s.crew.log || []).length);
+  }
   return s;
 }
 

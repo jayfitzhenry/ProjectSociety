@@ -17,6 +17,7 @@ const ui = {
   smoke: false,
   cover: false,
   ghost: false,
+  haymaker: false,
   atkShaken: 0,
   defShaken: 0,
   hitPlus: 0,
@@ -35,6 +36,8 @@ function calc() {
   const fire = w.rules.includes('Fire');
   const pierce = w.rules.includes('Pierce');
   const shock = w.rules.includes('Shock');
+  const melee = /^Melee/.test(w.range || '');
+  const haymaker = ui.haymaker && melee;
   const armourRating = pierce ? Math.min(0, a.mod + 1) : a.mod; // -2 -> -1, -1 -> 0
 
   const hit = { plus: [], minus: [] };
@@ -44,7 +47,7 @@ function calc() {
   if (ui.hitPlus) hit.plus.push(['⬆️ Other', ui.hitPlus]);
   if (ui.long) hit.minus.push(['📏 Long range', 1]);
   if (ui.smoke) hit.minus.push(['💨 Smoke', 1]);
-  if (ui.cover && w.range !== 'Melee') hit.minus.push(['🧱 Cover', 1]);
+  if (ui.cover && w.range !== 'Melee') hit.minus.push(['🧱 Cover / darkness / vehicle', 1]);
   if (ui.atkShaken) hit.minus.push([`🩸 Shaken ×${ui.atkShaken}`, ui.atkShaken]);
   if (ui.hitMinus) hit.minus.push(['⬇️ Other', ui.hitMinus]);
 
@@ -64,17 +67,26 @@ function calc() {
   wound.net = netOf(sum(wound.plus), sum(wound.minus));
   wound.raw = sum(wound.plus) - sum(wound.minus);
   wound.critNet = netOf(sum(wound.plus) + 1, sum(wound.minus));
-  return { w, a, fire, shock, hit, wound };
+  return { w, a, fire, shock, haymaker, hit, wound };
 }
 
-/** Read a wound total for this defender. */
+/**
+ * Read a wound total for this defender.
+ * Shaken overflow (equipment.md): several Shaken are added one at a time, and each one
+ * past −3 becomes 1 wound, or a Knock Out for Shock weapons.
+ */
 function outcome(total, c) {
   if (total >= 12) return c.shock ? { k: 'ko', t: '😵 Knocked Out' } : { k: 'crit', t: '🔴 3 wounds + free attack' };
-  if (total >= 7) {
-    if (c.shock) return ui.defShaken >= 3 ? { k: 'ko', t: '😵 Knocked Out' } : { k: 'shaken2', t: '🟡🟡 2 Shaken (Shock)' };
-    return { k: 'wound', t: '🟠 1 wound' };
-  }
-  return ui.defShaken >= 3 ? { k: 'wound', t: '🟠 1 wound (already at −3 Shaken)' } : { k: 'shaken', t: '🟡 Shaken' };
+  if (total >= 7 && !c.shock) return { k: 'wound', t: '🟠 1 wound' };
+  // Shaken gained: Shock turns a Wounded result into 2 Shaken; Haymaker turns a Shaken result into 2.
+  const gain = total >= 7 ? 2 : c.haymaker ? 2 : 1;
+  const room = Math.max(0, 3 - ui.defShaken);
+  const shaken = Math.min(gain, room);
+  const over = gain - shaken;
+  if (over && c.shock) return { k: 'ko', t: '😵 Knocked Out' };
+  if (!over) return shaken === 2 ? { k: 'shaken2', t: '🟡🟡 2 Shaken' } : { k: 'shaken', t: '🟡 Shaken' };
+  if (!shaken) return over === 2 ? { k: 'wound2', t: '🟠🟠 2 wounds (overflow past −3)' } : { k: 'wound', t: '🟠 1 wound' };
+  return { k: 'mixed', t: '🟡 Shaken + 🟠 1 wound (overflow)' };
 }
 
 function odds(c) {
@@ -93,7 +105,7 @@ function odds(c) {
   for (let s = 2; s <= 12; s++) {
     const p = (pHit - pCrit) * dw.sums[s] + pCrit * dc.sums[s];
     const o = outcome(s, c);
-    add(o.k, o.t.replace(/ \(already.*\)/, ''), p);
+    add(o.k, o.t, p);
   }
   return { pHit, pCrit, pFumble, buckets };
 }
@@ -124,7 +136,7 @@ function breakdown(part, crit) {
 function view() {
   const c = calc();
   const o = odds(c);
-  const order = ['miss', 'shaken', 'shaken2', 'wound', 'crit', 'ko'];
+  const order = ['miss', 'shaken', 'shaken2', 'mixed', 'wound', 'wound2', 'crit', 'ko'];
   const unwieldy = c.w.rules.includes('Unwieldy');
   return `<div class="page">
     <h1>⚔️ Attack Calculator</h1>
@@ -135,14 +147,16 @@ function view() {
         <label class="field"><span>Weapon</span><select data-sel="weapon">${opt(WEAPONS, ui.weapon)}</select></label>
         ${c.w.rules.length ? `<p class="muted small">${c.w.range ? `${esc(c.w.range)} · ` : ''}${c.w.rules.map(esc).join(', ')}</p>` : `<p class="muted small">${esc(c.w.range || '')}</p>`}
         ${c.fire ? '<div class="callout">🔥 <b>Fire:</b> no To Hit roll. Every model on the line is hit, friend or foe. Aiming and Marksman don\'t help.</div>' : ''}
+        ${c.shock ? '<div class="callout">⚡ <b>Shock:</b> never wounds. Shaken past −3 Knocks Out instead.</div>' : ''}
         ${c.w.rules.includes('Blast') ? '<div class="callout">💣 <b>Blast:</b> on a hit, every model within 2" is hit too. Roll To Wound for each.</div>' : ''}
         ${unwieldy ? '<div class="callout">🏋️ <b>Unwieldy:</b> no Move and Attack in the same turn, but you can use your Move to Aim.</div>' : ''}
         <div class="checks">
           ${toggle('trait', '🧬 Covering trait (Brawler / Marksman) <b>+1</b>')}
           ${toggle('long', '📏 Long range (beyond half) <b>−1</b>')}
           ${toggle('smoke', '💨 Shooting through smoke <b>−1</b>')}
-          ${toggle('cover', '🧱 Target in cover (ranged only) <b>−1</b>')}
+          ${toggle('cover', '🧱 Cover, darkness or a moving vehicle (ranged only) <b>−1</b>')}
           ${toggle('ghost', '🌑 Ghost: attacking from Hide <b>+1 / +1</b>')}
+          ${/^Melee/.test(c.w.range || '') ? toggle('haymaker', '👊 Haymaker: a Shaken result gives 2 Shaken') : ''}
         </div>
         <div class="seg small">
           ${[[0, 'No aim'], [1, '🎯 Aim +1'], [2, '🎯 Dead Eye +2']].map(([v, l]) => `<button type="button" data-aim="${v}" class="${ui.aim === v ? 'on' : ''}">${l}</button>`).join('')}

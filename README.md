@@ -10,6 +10,7 @@ The rules live in this repo as one markdown file per subsystem. The repo also co
 
 | Document | What it covers |
 | :--- | :--- |
+| [Getting Started](getting_started.md) | The game on one page, the world in brief, session zero, running a job, quick reference |
 | [Dice System](dice_system.md) | How every roll works |
 | [Character Creation](character_creation.md) | Backgrounds, traits, wounds |
 | [Actions](actions.md) | Turns, combat actions, healing, dying, downtime |
@@ -18,13 +19,15 @@ The rules live in this repo as one markdown file per subsystem. The repo also co
 | [Exposure & Trust](exposure_and_trust.md) | Staying deniable, and the handler |
 | [Progression](progression.md) | Levels, talents, contacts |
 
+Design reviews are tracked in [checklist.md](checklist.md) (not shown in the app).
+
 ## 🧰 The app
 
 | Section | What it does |
 | :--- | :--- |
 | 📜 **Rules** | Renders the `.md` files above live, with search, contents, cross-links and a player view that hides GM-only sections |
-| 🎲 **Dice** | Build a pool from modifier sources (cancel, then cap at −3), see exact odds, roll |
-| ⚔️ **Combat** | Weapon vs armour: To Hit and To Wound odds, special rules (Fire, Pierce, Shock…), full attack rolls |
+| 🎲 **Dice** | Build a pool from modifier sources (cancel, then cap at −3), see exact odds, roll. Includes survival rolls |
+| ⚔️ **Combat** | Weapon vs armour: To Hit and To Wound odds, special rules (Fire, Pierce, Shock…), Shaken overflow, full attack rolls |
 | 🧰 **Characters** | The six-step creation wizard, then an in-play sheet: wounds, Shaken, scars, chips, market, advances, quick rolls, print |
 | 🏠 **Crew** | Community and projects, the Pot, Exposure, Trust, job tracking, Homecoming, Hardship, raids, downtime, log |
 

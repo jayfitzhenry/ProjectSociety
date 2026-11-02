@@ -33,7 +33,7 @@ function home(el) {
     </section>
 
     <div class="card-grid">
-      <a class="card link-card" href="#/rules"><div class="big">📜</div><b>Rules</b><small class="muted">All seven rulebooks, searchable, cross-linked</small></a>
+      <a class="card link-card" href="#/rules"><div class="big">📜</div><b>Rules</b><small class="muted">Every rulebook, searchable and cross-linked</small></a>
       <a class="card link-card" href="#/dice"><div class="big">🎲</div><b>Dice Roller</b><small class="muted">Build a pool, see the exact odds, roll</small></a>
       <a class="card link-card" href="#/combat"><div class="big">⚔️</div><b>Attack Calculator</b><small class="muted">Weapon vs armour, To Hit and To Wound</small></a>
       <a class="card link-card" href="#/characters"><div class="big">🧰</div><b>Characters</b><small class="muted">Create in ten minutes, track in play</small></a>

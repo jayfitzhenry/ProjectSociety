@@ -105,7 +105,7 @@ function projects() {
   const c = crew();
   const com = community();
   const cost = communityCost(com + 1);
-  const starting = com === 2 && !c.log.length;
+  const starting = com === 2 && !c.startChosen;
   return `<section class="card">
     <h3>🧱 Projects <span class="muted small">Community = tiers built (max 10). Build I → II → III. Lost tiers are always the top one.</span></h3>
     ${starting ? '<div class="callout">🆕 New campaign: the district starts with Clinic I and Hall I. <b>Pick one more starting tier</b> (free).</div>' : ''}
@@ -256,6 +256,7 @@ function homecoming() {
         ${short > 0 ? `<div class="actions small">
           <button type="button" class="btn small" data-payneed="${short}">Pay ${short}c${c.purse < short ? ' (rest from the Pot)' : ''}</button>
           ${Math.ceil(due / 2) - c.needPaid > 0 && Math.ceil(due / 2) < due ? `<button type="button" class="btn small" data-payneed="${Math.ceil(due / 2) - c.needPaid}">Pay half (${Math.ceil(due / 2) - c.needPaid}c)</button>` : ''}
+          ${team.length ? '<button type="button" class="btn small" data-act="chipin">🪙 Characters chip in…</button>' : ''}
           <button type="button" class="btn small ghost" data-act="skipneed">Don't pay (Hardship test)</button></div>` : ' ✅'}`}
       </li>
       ${c.hardshipDue || ui.hardship ? `<li><b>🎲 Hardship test</b>: the Need wasn't met.
@@ -430,9 +431,10 @@ export function renderCrew(el) {
       }
       if (com >= MAX_COMMUNITY) { toast('Community is at 10. No district can have everything.'); return; }
       const cost = communityCost(com + 1);
-      const starting = com === 2 && !c.log.length;
+      const starting = com === 2 && !c.startChosen;
       if (starting) {
         c.projects[p.id] = n;
+        c.startChosen = true;
         log(`🆕 Starting tier chosen: ${p.icon} ${p.name} I. Community 3.`);
       } else if (c.pot >= cost) {
         if (!confirm(`Build ${p.name} ${'I'.repeat(n)} for ${cost}c from the Pot?`)) return;
@@ -489,6 +491,16 @@ export function renderCrew(el) {
     }
 
     switch (d.act) {
+      case 'chipin': {
+        const short = Math.max(0, c.needDue - c.needPaid);
+        const v = Math.min(short, Math.floor(Number(prompt(`How many chips do the characters pay from their own pockets? (${short}c still due)\nTake them off the character sheets as well.`, String(short))) || 0));
+        if (v <= 0) break;
+        c.needPaid += v;
+        c.hardshipDue = c.needPaid < c.needDue;
+        log(`🪙 Characters chipped in ${v}c of the Need. ${c.needPaid}/${c.needDue}c.`);
+        commit();
+        break;
+      }
       case 'skipneed': c.hardshipDue = true; log(`💧 The Need wasn't met (${c.needPaid}/${c.needDue}c).`); commit(); break;
       case 'manualpay': {
         const v = Number(prompt('How many chips did the crew bring home?', '60'));

@@ -57,6 +57,8 @@ If the crew gains **0 or 1 Exposure** during a job, it's a **clean job**:
 | 🤝 **+1 Trust** | The handler likes crews who don't make noise |
 | 📈 **+1 Mark** | See [Progression](progression.md#-marks) |
 
+A **failed** job can still be clean. The crew gets the +10c and the +1 Trust, but a failed job only ever earns **1 Mark** in total ([Progression](progression.md#-marks)).
+
 > 🎯 **Clean jobs are the best way to play.** They pay more, earn Trust faster and level the crew faster. Going in loud is always possible, but it costs.
 
 ---
@@ -89,6 +91,7 @@ If the crew gains **0 or 1 Exposure** during a job, it's a **clean job**:
 
 At Exposure 10, **Antioch cuts the crew loose**.
 
+- **Everything from Hot still applies**: Raid checks at `+1 dice` and Raid tests at `-1 dice`.
 - **No more jobs** from the handler, and **no favours**.
 - **No protection.** Nobody comes when the district is raided: a failed Raid test costs **2 Community**.
 - **The water may be cut** ([Community: the Water](community.md#-the-water)). The DM decides.
@@ -192,6 +195,8 @@ The handler is secretly an agent of the **Orrery**. Trust measures the handler's
 | **2** | What happens at 10? | 🟡 **Proposed:** Burned. No jobs, no protection, and the water may be cut. Coming back needs Trust 5+ and an unpaid penance job. |
 | **3** | What is Trust? | 🟡 **Proposed:** a 0–10 track, starting at 3, that decides how many favours the handler gives each job. |
 | **4** | Do the players see the tracks? | 🟡 **Proposed:** yes, both. The handler's **secret** stays hidden, not the number. |
+| **5** | Can a failed job be clean? | 🟡 **Proposed:** yes. +10c and +1 Trust, but a failed job still earns only 1 Mark. |
+| **6** | Does Burned count as Hot? | 🟡 **Proposed:** yes. Raid checks at `+1 dice` and Raid tests at `-1 dice` carry on at Exposure 10. |
 
 🟡 = proposed, not yet final. The handler's secret comes from *Project Society — World Bible* (GM secret: House Calyx and the Orrery).
 

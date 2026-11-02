@@ -171,7 +171,7 @@ The **Covers** column gives examples, not a complete list. The **Doesn't cover**
 
 ## 🏭 Backgrounds
 
-Pick one. Take **2 of its 3 traits**. Each starting kit is worth about **30 chips**. Item details are in [Equipment](equipment.md).
+Pick one. Take **2 of its 3 traits**. Each starting kit is worth **25–40 chips** at market prices (most are 30c). Item details are in [Equipment](equipment.md).
 
 | Background | Who you were | Traits (pick 2) | Starting kit |
 | :--- | :--- | :--- | :--- |
@@ -234,7 +234,7 @@ Pick one. Take **2 of its 3 traits**. Each starting kit is worth about **30 chip
 
 ## ✅ Design Decisions
 
-These are **final**.
+Rulings 1–11 are **final**.
 
 | # | Question | Ruling |
 | :---: | :--- | :--- |
@@ -249,6 +249,7 @@ These are **final**.
 | **9** | How many wounds? | ✅ **5**, raised by levelling and Refined grafts, to a maximum of **8**. |
 | **10** | What happens at 0 wounds left? | ✅ The character is **Dying**. A failed survival roll after the combat means **death**. |
 | **11** | Currency? | ✅ **Chips**: tokens of a Refined brass alloy. Written as **c** (e.g. 15c). |
+| **12** | Should starting kits be evened out? | 🟡 **Open.** Kits range from **25c** (Line Fitter, Cutpurse) to **40c** (Clinic Hand, Deserter). One option is to drop one Boiler-black from the Clinic Hand (32c) and give the Line Fitter and Cutpurse 5 extra chips, as the Fallen Servant has. The Deserter's rifle is its only kit, so it may be fine as it is. |
 
 ---
 

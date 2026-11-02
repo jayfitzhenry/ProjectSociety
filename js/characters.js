@@ -312,7 +312,7 @@ function sheetView(c) {
     </div>
     ${c.dead ? '<div class="callout bad">⚰️ This character is dead. Make a new one: they join at crew level − 1.</div>' : ''}
     ${dying && !c.dead ? `<div class="callout bad"><b>🫀 Dying.</b> Can't act or take more wounds. After the combat, someone makes a survival roll (a Medic test).
-      <div class="actions"><a class="btn" href="#/rules/actions/dying">Rules</a><button type="button" class="btn" data-act="survive">✅ Survived (−1 wound, gain a Scar)</button><button type="button" class="btn" data-act="survivecrit">💥 Critical (−2 wounds, no Scar)</button><button type="button" class="btn danger" data-act="die">⚰️ Died</button></div></div>` : ''}
+      <div class="actions"><a class="btn" href="#/rules/actions/dying">Rules</a><a class="btn" href="#/dice/survival">🎲 Survival roll odds</a><button type="button" class="btn" data-act="survive">✅ Survived (−1 wound, gain a Scar)</button><button type="button" class="btn" data-act="survivecrit">💥 Critical (−2 wounds, no Scar)</button><button type="button" class="btn danger" data-act="die">⚰️ Died</button></div></div>` : ''}
     ${ui.editing ? `<section class="card">
       <div class="form-row">
         <label class="field"><span>Name</span><input data-f="name" value="${esc(c.name)}"></label>
@@ -342,7 +342,7 @@ function sheetView(c) {
         <h3>🟡 Shaken <span class="muted small">${c.shaken ? `−${c.shaken} dice until the end of combat` : 'clears after combat'}</span></h3>
         <div class="boxes">${boxes(3, c.shaken, 'data-shaken', 'shaken')}</div>
         <div class="actions small">
-          <button type="button" class="btn small" data-act="clearshaken">End of combat (clear Shaken)</button>
+          <button type="button" class="btn small" data-act="clearshaken">End of combat (clear Shaken${c.gear.some((g) => (gearItem(g).rules || []).includes('Mending')) ? ', Mending −1 wound' : ''})</button>
         </div>
         <h3>🩻 Scars</h3>
         ${c.scars.length ? `<ul class="scars">${c.scars.map((s, i) => `<li>${esc(s)} <button type="button" class="tiny ghost" data-delscar="${i}">✕</button></li>`).join('')}</ul>` : '<p class="muted small">None. Yet.</p>'}
@@ -464,7 +464,17 @@ export function renderCharacters(el, [id]) {
       case 'edit': ui.editing = !ui.editing; draw(); return;
       case 'print': window.print(); return;
       case 'shop': ui.shopOpen = !ui.shopOpen; draw(); return;
-      case 'clearshaken': c.shaken = 0; commit(); return;
+      case 'clearshaken': {
+        c.shaken = 0;
+        // Mending armour: at the end of each combat, the wearer removes 1 wound.
+        const mending = c.gear.find((g) => (gearItem(g).rules || []).includes('Mending'));
+        if (mending && c.wounds > 0 && c.wounds < maxWounds(c)) {
+          c.wounds -= 1;
+          toast(`🩹 ${esc(mending.name)}: Mending removes 1 wound`);
+        }
+        commit();
+        return;
+      }
       case 'addscar': {
         const v = el.querySelector('#scar-input').value.trim();
         if (v) { c.scars.push(v); commit(); }

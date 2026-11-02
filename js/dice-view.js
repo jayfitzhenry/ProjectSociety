@@ -24,7 +24,7 @@ const SOURCES = {
     { id: 'ghost', label: '🌑 Ghost (from Hide)', n: 1 },
     { id: 'long', label: '📏 Long range', n: -1 },
     { id: 'smoke', label: '💨 Through smoke', n: -1 },
-    { id: 'cover', label: '🧱 Target in cover', n: -1 },
+    { id: 'cover', label: '🧱 Cover, darkness or moving vehicle', n: -1 },
   ],
   wound: [
     { id: 'w1', label: '🗡️ Weapon +1', n: 1, group: 'weapon' },
@@ -37,11 +37,22 @@ const SOURCES = {
     { id: 'fire', label: '🔥 Fire', n: -1 },
     { id: 'fireproof', label: '🧯 Fireproof vs Fire', n: -1 },
   ],
+  // Survival roll (actions.md › Dying): a Medic test made by a crewmate after the combat.
+  survival: [
+    { id: 'medic', label: '🩹 Roller has Medic', n: 1, group: 'medic' },
+    { id: 'nomedic', label: '❓ Roller has no Medic', n: -1, group: 'medic' },
+    { id: 'satchel', label: "🎒 Medic's satchel", n: 1 },
+    { id: 'dressing', label: '🩹 Field dressing', n: 1 },
+    { id: 'stabilised', label: '🫀 Stabilised in the fight', n: 1 },
+    { id: 'clinic3', label: '🏥 Clinic III', n: 1 },
+    { id: 'hardtokill', label: '🫀 Hard to Kill (dying character)', n: 1 },
+  ],
 };
+const MODES = [['test', '🧠 Test'], ['hit', '🎯 To Hit'], ['wound', '🩸 To Wound'], ['survival', '🫀 Survival']];
 
 const ui = {
   mode: 'test',
-  on: { test: new Set(), hit: new Set(), wound: new Set() },
+  on: { test: new Set(), hit: new Set(), wound: new Set(), survival: new Set() },
   shaken: 0,
   extraPlus: 0,
   extraMinus: 0,
@@ -52,7 +63,7 @@ const ui = {
 function totals() {
   const src = SOURCES[ui.mode].filter((s) => ui.on[ui.mode].has(s.id));
   let plus = ui.extraPlus;
-  let minus = ui.extraMinus + ui.shaken;
+  let minus = ui.extraMinus + (ui.mode === 'survival' ? 0 : ui.shaken);
   src.forEach((s) => { if (s.n > 0) plus += s.n; else minus += -s.n; });
   return { src, plus, minus, raw: plus - minus, net: netOf(plus, minus) };
 }
@@ -79,7 +90,7 @@ function oddsPanel(net) {
        <div class="stat"><b>${pct(d.wound)}</b><small>🟠 1 wound (7–11)</small></div>
        <div class="stat"><b>${pct(d.critWound)}</b><small>🔴 3 wounds + attack</small></div>
        <div class="stat"><b>${pct(d.fumble)}</b><small>💀 Fumble</small></div>`
-    : `<div class="stat big-stat"><b>${pct(d.pass)}</b><small>${ui.mode === 'hit' ? 'to hit' : 'to pass'} (7+)</small></div>
+    : `<div class="stat big-stat"><b>${pct(d.pass)}</b><small>${{ hit: 'to hit', survival: 'to survive' }[ui.mode] || 'to pass'} (7+)</small></div>
        <div class="stat"><b>${pct(d.crit)}</b><small>💥 Critical</small></div>
        <div class="stat"><b>${pct(d.fumble)}</b><small>💀 Fumble</small></div>`;
   return `<div class="odds"><div class="stats">${stats}</div><div class="bars">${bars}</div></div>`;
@@ -107,14 +118,15 @@ function view() {
     <div class="cols">
       <section class="card">
         <div class="seg" role="tablist">
-          ${[['test', '🧠 Test'], ['hit', '🎯 To Hit'], ['wound', '🩸 To Wound']].map(([m, l]) => `<button type="button" data-mode="${m}" class="${ui.mode === m ? 'on' : ''}">${l}</button>`).join('')}
+          ${MODES.map(([m, l]) => `<button type="button" data-mode="${m}" class="${ui.mode === m ? 'on' : ''}">${l}</button>`).join('')}
         </div>
         <div class="chips">
           ${SOURCES[ui.mode].map((s) => `<button type="button" class="chip ${s.n > 0 ? 'pos' : 'neg'} ${ui.on[ui.mode].has(s.id) ? 'on' : ''}" data-src="${s.id}">
             ${esc(s.label)} <b>${signed(s.n)}</b></button>`).join('')}
         </div>
+        ${ui.mode === 'survival' ? '<p class="muted small">Made after the combat by a crewmate in reach. ✅ Survives: −1 wound and a Scar. 💥 Critical: −2 wounds, no Scar. ❌ Dies. A Quickening draught passes it automatically. <a href="#/rules/actions/dying">Rules</a></p>' : ''}
         <div class="steppers">
-          ${stepper('shaken', ui.shaken, 0, 3, '🩸 Roller is Shaken')}
+          ${ui.mode === 'survival' ? '' : stepper('shaken', ui.shaken, 0, 3, '🩸 Roller is Shaken')}
           ${stepper('extraPlus', ui.extraPlus, 0, 9, '⬆️ Other +dice')}
           ${stepper('extraMinus', ui.extraMinus, 0, 9, '⬇️ Other −dice')}
         </div>
@@ -146,11 +158,13 @@ function view() {
 
 function describe(r, mode) {
   if (mode === 'wound') return r.total >= 12 ? '🔴 Critical Wound' : r.total >= 7 ? '🟠 Wounded' : '🟡 Shaken';
+  if (mode === 'survival') return r.crit ? '💥 Survives, no Scar' : r.pass ? '✅ Survives' : '⚰️ Dies';
   const base = mode === 'hit' ? (r.pass ? '✅ Hit' : '❌ Miss') : r.pass ? '✅ Pass' : '❌ Fail';
   return base + (r.crit ? ' 💥' : '') + (r.fumble ? ' 💀' : '');
 }
 
-export function renderDice(el) {
+export function renderDice(el, [mode] = []) {
+  if (mode && SOURCES[mode] && mode !== ui.mode) { ui.mode = mode; ui.last = null; }
   const draw = () => { el.innerHTML = view(); };
   draw();
   el.onclick = (e) => {
@@ -186,7 +200,7 @@ export function renderDice(el) {
       const t = totals();
       const r = roll(t.net);
       ui.last = { r, mode: ui.mode };
-      const label = { test: '🧠', hit: '🎯', wound: '🩸' }[ui.mode];
+      const label = { test: '🧠', hit: '🎯', wound: '🩸', survival: '🫀' }[ui.mode];
       ui.history.unshift({ r, label: `${label} ${signed(t.net)}`, text: describe(r, ui.mode) });
       ui.history = ui.history.slice(0, 12);
       draw();

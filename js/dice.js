@@ -106,22 +106,27 @@ export function dieFace(v, kept = true, extraClass = '') {
   return `<span class="die ${kept ? 'kept' : 'dropped'} ${extraClass}" title="${v}${kept ? ' (kept)' : ''}" aria-label="${v}">${pips}</span>`;
 }
 
-/** HTML for a roll result. mode: 'test' | 'hit' | 'wound' */
+/** HTML for a roll result. mode: 'test' | 'hit' | 'wound' | 'survival' */
 export function renderRoll(r, mode = 'test', opts = {}) {
   const dice = r.dice.map((v, i) => dieFace(v, r.kept.includes(i), opts.animate ? 'roll-in' : '')).join('');
   let verdict;
   if (mode === 'wound') {
     const inj = injury(r.total);
     verdict = `<span class="verdict v-${inj.key}">${inj.icon} ${inj.label}</span><span class="muted">${inj.text}</span>`;
+  } else if (mode === 'survival') {
+    verdict = r.pass
+      ? `<span class="verdict v-pass">✅ Survives</span><span class="muted">${r.crit ? '−2 wounds, no Scar' : '−1 wound, gain a Scar'}</span>`
+      : '<span class="verdict v-fail">⚰️ Dies</span>';
   } else {
     const word = mode === 'hit' ? (r.pass ? 'Hit' : 'Miss') : r.pass ? 'Pass' : 'Fail';
     verdict = `<span class="verdict ${r.pass ? 'v-pass' : 'v-fail'}">${r.pass ? '✅' : '❌'} ${word}</span>`;
   }
   const flags = [];
   if (r.crit) {
-    flags.push(`<span class="flag crit">💥 Critical${mode === 'hit' ? ': +1 dice on the wound roll' : mode === 'test' ? ': the DM narrates, you get a say' : ''}</span>`);
+    const critText = { hit: ': +1 dice on the wound roll', test: ': the DM narrates, you get a say', survival: ': survives without a Scar' }[mode] || '';
+    flags.push(`<span class="flag crit">💥 Critical${critText}</span>`);
   }
-  if (r.fumble) flags.push('<span class="flag fumble">💀 Fumble: in combat, the turn ends</span>');
+  if (r.fumble) flags.push(`<span class="flag fumble">💀 Fumble${mode === 'survival' ? ': just a fail out of combat' : ': in combat, the turn ends'}</span>`);
   return `<div class="roll-result">
     <div class="dice-row">${dice}</div>
     <div class="roll-total"><b>${r.total}</b> ${verdict}</div>

@@ -84,7 +84,7 @@ Special rules change *how* gear works. They never change its rating.
 | :--- | :--- |
 | 🔥 **Fire** | **No To Hit roll.** Draw a straight line from the attacker up to the weapon's range. **Every model it touches is hit**, friend or foe. Each makes a To Wound roll at **an extra `-1 dice`**. Aiming and Marksman don't help. |
 | 💣 **Blast** | Make one To Hit roll against a model or a point within range. On a hit, that target **and every model within 2"** of it are hit. Roll To Wound for each one separately. On a miss, nothing happens. |
-| ⚡ **Shock** | Non-lethal. A **Wounded** result (7–11) gives the target **2 Shaken** instead of a wound. A target already at `-3` Shaken is **Knocked Out** instead. A **Critical Wound** (12) also Knocks Out. A Knocked Out target is out of the combat but not Dying, and comes round afterwards with no wounds taken. Ideal for kidnappings. |
+| ⚡ **Shock** | Non-lethal. A **Wounded** result (7–11) gives the target **2 Shaken** instead of a wound. A Shock weapon never wounds: any Shaken that would take the target **past `-3`** Knocks it Out instead. A **Critical Wound** (12) also Knocks Out. A Knocked Out target is out of the combat but not Dying, and comes round afterwards with no wounds taken. Ideal for kidnappings. |
 | 🪡 **Pierce** | The target's armour counts as **one point lower** (`-2` becomes `-1`, `-1` becomes `0`). |
 | 🤫 **Silent** | Attacks with it raise no alarm and add **no Exposure** for noise. |
 | 🥷 **Ambush** | Can only attack a target that **hasn't noticed you**: you're Hidden, or it's distracted or asleep. Once it knows you're there, use another weapon. |
@@ -92,6 +92,8 @@ Special rules change *how* gear works. They never change its rating.
 | 🏋️ **Unwieldy** | You can't **Move** and **Attack** with it in the same turn. You *can* use your Move to [Aim](actions.md#-combat-actions). |
 | 🩹 **Mending** *(armour)* | At the end of each combat, the wearer removes **1 wound**. |
 | 🧯 **Fireproof** *(armour)* | Fire attacks against the wearer are at **an extra `-1 dice`**. |
+
+> 🩸 **Shaken overflow.** When a result gives more than one Shaken (Shock, the **Haymaker** talent), add them **one at a time**. Each Shaken that would go past `-3` becomes **1 wound** instead, or a **Knock Out** for Shock. *Example:* a target at `-2` takes a Haymaker's 2 Shaken. It goes to `-3`, and the second Shaken becomes 1 wound.
 
 > 🔥 **Fire, worked through.** A boiler lance (`+1`, Fire) is aimed down a corridor at two raiders. One wears a padded coat (`-1`). No To Hit roll: both are hit. The unarmoured raider rolls To Wound at `+1 -1` = **net 0** (58% to wound). The coated raider rolls at `+1 -1 -1` = **net `-1`** (32%). Fire is reliable and wide, but it isn't deadly against armour.
 
@@ -274,6 +276,7 @@ Sell gear for **half** its price (**three quarters** with a [Workshop](community
 | **5** | Markets | 🟡 **Proposed:** Works (L1), Specialist (L3), Refined (L6). |
 | **6** | Grafts | 🟡 **Proposed:** max 2, permanent, illegal. |
 | **7** | Second gear list | 🟡 **Proposed:** 22 new items and services (Firebottle to Hired muscle), plus the **Ambush** rule. All within the ±2 cap and the price bands. |
+| **8** | Shaken overflow | 🟡 **Proposed:** several Shaken are added one at a time, and each one past `-3` becomes 1 wound. Shock Knocks Out instead, so it never wounds. |
 
 🟡 = proposed, not yet final.
 

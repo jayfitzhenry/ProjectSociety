@@ -33,7 +33,7 @@ At the end of every job, **every character on the job** earns the same Marks:
 
 **Every 4 Marks is a new level.** Level up during [downtime](actions.md#-downtime).
 
-Because everyone earns the same Marks, **the crew levels together**. The **crew level** is the level most of the crew is at.
+Because everyone earns the same Marks, **the crew levels together**. The **crew level** is the level most of the crew is at. If the crew is split evenly, it's the **higher** level.
 
 > 🧮 **Pacing.** Level 10 takes **36 Marks**: about 18 Standard jobs, or 12 clean ones. That's roughly the same pace as building Community from 3 to 10.
 
@@ -87,7 +87,7 @@ Each talent can only be taken once.
 
 | Trait | Talent | Effect |
 | :--- | :--- | :--- |
-| 👊 Brawler | **Haymaker** | When your melee wound roll gives **Shaken**, the target gains **2 Shaken** instead |
+| 👊 Brawler | **Haymaker** | When your melee wound roll gives **Shaken**, the target gains **2 Shaken** instead. Any Shaken past `-3` becomes 1 wound ([overflow](equipment.md#special-rules)) |
 | | **Shove** | When you hit in melee, you can push the target **3"** straight away from you instead of rolling To Wound. Off a ledge, into a boiler, out of a doorway |
 | 🎯 Marksman | **Dead Eye** | **Aiming** gives `+2 dice` instead of `+1` |
 | | **Steady Hands** | **Unwieldy** ranged weapons don't stop you Moving and Attacking in the same activation |
@@ -173,6 +173,7 @@ When a character dies or retires, or a new player joins:
 | **5** | Limits | 🟡 **Proposed:** 6 traits, 2 talents per trait, 3 contacts, 8 wounds. |
 | **6** | More talents | 🟡 **Proposed:** a second talent for every trait, and 5 general talents that need no trait. |
 | **7** | Lost contacts | 🟡 **Proposed:** replaced with a successful Seek Out downtime action. |
+| **8** | Crew level ties | 🟡 **Proposed:** if the crew is split evenly between two levels, the crew level is the higher one. |
 
 🟡 = proposed, not yet final.
 

@@ -295,7 +295,7 @@ table.mini tr.tot td { border-top: 1px solid var(--line); font-weight: 700; }
 .outcome b { font-variant-numeric: tabular-nums; }
 .outcome i { position: absolute; left: 0; top: 0; bottom: 0; opacity: .28; transition: width .4s var(--ease); }
 .o-miss i { background: #8e8e93; } .o-shaken i, .o-shaken2 i { background: var(--shaken); }
-.o-wound i { background: var(--wound); } .o-crit i { background: var(--crit); } .o-ko i { background: var(--purple); }
+.o-wound i, .o-wound2 i, .o-mixed i { background: var(--wound); } .o-crit i { background: var(--crit); } .o-ko i { background: var(--purple); }
 .step { border-top: .5px solid var(--line); padding-top: .6rem; margin-top: .6rem; }
 .verdict-line { text-align: center; font-size: 1.1rem; }
 

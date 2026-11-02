@@ -16,9 +16,11 @@ Builds on the [Dice System](dice_system.md). See also [Character Creation](chara
 5. [Healing](#-healing)
 6. [Dying](#-dying)
 7. [Out of Combat](#-out-of-combat)
-8. [Downtime](#-downtime)
-9. [Worked Examples](#-worked-examples)
-10. [Design Decisions & Open Questions](#-design-decisions--open-questions)
+8. [Chases and Vehicles](#-chases-and-vehicles)
+9. [Hazards](#-hazards)
+10. [Downtime](#-downtime)
+11. [Worked Examples](#-worked-examples)
+12. [Design Decisions & Open Questions](#-design-decisions--open-questions)
 
 ---
 
@@ -62,6 +64,21 @@ You get **one Move** and **one Action**, in either order.
 | 🌑 **Hide** | Out of sight or in deep shadow: enemies can't target you until you Attack or end a Move in the open | Stealth test |
 | 🤝 **Help** | An ally within 6": your covering trait gives `+1 dice` on their next **test** this round. Not attacks | — |
 | 🔧 **Interact** | Open a door, pull a lever, pick a lock, start an engine | A test if it's risky |
+| 🤼 **Stunt** | Grapple, trip or disarm a model in base contact. See [Stunts](#-stunts) | A test, usually Brawler |
+
+> 🩹 **Medic actions without the trait.** Patch Up, Stabilise, [Treat Wounds](#-treat-wounds) and [survival rolls](#-dying) all need know-how, so a character without **Medic** rolls them at `-1 dice`.
+
+### 🤼 Stunts
+
+A Stunt does something other than damage. Describe it, then make a test with a covering trait (usually **Brawler**; **Thief** to snatch a weapon). The target must be in base contact.
+
+| Result | Effect |
+| :--- | :--- |
+| ✅ Pass | Choose **one**: **Pinned** (the target can't Move in its next activation), **Disarmed** (it drops one weapon; picking it up is an Interact), or **Floored** (its next To Hit roll is at `-1 dice`) |
+| 💥 Critical | Choose **two** |
+| ❌ Fail | Nothing |
+
+> 🤼 **Why so plain?** A Stunt never deals wounds or Shaken, so it doesn't compete with an Attack, **Menace** or **Shove**. It's for the times when the story needs the gun out of his hand.
 
 ### 🩹 Patch Up
 
@@ -101,6 +118,19 @@ A target is **in cover** if something solid hides **part** of it from the attack
 - Cover doesn't stack. Two walls are still `-1`.
 - **Shooting past your own crew** is allowed, but the target counts as in cover.
 - **Smoke** works the same way, but it's a separate penalty: a target in cover behind smoke is at `-2`.
+
+### 🌑 Darkness
+
+Lamps are far apart in the Works, and the Sunk has none at all.
+
+| In darkness | Effect |
+| :--- | :--- |
+| 🎯 Ranged attacks against a target in darkness | The target counts as **in cover** (`-1 dice` To Hit). It doesn't stack with real cover |
+| 👁️ Tests that rely on sight: searching, reading, spotting, picking a lock by eye | **Hard** (`-1 dice`) |
+| 🌑 Sneaking and hiding | **Easy** (`+1 dice`) |
+| 🗡️ Melee | No effect. You're close enough to feel them |
+
+A **shutter lantern** or a **Clear eye** graft removes the penalties for whoever carries it. But a lit lantern means its carrier isn't in darkness either: enemies shoot at them normally, and they can't Hide.
 
 ### 🚪 Leaving melee
 
@@ -227,6 +257,65 @@ There are no turns. Say what your character does.
 
 > 💀 **Fumbles out of combat are just a fail.** Nothing extra happens.
 
+### 🎲 Who rolls
+
+**Only the crew rolls tests.** When someone works against the crew, the opposition doesn't roll. It sets the difficulty instead:
+
+| The opposition is… | The crew's test is |
+| :--- | :--- |
+| Careless, distracted, drunk or outclassed | **Easy** (`+1 dice`) |
+| Ordinary | Normal |
+| Alert, skilled, or expecting trouble | **Hard** (`-1 dice`) |
+
+A guard doesn't roll to spot the Cutpurse. The Cutpurse rolls **Shadow**, and the guard's alertness makes it Hard or Easy. A rival haggler doesn't roll either: the Smooth Talker rolls against the haggler's skill.
+
+In **combat**, both sides roll their own To Hit and To Wound as normal.
+
+---
+
+## 🏃 Chases and Vehicles
+
+### 🏁 Chases
+
+A chase is a run of tests. The crew rolls, whether it's chasing or being chased.
+
+1. **Each round**, the DM describes one obstacle: a crowded market, a barge in the canal, a gate swinging shut.
+2. **The crew picks who leads** the round and which trait covers it: **Runner** on foot, **Driver** in a vehicle, **Streetwise** for a shortcut, **Shadow** to vanish into a crowd. One crewmate can Help as normal.
+3. **Difficulty** comes from the other side: **Hard** if they're faster, **Easy** if they're slower.
+4. **Three passes before three fails** and the crew gets what it wanted (it escapes, or it catches them). **Three fails first** and the other side does. A **critical** counts as two passes.
+
+The **Getaway** and **Shortcut** [talents](progression.md#-trait-talents) can end a chase outright. A chase through busy streets can still add [Exposure](exposure_and_trust.md#-gaining-exposure) for witnesses.
+
+### 🚂 Vehicles
+
+Vehicles have no stat lines. They're scenery that moves.
+
+| Situation | Rule |
+| :--- | :--- |
+| 🎯 **Shooting to or from a moving vehicle** | The target counts as **in cover** (`-1 dice` To Hit). It doesn't stack with real cover |
+| 🔩 **Attacking a vehicle** | To Wound at `-2` (it's iron). A **Critical Wound** (12) stops it. Any other result just leaves a mark |
+| 💥 **Ramming** | The driver makes a **Driver** test instead of To Hit, then rolls To Wound against the target as a `+2` weapon |
+| 🧯 **Crashing** | Everyone aboard makes a [hazard](#-hazards) roll at `+1` |
+| 🔧 **Repairing** | A **Mechanic** test, or Hard without the trait. It takes a scene, not an Action |
+
+---
+
+## 🚧 Hazards
+
+The world hurts too. A hazard makes a **wound roll** against the character, read on the [Injury Table](dice_system.md#-injury-table), exactly as if a weapon had hit them.
+
+| Hazard | Wound roll |
+| :--- | :---: |
+| 🪜 A fall of 3" to 6", a scald, a live wire | `+0` |
+| 🔥 A fall of more than 6", a steam burst, being caught in a fire, a crash | `+1` |
+| 🏚️ A fall of more than 12", being crushed by machinery, a boiler explosion | `+2` |
+
+- **Avoiding it.** If the character sees it coming, they make a test first (**Runner** to jump clear, **Mechanic** to vent the boiler). On a pass there's no wound roll.
+- **Armour** only counts if it would really help. **Fireproof** armour gives its extra `-1 dice` against fire and steam.
+- **Shaken from a hazard** lasts until the end of the combat, or the end of the scene out of combat.
+- **No breath.** Each round underwater or in thick smoke gives **1 Shaken**. Shaken past `-3` becomes wounds, as usual. An **Iron lung** graft ignores this, and a **gas mask** ignores smoke.
+- **Poison and drugs.** A poison makes **one** hazard roll at `+0` to `+2`, chosen by the DM, when it takes hold. A **Medic** test (identifying drugs and poisons) made before then stops it.
+
 ---
 
 ## 🏠 Downtime
@@ -315,6 +404,12 @@ Homecoming and downtime still happen. The **Need is still due**, so the crew has
 | **7** | Cover and line of sight | 🟡 **Proposed:** see any part to target. Cover is `-1 dice` To Hit on ranged attacks only, and doesn't stack. |
 | **8** | Leaving melee | 🟡 **Proposed:** allowed, but you can't Attack in that activation. |
 | **9** | Enemy profiles | 🟡 **Proposed:** six profiles. Unnamed enemies have 1–3 wounds, go out instead of Dying, and flee at half strength. |
+| **10** | Darkness | 🟡 **Proposed:** cover against ranged attacks, Hard for tests that rely on sight, Easy for sneaking. A lantern removes the penalty, but lights up whoever carries it. |
+| **11** | Chases and vehicles | 🟡 **Proposed:** three passes before three fails. Moving vehicles count as cover, are `-2` to wound, and stop on a 12. Ramming is a Driver test, then a `+2` wound roll. |
+| **12** | Hazards | 🟡 **Proposed:** a wound roll at `+0` / `+1` / `+2`, avoided with a test if seen coming. Breathless rounds give Shaken. Poison is one roll. |
+| **13** | Who rolls? | 🟡 **Proposed:** only the crew rolls tests. Opposition sets the difficulty. Both sides roll in combat. |
+| **14** | Stunts | 🟡 **Proposed:** a test to Pin, Disarm or Floor a model in base contact. No wounds or Shaken. |
+| **15** | Medic actions without the trait | 🟡 **Proposed:** all of them are `-1 dice` (they need know-how). |
 
 🟡 = proposed, not yet final.
 
@@ -323,9 +418,9 @@ Homecoming and downtime still happen. The **Need is still due**, so the crew has
 - [x] **Cover and terrain:** now proposed above (#7).
 - [x] **Line of sight:** now proposed above (#7).
 - [x] **Leaving melee:** now proposed above (#8).
-- [ ] **Vehicles:** movement, chases and ramming.
+- [x] **Vehicles:** now proposed above (#11).
 - [x] **Enemy profiles:** now proposed above (#9).
-- [ ] **Darkness:** should fighting in the dark be a Hard test, or cover for everyone?
+- [x] **Darkness:** now proposed above (#10). It's cover for ranged attacks, and Hard for tests that rely on sight.
 
 ---
 
