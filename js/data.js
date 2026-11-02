@@ -33,23 +33,50 @@ export const TRAITS = [
 ];
 export const traitIcon = (t) => (TRAITS.find((x) => x.id === t) || {}).icon || '🧬';
 
-export const TALENTS = {
-  Brawler: { name: 'Haymaker', effect: 'When your melee wound roll gives Shaken, the target gains 2 Shaken instead.' },
-  Marksman: { name: 'Dead Eye', effect: 'Aiming gives +2 dice instead of +1.' },
-  Thief: { name: 'Quick Hands', effect: 'In combat, picking a lock or using an item takes your Move instead of your Action.' },
-  Craftsperson: { name: 'Jury-rig', effect: 'Once per job, improvise any Works tool from what\'s lying around. It lasts for one scene.' },
-  Mechanic: { name: 'Overpressure', effect: 'Once per combat, +1 dice To Wound with a firearm or boiler lance. Afterwards the DM may call it Conspicuous for the rest of the job.' },
-  Medic: { name: 'Field Surgeon', effect: 'Patch Up can remove 1 wound instead of Shaken.' },
-  'Smooth Talker': { name: 'Silver Tongue', effect: 'Once per job, turn a failed social test into a pass. The DM names a price you must accept.' },
-  Intimidator: { name: 'Menace', effect: 'Combat Action: an enemy within 6" who can see you. Intimidator test: pass = 1 Shaken, critical = 2.' },
-  Streetwise: { name: 'Ear to the Ground', effect: 'One free Informant question each job.' },
-  Courtier: { name: 'Belongs Here', effect: 'In the Terraces and Heights, the first time each job someone questions why you\'re there, they accept your answer.' },
-  Runner: { name: 'Fleet-footed', effect: 'Move 8" instead of 6".' },
-  Shadow: { name: 'Ghost', effect: 'When you Attack from Hide, +1 dice To Hit and To Wound. Afterwards you\'re no longer hidden.' },
-  Driver: { name: 'Getaway', effect: 'Once per job, if you\'re driving, the crew escapes a scene. No test.' },
-  Forger: { name: 'Paper Trail', effect: 'Once per job, produce a document you "made earlier". It counts as a Papers favour.' },
-  Lettered: { name: 'Research', effect: 'Once per job, ask the DM one question about a person, place or house. The answer is true.' },
-};
+// Talents: two per trait (trait set), plus general talents (trait null) anyone can take.
+export const TALENTS = [
+  { id: 'haymaker', trait: 'Brawler', name: 'Haymaker', effect: 'When your melee wound roll gives Shaken, the target gains 2 Shaken instead.' },
+  { id: 'shove', trait: 'Brawler', name: 'Shove', effect: 'When you hit in melee, you can push the target 3" straight away from you instead of rolling To Wound.' },
+  { id: 'deadeye', trait: 'Marksman', name: 'Dead Eye', effect: 'Aiming gives +2 dice instead of +1.' },
+  { id: 'steadyhands', trait: 'Marksman', name: 'Steady Hands', effect: 'Unwieldy ranged weapons don\'t stop you Moving and Attacking in the same activation.' },
+  { id: 'quickhands', trait: 'Thief', name: 'Quick Hands', effect: 'In combat, picking a lock or using an item takes your Move instead of your Action.' },
+  { id: 'lightfingers', trait: 'Thief', name: 'Light Fingers', effect: 'Once per job, reveal that you lifted something earlier: a key, a pass, a purse (5c) or a Works tool.' },
+  { id: 'juryrig', trait: 'Craftsperson', name: 'Jury-rig', effect: 'Once per job, improvise any Works tool from what\'s lying around. It lasts for one scene.' },
+  { id: 'barricade', trait: 'Craftsperson', name: 'Barricade', effect: 'As an Action, drag together a 3" wall of junk. It gives cover until the end of combat.' },
+  { id: 'overpressure', trait: 'Mechanic', name: 'Overpressure', effect: 'Once per combat, +1 dice To Wound with a firearm or boiler lance. Afterwards the DM may call it Conspicuous for the rest of the job.' },
+  { id: 'saboteur', trait: 'Mechanic', name: 'Saboteur', effect: 'Once per job, a machine you\'ve had your hands on fails exactly when you choose. No test when it fails.' },
+  { id: 'fieldsurgeon', trait: 'Medic', name: 'Field Surgeon', effect: 'Patch Up can remove 1 wound instead of Shaken.' },
+  { id: 'triage', trait: 'Medic', name: 'Triage', effect: 'Treat Wounds takes one minute instead of ten, and you can treat each character twice per job.' },
+  { id: 'silvertongue', trait: 'Smooth Talker', name: 'Silver Tongue', effect: 'Once per job, turn a failed social test into a pass. The DM names a price you must accept.' },
+  { id: 'fastfriends', trait: 'Smooth Talker', name: 'Fast Friends', effect: 'Once per job, a minor character treats you as an old friend. Social tests with them are Easy.' },
+  { id: 'menace', trait: 'Intimidator', name: 'Menace', effect: 'Combat Action: an enemy within 6" who can see you. Intimidator test: pass = 1 Shaken, critical = 2.' },
+  { id: 'interrogator', trait: 'Intimidator', name: 'Interrogator', effect: 'A captive you question answers one question truthfully. No test.' },
+  { id: 'eartotheground', trait: 'Streetwise', name: 'Ear to the Ground', effect: 'One free Informant question each job.' },
+  { id: 'bargainhunter', trait: 'Streetwise', name: 'Bargain Hunter', effect: 'Once per downtime, buy one item at 20% off (rounded up). Doesn\'t stack with the Workshop.' },
+  { id: 'belongshere', trait: 'Courtier', name: 'Belongs Here', effect: 'In the Terraces and Heights, the first time each job someone questions why you\'re there, they accept your answer.' },
+  { id: 'gossip', trait: 'Courtier', name: 'Gossip', effect: 'Once per job, you know something embarrassing about one named upper-class person. One social test with them is Easy.' },
+  { id: 'fleetfooted', trait: 'Runner', name: 'Fleet-footed', effect: 'Move 8" instead of 6".' },
+  { id: 'freerunner', trait: 'Runner', name: 'Free Runner', effect: 'Climbing and jumping up to 3" during a Move never needs a test.' },
+  { id: 'ghost', trait: 'Shadow', name: 'Ghost', effect: 'When you Attack from Hide, +1 dice To Hit and To Wound. Afterwards you\'re no longer hidden.' },
+  { id: 'vanish', trait: 'Shadow', name: 'Vanish', effect: 'You can Hide using your Move instead of your Action.' },
+  { id: 'getaway', trait: 'Driver', name: 'Getaway', effect: 'Once per job, if you\'re driving, the crew escapes a scene. No test.' },
+  { id: 'shortcut', trait: 'Driver', name: 'Shortcut', effect: 'Once per job, you know a quicker route: the crew gets somewhere first, or shakes off a tail.' },
+  { id: 'papertrail', trait: 'Forger', name: 'Paper Trail', effect: 'Once per job, produce a document you "made earlier". It counts as a Papers favour.' },
+  { id: 'doctoredrecords', trait: 'Forger', name: 'Doctored Records', effect: 'Once per downtime, lose a report or rewrite a ledger: -1 Exposure. Doesn\'t stack with a Cleaner.' },
+  { id: 'research', trait: 'Lettered', name: 'Research', effect: 'Once per job, ask the DM one question about a person, place or house. The answer is true.' },
+  { id: 'blueprints', trait: 'Lettered', name: 'Blueprints', effect: 'At the start of a job, name one hidden way in, out or through the place. The DM makes it real.' },
+  // General talents
+  { id: 'lucky', trait: null, icon: '🍀', name: 'Lucky', effect: 'Once per job, reroll one of your own rolls. You must keep the new result.' },
+  { id: 'coolhead', trait: null, icon: '🧊', name: 'Cool Head', effect: 'Once per combat, at the start of your activation, remove all your Shaken.' },
+  { id: 'teamplayer', trait: null, icon: '🤝', name: 'Team Player', effect: 'You can Help a crewmate without a covering trait.' },
+  { id: 'hardtokill', trait: null, icon: '🫀', name: 'Hard to Kill', effect: 'Survival rolls made for you get +1 dice.' },
+  { id: 'workhorse', trait: null, icon: '🛠️', name: 'Workhorse', effect: 'You take two different downtime actions instead of one.' },
+];
+export const MAX_TALENTS_PER_TRAIT = 2;
+export const talentById = (id) => TALENTS.find((t) => t.id === id)
+  // Saves from before talents had ids stored the trait name: map it to that trait's first talent.
+  || TALENTS.find((t) => t.trait === id);
+export const talentIcon = (t) => t.icon || traitIcon(t.trait);
 
 export const CONTACTS = [
   { id: 'Fence', icon: '🏷️', who: 'Moves goods with no questions', effect: 'Sell gear for ¾ price. Doesn\'t stack with the Workshop.' },
@@ -71,6 +98,7 @@ export const MARKETS = {
 export const ITEMS = [
   // Weapons (mod applies to To Wound)
   { id: 'knife', kind: 'weapon', name: 'Knife', mod: 1, range: 'Melee, thrown', rules: ['Concealable'], price: 5, market: 'works' },
+  { id: 'firebottle', kind: 'weapon', name: 'Firebottle', mod: 1, range: 'Thrown', rules: ['Blast', 'Consumable'], price: 8, market: 'works' },
   { id: 'cosh', kind: 'weapon', name: 'Cosh, wrench, club', mod: 1, range: 'Melee', rules: [], price: 5, market: 'works' },
   { id: 'pike', kind: 'weapon', name: 'Pike hook', mod: 1, range: 'Melee', rules: ['Reach'], price: 10, market: 'works' },
   { id: 'hosepistol', kind: 'weapon', name: 'Hose pistol', mod: 1, range: 'Short', rules: ['Conspicuous'], price: 10, market: 'works' },
@@ -81,14 +109,21 @@ export const ITEMS = [
   { id: 'scattergun', kind: 'weapon', name: 'Scattergun', mod: 2, range: 'Short', rules: ['Conspicuous'], price: 35, market: 'works' },
   { id: 'rifle', kind: 'weapon', name: 'Rifle', mod: 2, range: 'Long', rules: ['Unwieldy', 'Conspicuous'], price: 40, market: 'works' },
   { id: 'shockbaton', kind: 'weapon', name: 'Shock baton', mod: 1, range: 'Melee', rules: ['Shock'], price: 20, market: 'specialist' },
+  { id: 'garrotte', kind: 'weapon', name: 'Garrotte', mod: 1, range: 'Melee', rules: ['Ambush', 'Silent', 'Concealable'], price: 15, market: 'specialist' },
+  { id: 'crossbow', kind: 'weapon', name: 'Crossbow', mod: 1, range: 'Medium', rules: ['Silent', 'Unwieldy', 'Conspicuous'], price: 30, market: 'specialist' },
+  { id: 'rivetgun', kind: 'weapon', name: 'Rivet gun', mod: 1, range: 'Short', rules: ['Pierce', 'Conspicuous'], price: 30, market: 'specialist' },
   { id: 'boilerlance', kind: 'weapon', name: 'Boiler lance', mod: 1, range: 'Short', rules: ['Fire', 'Unwieldy', 'Conspicuous'], price: 35, market: 'specialist' },
   { id: 'pressurebomb', kind: 'weapon', name: 'Pressure bomb', mod: 2, range: 'Thrown', rules: ['Blast', 'Consumable'], price: 15, market: 'specialist' },
   { id: 'needle', kind: 'weapon', name: 'Refined needle', mod: 1, range: 'Melee', rules: ['Pierce', 'Silent', 'Concealable', 'Refined'], price: 40, market: 'refined' },
+  { id: 'shockglove', kind: 'weapon', name: 'Shock glove', mod: 1, range: 'Melee', rules: ['Shock', 'Silent', 'Concealable', 'Refined'], price: 70, market: 'refined' },
   { id: 'sidearm', kind: 'weapon', name: 'Refined sidearm', mod: 2, range: 'Medium', rules: ['Silent', 'Concealable', 'Refined'], price: 120, market: 'refined' },
+  { id: 'glassrifle', kind: 'weapon', name: 'Glass rifle', mod: 2, range: 'Long', rules: ['Silent', 'Unwieldy', 'Refined'], price: 150, market: 'refined' },
   // Armour (mod applies to To Wound rolls against the wearer)
   { id: 'padded', kind: 'armour', name: 'Padded coat, leather, padded apron', mod: -1, rules: [], price: 15, market: 'works' },
   { id: 'plate', kind: 'armour', name: 'Plate, riot armour', mod: -2, rules: ['Conspicuous'], price: 45, market: 'works' },
   { id: 'firecloth', kind: 'armour', name: 'Fire-cloth coat', mod: -1, rules: ['Fireproof'], price: 25, market: 'specialist' },
+  { id: 'hiddenvest', kind: 'armour', name: 'Hidden vest', mod: -1, rules: ['Concealable'], price: 25, market: 'specialist' },
+  { id: 'silkweave', kind: 'armour', name: 'Silk-weave suit (counts as a good suit)', mod: -1, rules: ['Refined'], price: 70, market: 'refined' },
   { id: 'mendingcoat', kind: 'armour', name: 'Mending coat', mod: -1, rules: ['Mending', 'Refined'], price: 60, market: 'refined' },
   { id: 'grownmail', kind: 'armour', name: 'Grown mail', mod: -2, rules: ['Refined'], price: 160, market: 'refined' },
   // Tools (+1 dice on tests they cover; one tool per roll)
@@ -100,25 +135,39 @@ export const ITEMS = [
   { id: 'spyglass', kind: 'tool', name: 'Spyglass', helps: 'Spotting and watching from far away', rules: ['Concealable'], price: 10, market: 'works' },
   { id: 'forgerkit', kind: 'tool', name: "Forger's kit", helps: 'Forging documents and seals', rules: ['Concealable'], price: 15, market: 'works' },
   { id: 'suit', kind: 'tool', name: 'Good suit of clothes', helps: 'Passing as respectable in the Terraces', rules: [], price: 15, market: 'works' },
+  { id: 'prybar', kind: 'tool', name: 'Pry bar', helps: 'Forcing doors, crates, grates and shutters', rules: ['Conspicuous'], price: 10, market: 'works' },
+  { id: 'lantern', kind: 'tool', name: 'Shutter lantern', helps: 'Searching a place, and working in the dark', rules: [], price: 10, market: 'works' },
+  { id: 'listeninghorn', kind: 'tool', name: 'Listening horn', helps: 'Eavesdropping through doors and walls, cracking combination locks', rules: ['Concealable'], price: 10, market: 'works' },
+  { id: 'routebook', kind: 'tool', name: 'Route book', helps: 'Finding your way and driving through the Works and the Sunk', rules: ['Concealable'], price: 10, market: 'works' },
+  { id: 'disguise', kind: 'tool', name: 'Disguise kit', helps: 'Passing as a particular kind of Works person', rules: [], price: 15, market: 'works' },
   { id: 'gasmask', kind: 'tool', name: 'Gas mask', helps: 'Immune to choke gas', rules: ['Conspicuous'], price: 10, market: 'specialist' },
   { id: 'grapple', kind: 'tool', name: 'Grapple gun', helps: 'Climbing; reach a ledge up to 12" away', rules: ['Conspicuous'], price: 25, market: 'specialist' },
+  { id: 'torch', kind: 'tool', name: 'Cutting torch', helps: 'Cutting bars, chains, grates and Works safes', rules: ['Conspicuous'], price: 20, market: 'specialist' },
   { id: 'whisperkey', kind: 'tool', name: 'Whisper key', helps: 'Any lock, including Refined locks', rules: ['Concealable', 'Refined'], price: 60, market: 'refined' },
   { id: 'quietcloak', kind: 'tool', name: 'Quiet-cloth cloak', helps: 'Sneaking and hiding', rules: ['Refined'], price: 50, market: 'refined' },
+  { id: 'sealblanks', kind: 'tool', name: 'Seal blanks', helps: 'Forging house seals and Refined papers', rules: ['Concealable', 'Refined'], price: 40, market: 'refined' },
   // Consumables
   { id: 'dressing', kind: 'consumable', name: 'Field dressing', effect: '+1 dice on one Medic test', price: 3, market: 'works' },
   { id: 'boilerblack', kind: 'consumable', name: 'Boiler-black', effect: 'Remove 1 Shaken', price: 8, market: 'works' },
   { id: 'smoke', kind: 'consumable', name: 'Smoke canister', effect: 'Ranged To Hit through a 3" cloud at -1 dice until end of round', price: 5, market: 'works' },
   { id: 'strikeoil', kind: 'consumable', name: 'Strike-oil', effect: '+1 dice on one sabotage or fire-starting test', price: 5, market: 'works' },
+  { id: 'numbing', kind: 'consumable', name: 'Numbing tincture', effect: 'Before a fight: ignore the first Shaken result you suffer in it', price: 6, market: 'works' },
   { id: 'stitchglue', kind: 'consumable', name: 'Stitch-glue', effect: 'Remove 1 wound. No test, works in combat', price: 15, market: 'specialist' },
   { id: 'chokegas', kind: 'consumable', name: 'Choke gas', effect: 'Thrown (Short), Blast. Every model hit gains 1 Shaken unless masked', price: 10, market: 'specialist' },
+  { id: 'sleeping', kind: 'consumable', name: 'Sleeping draught', effect: 'In food or drink: one person sleeps for about an hour. No test if they don\'t suspect', price: 10, market: 'specialist' },
   { id: 'salve', kind: 'consumable', name: 'Mending salve', effect: 'Remove 2 wounds. No test, works in combat', price: 40, market: 'refined' },
   { id: 'quickening', kind: 'consumable', name: 'Quickening draught', effect: 'A Dying character automatically passes their survival roll', price: 80, market: 'refined' },
+  { id: 'forgetme', kind: 'consumable', name: 'Forget-me draught', effect: 'A witness who drinks it before the job ends forgets the last hour: -1 Exposure', price: 30, market: 'refined' },
   // Grafts (max 2, permanent, illegal)
   { id: 'sinew', kind: 'graft', name: 'Grown sinew', effect: '+1 maximum wound (to the cap of 8)', price: 150, market: 'refined' },
   { id: 'stillhand', kind: 'graft', name: 'Still hand', effect: "Counts as lockpicks that can't be found or taken", price: 100, market: 'refined' },
   { id: 'cleareye', kind: 'graft', name: 'Clear eye', effect: "Counts as a spyglass that can't be found or taken, and works in the dark", price: 100, market: 'refined' },
+  { id: 'ironlung', kind: 'graft', name: 'Iron lung', effect: 'Immune to choke gas and smoke. Hold your breath for up to an hour', price: 100, market: 'refined' },
+  { id: 'secondskin', kind: 'graft', name: 'Second skin', effect: "Counts as -1 armour that can't be found or taken. With worn armour, use the better rating", price: 120, market: 'refined' },
 ];
 export const itemById = (id) => ITEMS.find((i) => i.id === id);
+
+export const HOMECOMING_STEPS = ['💧 Need', '🎲 Hardship', '🛡️ Raids', '🚱 Water', '🏺 Pot', '🏗️ Build', '💰 Split'];
 
 export const KIND_LABEL = { weapon: '🗡️ Weapons', armour: '🛡️ Armour', tool: '🧰 Tools', consumable: '🔂 Consumables', graft: '🧬 Grafts' };
 
@@ -132,6 +181,7 @@ export const SPECIAL_RULES = {
   Shock: 'Non-lethal. Wounded (7–11) gives 2 Shaken instead. At -3 Shaken, or on a 12: Knocked Out.',
   Pierce: "The target's armour counts as one point lower.",
   Silent: 'Raises no alarm and adds no Exposure for noise.',
+  Ambush: "Can only attack a target that hasn't noticed you: you're Hidden, or it's distracted or asleep.",
   Reach: 'Melee attacks can target models up to 2" away.',
   Unwieldy: "Can't Move and Attack in the same turn. You can use your Move to Aim.",
   Mending: 'At the end of each combat, the wearer removes 1 wound.',
@@ -188,9 +238,9 @@ export const JOBS = {
 // ---------- Community ----------
 export const PROJECTS = [
   { id: 'clinic', name: 'Clinic', icon: '🩺', tiers: ['Recovery removes 2 wounds (instead of 1)', 'Recovery removes all wounds', '+1 dice on survival rolls'] },
-  { id: 'workshop', name: 'Workshop', icon: '🔧', tiers: ['Sell gear for ¾ price', 'Works market items cost 20% less', 'Specialist market opens (also 20% off)'] },
+  { id: 'workshop', name: 'Workshop', icon: '🔧', tiers: ['Sell gear for ¾ price (not with a Fence)', 'Works market items cost 20% less', 'Specialist market opens (also 20% off)'] },
   { id: 'watch', name: 'Watch', icon: '👁️', tiers: ['+1 dice on Raid tests', '+2 dice on Raid tests', '+3 dice on Raid tests, and the crew can defend in person'] },
-  { id: 'cistern', name: 'Cistern', icon: '💧', tiers: ['First Homecoming without water costs no Community', 'First three Homecomings without water cost nothing', 'The district has its own water'] },
+  { id: 'cistern', name: 'Cistern', icon: '💧', tiers: ['Each water cut: the first Homecoming without water costs nothing', 'Each water cut: the first three Homecomings cost nothing', 'The district has its own water'] },
   { id: 'safehouse', name: 'Safehouse', icon: '🏚️', tiers: ['Keep Quiet removes 2 Exposure', 'Lying low removes 3 Exposure', 'Once per campaign, when Exposure would reach 10, set it to 8'] },
   { id: 'hall', name: 'Hall', icon: '📚', tiers: ['+1 dice on Hardship tests', 'New characters join at the full crew level', 'Once per job, +1 dice on one test, no trait needed'] },
 ];
@@ -209,11 +259,11 @@ export const communityBand = (c) => COMMUNITY_BANDS.find((b) => c >= b.min && c 
 
 export const HARDSHIP_EVENTS = [
   { roll: 1, name: 'Sickness', icon: '🤒', text: 'Something goes through the district. If the Clinic has any tiers, the lost tier must be a Clinic tier.' },
-  { roll: 2, name: 'Families leave', icon: '🚪', text: "They go to a rival gang's district. Make a Raid check at the next Homecoming, even if one isn't due." },
-  { roll: 3, name: 'Debt', icon: '💰', text: 'A Sunk lender covers the shortfall. At the next Homecoming, the Need is doubled.' },
+  { roll: 2, name: 'Families leave', icon: '🚪', text: "They go to a rival gang's district. Make a Raid check this Homecoming, even if one isn't due." },
+  { roll: 3, name: 'Debt', icon: '💰', text: 'A Sunk lender covers the shortfall. At the next Homecoming (only), the Need is doubled.' },
   { roll: 4, name: 'Unrest', icon: '🔥', text: 'Arguments, then fighting. The ration board burns. If the Watch or Hall has any tiers, the lost tier must be one of them.' },
   { roll: 5, name: 'Close to home', icon: '🫂', text: "Someone from a crew member's Ties is hurt, ill or in trouble. The DM turns it into a personal side job." },
-  { roll: 6, name: 'Pressure drop', icon: '💧', text: "The pump house fails. Pay 15c now, or lose 1 more Community." },
+  { roll: 6, name: 'Pressure drop', icon: '💧', text: 'The pump house fails. Pay 15c now (from the pay, the Pot or anyone\'s chips), or lose 1 more tier.' },
 ];
 
 // ---------- Exposure & Trust ----------

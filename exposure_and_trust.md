@@ -67,9 +67,11 @@ If the crew gains **0 or 1 Exposure** during a job, it's a **clean job**:
 | :--- | :---: | :--- |
 | 🌙 **Things go quiet** | `-1` | Automatically, every downtime |
 | 🤫 **Keep Quiet** (downtime action) | `-1` (`-2` with [Safehouse I](community.md#-projects)) | Once per downtime, however many characters take it |
-| 🫥 **Lie low** (skip a job) | `-2` (`-3` with Safehouse II) | Instead of taking a job. No pay, but the Need is still due |
+| 🫥 **Lie low** (skip a job) | `-2` (`-3` with Safehouse II) | Instead of taking a job. No pay, but the Need is still due. Things still go quiet afterwards |
 | 🧹 **Cleaner** in the Sunk | `-1` | 20c, once per downtime |
 | 🎁 **Clean-up** [favour](#-favours) | `-1` | Spend one handler favour |
+| ✨ **Forget-me draught** ([Refined](equipment.md#-consumables)) | `-1` | A witness drinks it before the end of the job |
+| 🖋️ **Doctored Records** ([Forger talent](progression.md#-trait-talents)) | `-1` | Once per downtime. Doesn't stack with a Cleaner |
 | 🏚️ **Safehouse III** | Set 10 to 8 | Once per campaign |
 
 ---

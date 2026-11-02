@@ -11,12 +11,14 @@ Builds on the [Dice System](dice_system.md). See also [Character Creation](chara
 
 1. [Combat Turns](#️-combat-turns)
 2. [Combat Actions](#-combat-actions)
-3. [Healing](#-healing)
-4. [Dying](#-dying)
-5. [Out of Combat](#-out-of-combat)
-6. [Downtime](#-downtime)
-7. [Worked Examples](#-worked-examples)
-8. [Design Decisions & Open Questions](#-design-decisions--open-questions)
+3. [Position: Cover, Sight and Melee](#-position-cover-sight-and-melee)
+4. [Enemies](#-enemies)
+5. [Healing](#-healing)
+6. [Dying](#-dying)
+7. [Out of Combat](#-out-of-combat)
+8. [Downtime](#-downtime)
+9. [Worked Examples](#-worked-examples)
+10. [Design Decisions & Open Questions](#-design-decisions--open-questions)
 
 ---
 
@@ -81,6 +83,56 @@ Patch Up doesn't remove wounds in combat. Only Stitch-glue, Mending salve and th
 
 ---
 
+## 🧱 Position: Cover, Sight and Melee
+
+### 👁️ Line of sight
+
+Get down to the model's level and look. If you can see **any part** of the target, you can attack it. If you can't see it at all, you can't.
+
+### 🧱 Cover
+
+A target is **in cover** if something solid hides **part** of it from the attacker: a wall, crates, a doorway, a boiler, or another model standing in the way.
+
+| | Modifier |
+| :--- | :---: |
+| 🧱 Ranged attack against a target **in cover** | `-1 dice` To Hit |
+
+- Cover only counts against **ranged** attacks. In melee, the attacker is right there.
+- Cover doesn't stack. Two walls are still `-1`.
+- **Shooting past your own crew** is allowed, but the target counts as in cover.
+- **Smoke** works the same way, but it's a separate penalty: a target in cover behind smoke is at `-2`.
+
+### 🚪 Leaving melee
+
+A character in base contact with an enemy can **break away**: Move out of contact as normal, but they **can't Attack** in that activation. Dash counts as moving away, too.
+
+> 🎯 **Why so simple?** There are no free strikes or reactions to track. Breaking away costs your attack, which is enough to make holding a doorway matter.
+
+---
+
+## 👥 Enemies
+
+> ⚠️ **GM reference.** Enemies use the same rules as the crew, with one difference: most of them have **fewer wounds**, so fights stay fast.
+
+| Enemy | Wounds | To Hit | Weapon | Armour | Notes |
+| :--- | :---: | :---: | :--- | :---: | :--- |
+| 🐀 **Raider** | 2 | `+0` | Cosh `+1` or hose pistol `+1` | — | Raids districts. Comes in groups of 4–6 |
+| 🐕 **Guard dog** | 1 | `+1` | Bite `+1` | — | Moves **10"**. Barks: its first activation raises the alarm |
+| 🥊 **Gang tough** | 3 | `+1` | Heavy blade `+2` or scattergun `+2` | `-1` | Rival gangs' muscle. Also the **Hired muscle** service |
+| 💂 **House guard** | 3 | `+1` | Carbine `+1`, cosh `+1` | `-2` | If it sees the crew, its first activation raises the alarm |
+| 🗡️ **Rival crew agent** | 5 | `+1` | Refined sidearm `+2` (Silent) | `-1` | Another house's crew. Has one [talent](progression.md#-talents). Uses finishing blows |
+| ⚜️ **Antioch elite** | 5 | `+1` | Rifle `+2` or heavy blade `+2` | `-2` | Ends raids. Only fights the crew if they're Burned, or worse |
+
+**To Hit** is the bonus from a covering trait. Enemies follow every other rule: Shaken, criticals, fumbles, cover and range.
+
+### Rules for enemies
+
+- **Out of the fight.** An enemy with its last wound filled is **out**: dead, unconscious or crawling away, as the story needs. Only **named** enemies (agents, elites, anyone the DM gives a name) become Dying.
+- **Nerve.** When **half** of a group is out, the rest **flee** at their next activation, unless the DM decides they're fanatics or cornered.
+- **Making your own.** Pick wounds (1–5), a To Hit bonus (`+0` or `+1`), and gear from the [price lists](equipment.md#-price-lists). Keep to the ±2 cap.
+
+---
+
 ## 🩹 Healing
 
 Healing happens at three speeds.
@@ -105,7 +157,7 @@ Out of combat, during a job, someone can spend about ten minutes treating a char
 
 - It's a **Medic test**. Without the Medic trait it's `-1 dice` (it needs know-how).
 - A medic's satchel and field dressings add dice as normal.
-- Each character can be treated **once per job**.
+- Each character can be treated **once per job** (twice with the [Triage](progression.md#-talents) talent).
 - Ten minutes is a long time on some jobs. The DM may say the guards' rounds come by, or Exposure is at risk.
 
 | Result | Effect |
@@ -183,13 +235,12 @@ Downtime happens **between jobs**. Do it in this order:
 
 | Step | What happens |
 | :---: | :--- |
-| **1** | 🪙 **Homecoming.** Pay the Need, fill the Pot, split the rest ([Community](community.md#-homecoming)) |
-| **2** | 🛡️ **Raid check**, if one is due ([Community](community.md#️-raids)) |
-| **3** | 🩹 **Recovery.** Every character removes wounds depending on the Clinic: **1** with no Clinic, **2** with Clinic I, **all** with Clinic II or III |
-| **4** | 🧑‍🔧 **Downtime actions.** Each character takes **one** (below) |
-| **5** | 📈 **Level up**, if anyone has enough Marks ([Progression](progression.md)) |
-| **6** | 🛒 **Shop** in any market you have access to |
-| **7** | 👁️ **Things go quiet.** Exposure goes down by **1** ([Exposure](exposure_and_trust.md#-reducing-exposure)) |
+| **0** | 🪙 **Homecoming** comes first: the Need, Hardship, raids, the water, the Pot, building and the split ([Community](community.md#-homecoming)) |
+| **1** | 🩹 **Recovery.** Every character removes wounds depending on the Clinic: **1** with no Clinic, **2** with Clinic I, **all** with Clinic II or III |
+| **2** | 🧑‍🔧 **Downtime actions.** Each character takes **one** (below) |
+| **3** | 📈 **Level up**, if anyone has enough Marks ([Progression](progression.md)) |
+| **4** | 🛒 **Shop** in any market you have access to |
+| **5** | 👁️ **Things go quiet.** Exposure goes down by **1** ([Exposure](exposure_and_trust.md#-reducing-exposure)) |
 
 ### 🧑‍🔧 Downtime actions
 
@@ -199,13 +250,15 @@ Each character picks **one**.
 | :--- | :--- |
 | 🛌 **Recover** | Remove **2 more wounds** |
 | 🪙 **Odd Jobs** | Earn **5c**. Keep it or send it home |
-| 🏠 **Help at Home** | `+1 dice` on the community's next **Hardship** or **Raid** test. Only `+1` in total, however many characters do this |
+| 🏠 **Help at Home** | `+1 dice` on the **Hardship** and **Raid** tests at the **next** Homecoming. Only `+1` in total, however many characters do this |
 | 🤫 **Keep Quiet** | **-1 Exposure**. Only `-1` in total, however many characters do this |
-| 🔎 **Seek Out** | A test with a covering trait (usually **Streetwise**) to find one specific person, rumour or item. On a pass you may buy one **Specialist** item before you've unlocked the market, at **double** price |
+| 🔎 **Seek Out** | A test with a covering trait (usually **Streetwise**) to find one specific person, rumour or item. On a pass you may buy one **Specialist** item before you've unlocked the market, at **double** price, or replace a [lost contact](progression.md#-contacts) |
 
 ### 🫥 Lying low
 
-Instead of taking the next job, the crew can **lie low**: **-2 Exposure**, but there's **no pay** that round. The community still needs its **Need**, so the crew has to pay it from savings or face a [Hardship test](community.md#-hardship).
+Instead of taking the next job, the crew can **lie low**: **-2 Exposure** (`-3` with [Safehouse II](community.md#-projects)), but there's **no pay** and no Marks that round.
+
+Homecoming and downtime still happen. The **Need is still due**, so the crew has to pay it from the Pot or their own chips, or face a [Hardship test](community.md#-hardship). Things still go quiet in downtime, so lying low takes off **3 Exposure** in total (4 with Safehouse II).
 
 ---
 
@@ -259,16 +312,20 @@ Instead of taking the next job, the crew can **lie low**: **-2 Exposure**, but t
 | **4** | Healing in combat | 🟡 **Proposed:** Shaken only, except for consumables and the Field Surgeon talent. |
 | **5** | Finishing blows | 🟡 **Proposed:** possible, but rare, and the DM warns the table. |
 | **6** | Scars | 🟡 **Proposed:** story only, no rules effect. |
+| **7** | Cover and line of sight | 🟡 **Proposed:** see any part to target. Cover is `-1 dice` To Hit on ranged attacks only, and doesn't stack. |
+| **8** | Leaving melee | 🟡 **Proposed:** allowed, but you can't Attack in that activation. |
+| **9** | Enemy profiles | 🟡 **Proposed:** six profiles. Unnamed enemies have 1–3 wounds, go out instead of Dying, and flee at half strength. |
 
 🟡 = proposed, not yet final.
 
 ### Open questions
 
-- [ ] **Cover and terrain:** should cover give `-1 dice` To Hit? It isn't in the dice system yet.
-- [ ] **Line of sight:** what blocks it, and can you shoot past your own crew?
-- [ ] **Leaving melee:** can a character walk away from an enemy in base contact freely?
+- [x] **Cover and terrain:** now proposed above (#7).
+- [x] **Line of sight:** now proposed above (#7).
+- [x] **Leaving melee:** now proposed above (#8).
 - [ ] **Vehicles:** movement, chases and ramming.
-- [ ] **Enemy profiles:** wounds and gear for raiders, elites and rival crews.
+- [x] **Enemy profiles:** now proposed above (#9).
+- [ ] **Darkness:** should fighting in the dark be a Hard test, or cover for everyone?
 
 ---
 

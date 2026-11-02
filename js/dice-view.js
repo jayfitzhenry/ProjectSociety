@@ -24,6 +24,7 @@ const SOURCES = {
     { id: 'ghost', label: '🌑 Ghost (from Hide)', n: 1 },
     { id: 'long', label: '📏 Long range', n: -1 },
     { id: 'smoke', label: '💨 Through smoke', n: -1 },
+    { id: 'cover', label: '🧱 Target in cover', n: -1 },
   ],
   wound: [
     { id: 'w1', label: '🗡️ Weapon +1', n: 1, group: 'weapon' },

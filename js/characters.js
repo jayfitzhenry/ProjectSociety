@@ -2,7 +2,7 @@
 import {
   TRAITS, TALENTS, CONTACTS, BACKGROUNDS, ITEMS, MARKETS, KIND_LABEL, SPECIAL_RULES, STARTING_CHIPS,
   MAX_TRAITS, MAX_CONTACTS, MAX_GRAFTS, WHY_ANTIOCH, LEVEL_REWARDS, MAX_LEVEL, itemById, traitIcon,
-  marksForLevel,
+  marksForLevel, talentById, talentIcon, MAX_TALENTS_PER_TRAIT,
 } from './data.js';
 import {
   state, save, esc, uid, toast, charLevel, maxWounds, crewLevel, marketOpen, buyPrice, sellPrice, gearItem,
@@ -229,16 +229,19 @@ function advancesView(c) {
   const used = (c.extraTraits?.length || 0) + (c.talents?.length || 0) + (c.contacts?.length || 0);
   const free = available - used;
   const traits = traitsOf(c);
+  // Talents this character could take: trait talents for traits they have (max 2 per trait), plus general talents.
+  const openTalents = TALENTS.filter((t) => !c.talents.includes(t.id)
+    && (!t.trait || (traits.includes(t.trait) && c.talents.filter((x) => talentById(x)?.trait === t.trait).length < MAX_TALENTS_PER_TRAIT)));
   let picker = '';
   if (free > 0) {
     const opts = [];
     if (traits.length < MAX_TRAITS) opts.push(['trait', '🧬 New trait']);
-    if (traits.some((t) => !c.talents.includes(t))) opts.push(['talent', '🌟 Talent']);
+    if (openTalents.length) opts.push(['talent', '🌟 Talent']);
     if (c.contacts.length < MAX_CONTACTS) opts.push(['contact', '🤝 Contact']);
     picker = `<div class="advance-picker">
       <div class="seg small">${opts.map(([k, l]) => `<button type="button" data-advtype="${k}" class="${ui.advance === k ? 'on' : ''}">${l}</button>`).join('')}</div>
       ${ui.advance === 'trait' ? `<div class="chips">${TRAITS.filter((t) => !traits.includes(t.id)).map((t) => `<button type="button" class="chip" data-addtrait="${t.id}" title="${esc(t.covers)}">${t.icon} ${t.id}</button>`).join('')}</div><p class="muted small">Describe how you learned it.</p>` : ''}
-      ${ui.advance === 'talent' ? `<div class="list">${traits.filter((t) => !c.talents.includes(t)).map((t) => `<button type="button" class="list-btn" data-addtalent="${t}"><b>${TALENTS[t].name}</b> <span class="muted">(${traitIcon(t)} ${t})</span><br><small>${esc(TALENTS[t].effect)}</small></button>`).join('')}</div>` : ''}
+      ${ui.advance === 'talent' ? `<div class="list">${openTalents.map((t) => `<button type="button" class="list-btn" data-addtalent="${t.id}"><b>${talentIcon(t)} ${t.name}</b> <span class="muted">${t.trait ? `(${t.trait})` : '(general)'}</span><br><small>${esc(t.effect)}</small></button>`).join('')}</div>` : ''}
       ${ui.advance === 'contact' ? `<div class="list">${CONTACTS.filter((k) => !c.contacts.some((x) => x.type === k.id)).map((k) => `<button type="button" class="list-btn" data-addcontact="${k.id}"><b>${k.icon} ${k.id}</b> <span class="muted">${esc(k.who)}</span><br><small>${esc(k.effect)}</small></button>`).join('')}</div>` : ''}
     </div>`;
   }
@@ -352,7 +355,7 @@ function sheetView(c) {
           const def = TRAITS.find((x) => x.id === t);
           return `<li><b>${def.icon} ${t}</b> ${t === c.personalTrait ? '<span class="tag">personal</span>' : ''}${(c.extraTraits || []).includes(t) ? `<span class="tag">advance</span>${ui.editing ? ` <button type="button" class="tiny ghost" data-deltrait="${t}">✕</button>` : ''}` : ''}<br><small class="muted">${esc(def.covers)}</small></li>`;
         }).join('')}</ul>
-        ${c.talents.length ? `<h3>🌟 Talents</h3><ul class="traits">${c.talents.map((t) => `<li><b>${TALENTS[t].name}</b> <span class="muted small">(${t})</span>${ui.editing ? ` <button type="button" class="tiny ghost" data-deltalent="${t}">✕</button>` : ''}<br><small>${esc(TALENTS[t].effect)}</small></li>`).join('')}</ul>` : ''}
+        ${c.talents.length ? `<h3>🌟 Talents</h3><ul class="traits">${c.talents.map(talentById).filter(Boolean).map((t) => `<li><b>${talentIcon(t)} ${t.name}</b> <span class="muted small">(${t.trait || 'general'})</span>${ui.editing ? ` <button type="button" class="tiny ghost" data-deltalent="${t.id}">✕</button>` : ''}<br><small>${esc(t.effect)}</small></li>`).join('')}</ul>` : ''}
         ${c.contacts.length ? `<h3>🤝 Contacts</h3><ul class="traits">${c.contacts.map((k, i) => {
           const def = CONTACTS.find((x) => x.id === k.type);
           return `<li><b>${def.icon} ${k.type}</b> <input class="inline-input" data-contactname="${i}" value="${esc(k.name)}" placeholder="their name">${ui.editing ? ` <button type="button" class="tiny ghost" data-delcontact="${i}">✕</button>` : ''}<br><small>${esc(def.effect)}</small></li>`;
@@ -566,7 +569,7 @@ export function renderCharacters(el, [id]) {
     if (d.addtrait) { c.extraTraits.push(d.addtrait); ui.advance = ''; toast(`🧬 Learned ${d.addtrait}. How did you learn it?`); commit(); return; }
     if (d.addtalent) { c.talents.push(d.addtalent); ui.advance = ''; commit(); return; }
     if (d.addcontact) { c.contacts.push({ type: d.addcontact, name: '' }); ui.advance = ''; commit(); return; }
-    if (d.deltrait) { c.extraTraits = c.extraTraits.filter((t) => t !== d.deltrait); c.talents = c.talents.filter((t) => t !== d.deltrait); commit(); return; }
+    if (d.deltrait) { c.extraTraits = c.extraTraits.filter((t) => t !== d.deltrait); c.talents = c.talents.filter((t) => talentById(t)?.trait !== d.deltrait); commit(); return; }
     if (d.deltalent) { c.talents = c.talents.filter((t) => t !== d.deltalent); commit(); return; }
     if (d.delcontact !== undefined) { c.contacts.splice(Number(d.delcontact), 1); commit(); }
   };

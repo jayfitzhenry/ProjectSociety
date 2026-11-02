@@ -15,6 +15,7 @@ const ui = {
   aim: 0, // 0, 1, 2 (Dead Eye)
   long: false,
   smoke: false,
+  cover: false,
   ghost: false,
   atkShaken: 0,
   defShaken: 0,
@@ -43,6 +44,7 @@ function calc() {
   if (ui.hitPlus) hit.plus.push(['⬆️ Other', ui.hitPlus]);
   if (ui.long) hit.minus.push(['📏 Long range', 1]);
   if (ui.smoke) hit.minus.push(['💨 Smoke', 1]);
+  if (ui.cover && w.range !== 'Melee') hit.minus.push(['🧱 Cover', 1]);
   if (ui.atkShaken) hit.minus.push([`🩸 Shaken ×${ui.atkShaken}`, ui.atkShaken]);
   if (ui.hitMinus) hit.minus.push(['⬇️ Other', ui.hitMinus]);
 
@@ -139,6 +141,7 @@ function view() {
           ${toggle('trait', '🧬 Covering trait (Brawler / Marksman) <b>+1</b>')}
           ${toggle('long', '📏 Long range (beyond half) <b>−1</b>')}
           ${toggle('smoke', '💨 Shooting through smoke <b>−1</b>')}
+          ${toggle('cover', '🧱 Target in cover (ranged only) <b>−1</b>')}
           ${toggle('ghost', '🌑 Ghost: attacking from Hide <b>+1 / +1</b>')}
         </div>
         <div class="seg small">

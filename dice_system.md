@@ -78,6 +78,7 @@ Modifiers either **add** dice (`+dice`) or **minus** dice (`-dice`). In both cas
 | Source | Applies to | Modifier |
 | :--- | :--- | :---: |
 | 📏 **Long range** (target more than half the weapon's range away) | Hit rolls (shooting) | `-1` |
+| 🧱 **Cover** (part of the target is hidden; 🟡 proposed in [Actions](actions.md#-position-cover-sight-and-melee)) | Hit rolls (shooting) | `-1` |
 | 🛡️ **Target's armour** | Wound rolls | `-1` to `-2` *(armour rating)* |
 | 🔴 **Hard test** | Non-combat tests | `-1` |
 | 🩸 **Shaken** | All of that character's rolls until the end of combat | `-1` per stack, **max `-3`** *(further results deal 1 wound)* |

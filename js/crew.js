@@ -1,6 +1,6 @@
 // Crew sheet: Community, the Pot, Exposure, Trust, jobs, Homecoming, raids and downtime.
 import {
-  PROJECTS, JOBS, EXPOSURE_EVENTS, TRUST_EVENTS, FAVOURS, HARDSHIP_EVENTS, MAX_COMMUNITY,
+  PROJECTS, JOBS, EXPOSURE_EVENTS, TRUST_EVENTS, FAVOURS, HARDSHIP_EVENTS, MAX_COMMUNITY, HOMECOMING_STEPS,
   communityBand, exposureBand, trustBand, communityCost,
 } from './data.js';
 import {
@@ -53,6 +53,14 @@ function setTrust(next, reason) {
   log(`🤝 Trust ${signed(delta)} → ${n}${reason ? ` (${reason})` : ''}`);
 }
 
+/** Set the Need due at this Homecoming. Debt doubles it once, then it's paid off. */
+function setNeedDue() {
+  const c = crew();
+  c.needDue = needPerJob();
+  c.needPaid = 0;
+  if (c.debt) { c.debt = false; log(`💰 Debt: this Homecoming's Need is doubled (${c.needDue}c).`); }
+}
+
 function meter(value, max, kind) {
   return `<div class="meter m-${kind}">${Array.from({ length: max + 1 }, (_, i) => `<button type="button" class="pip ${i <= value ? 'on' : ''} ${i === value ? 'cur' : ''}" data-meter="${kind}" data-v="${i}" title="${i}">${i}</button>`).join('')}</div>`;
 }
@@ -99,7 +107,7 @@ function projects() {
   const cost = communityCost(com + 1);
   const starting = com === 2 && !c.log.length;
   return `<section class="card">
-    <h3>🧱 Projects <span class="muted small">Community = tiers built. Build in order I → II → III. Max 10.</span></h3>
+    <h3>🧱 Projects <span class="muted small">Community = tiers built (max 10). Build I → II → III. Lost tiers are always the top one.</span></h3>
     ${starting ? '<div class="callout">🆕 New campaign: the district starts with Clinic I and Hall I. <b>Pick one more starting tier</b> (free).</div>' : ''}
     <div class="projects">
       ${PROJECTS.map((p) => `<div class="project">
@@ -175,8 +183,7 @@ function endJob(outcome) {
   else setTrust(c.trust - 1, 'objective failed');
   if (clean) setTrust(c.trust + 1, 'clean job');
   c.purse += pay;
-  c.needDue = needPerJob();
-  c.needPaid = 0;
+  setNeedDue();
   c.job = null;
   ui.onJob = null;
   log(`💼 Job done: ${parts.join(', ')} = ${pay}c. ${marks} Mark${marks > 1 ? 's' : ''} each${team.length ? ` (${team.map((x) => x.name).join(', ')})` : ''}.`);
@@ -200,7 +207,7 @@ function raidReasons() {
   const r = [];
   if (c.exposure >= 4) r.push('Exposure 4+');
   if (community() >= 7) r.push('Community 7+');
-  if (c.forceRaid) r.push('Families left (Hardship event)');
+  if (c.forceRaid) r.push('Families leave event');
   return r;
 }
 
@@ -234,15 +241,18 @@ function homecoming() {
   const reasons = raidReasons();
   const cisternCovers = c.projects.cistern >= 3 || (c.projects.cistern === 2 && c.cisternUsed < 3) || (c.projects.cistern === 1 && c.cisternUsed < 1);
   if (!active) {
-    return `<section class="card"><h3>🪙 Homecoming</h3><p class="muted">After a job, the pay comes here. Finish a job above, or
-      <button type="button" class="linklike" data-act="manualpay">bring pay home manually</button>.</p></section>`;
+    return `<section class="card"><h3>🪙 Homecoming</h3><p class="muted">After a job, the pay comes here and you work through seven steps:</p>
+      <div class="chips">${HOMECOMING_STEPS.map((x, i) => `<span class="chip static"><b>${i + 1}</b> ${x}</span>`).join('')}</div>
+      <p class="muted small">Finish a job, lie low, or <button type="button" class="linklike" data-act="manualpay">bring pay home by hand</button>.</p></section>`;
   }
   const team = alive();
+  const cost = communityCost(com + 1);
   return `<section class="card homecoming">
     <h3>🪙 Homecoming <span class="muted small">Pay brought home: <b>${c.purse}c</b></span></h3>
+    <p class="muted small">Work down the list. Losses come before building, so you can see what needs rebuilding.</p>
     <ol class="steps">
       <li class="${c.needPaid >= due ? 'done' : ''}">
-        <b>💧 Pay the Need</b> ${com === 0 ? '<span class="muted">Collapsed: there\'s no Need.</span>' : `<span>${c.needPaid}/${due}c paid</span>
+        <b>💧 Pay the Need</b> <span class="muted small">from the pay, then the Pot</span> ${com === 0 ? '<span class="muted">Collapsed: there\'s no Need.</span>' : `<span>${c.needPaid}/${due}c paid</span>
         ${short > 0 ? `<div class="actions small">
           <button type="button" class="btn small" data-payneed="${short}">Pay ${short}c${c.purse < short ? ' (rest from the Pot)' : ''}</button>
           ${Math.ceil(due / 2) - c.needPaid > 0 && Math.ceil(due / 2) < due ? `<button type="button" class="btn small" data-payneed="${Math.ceil(due / 2) - c.needPaid}">Pay half (${Math.ceil(due / 2) - c.needPaid}c)</button>` : ''}
@@ -257,11 +267,16 @@ function homecoming() {
         ${!c.skipRaid && reasons.length ? `<div class="actions small"><button type="button" class="btn small" data-act="raidcheck">🎲 Raid check${c.exposure >= 7 ? ' (+1 dice, Hot)' : ''}</button></div>` : ''}
         ${ui.raidCheck || ''}
       </li>
-      ${c.waterCut ? `<li><b>💧 Water cut</b> ${cisternCovers ? `<span class="tag pos">Cistern covers it</span>${c.projects.cistern < 3 ? ' <button type="button" class="tiny" data-act="cisternuse">Mark Homecoming used</button>' : ''}` : '<span class="tag neg">−1 Community: click the top tier of a project to lose it</span>'}</li>` : ''}
+      ${c.waterCut ? `<li><b>💧 Water cut</b> ${cisternCovers ? `<span class="tag pos">Cistern covers it</span>${c.projects.cistern < 3 ? ' <button type="button" class="tiny" data-act="cisternuse">Mark Homecoming used</button>' : ''}` : '<span class="tag neg">−1 Community</span> <span class="muted small">The crew chooses: tap the top tier of a project.</span>'}</li>` : ''}
       <li>
         <b>🏺 Fill the Pot</b>
         <div class="form-row"><input type="number" id="to-pot" min="0" max="${c.purse}" value="0" class="num-input"> <button type="button" class="btn small" data-act="topot">Send to the Pot</button>
         <span class="muted small">Pot: ${c.pot}c${com < MAX_COMMUNITY ? ` / ${communityCost(com + 1)}c for Community ${com + 1}` : ''}</span></div>
+      </li>
+      <li class="${com < MAX_COMMUNITY && c.pot >= cost ? '' : 'done'}">
+        <b>🏗️ Build</b> ${com >= MAX_COMMUNITY ? '<span class="muted small">Community is 10. Nothing left to build.</span>'
+          : c.pot >= cost ? `<span class="tag pos">The Pot can pay ${cost}c</span> <span class="muted small">Tap the next tier of any project above.</span>`
+            : `<span class="muted small">Next tier costs ${cost}c. ${cost - c.pot}c more needed.</span>`}
       </li>
       <li>
         <b>💰 Split the rest</b> ${team.length ? `<span class="muted small">${c.purse}c between ${team.length}: ${Math.floor(c.purse / team.length)}c each, ${c.purse % team.length}c left over goes to the Pot</span>
@@ -362,7 +377,15 @@ export function renderCrew(el) {
   };
   el.onchange = (e) => {
     const t = e.target;
-    if (t.dataset.flag) { crew()[t.dataset.flag] = t.checked; commit(); return; }
+    if (t.dataset.flag) {
+      crew()[t.dataset.flag] = t.checked;
+      if (t.dataset.flag === 'waterCut') {
+        log(t.checked ? '🚱 Antioch cuts the water.' : '💧 The water is back.');
+        if (!t.checked) crew().cisternUsed = 0; // the Cistern's count starts again with the next cut
+      }
+      commit();
+      return;
+    }
     if (t.id === 'import-file' && t.files[0]) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -460,7 +483,7 @@ export function renderCrew(el) {
       const paid = fromPurse + fromPot;
       c.needPaid += paid;
       log(`💧 Paid ${paid}c of the Need${fromPot ? ` (${fromPot}c from the Pot)` : ''}. ${c.needPaid}/${c.needDue}c.`);
-      if (c.needPaid >= c.needDue) { c.hardshipDue = false; c.debt = false; } else c.hardshipDue = true;
+      c.hardshipDue = c.needPaid < c.needDue;
       commit();
       return;
     }
@@ -469,7 +492,7 @@ export function renderCrew(el) {
       case 'skipneed': c.hardshipDue = true; log(`💧 The Need wasn't met (${c.needPaid}/${c.needDue}c).`); commit(); break;
       case 'manualpay': {
         const v = Number(prompt('How many chips did the crew bring home?', '60'));
-        if (v > 0) { c.purse += v; c.needDue = needPerJob(); c.needPaid = 0; log(`🪙 ${v}c brought home.`); commit(); }
+        if (v > 0) { c.purse += v; setNeedDue(); log(`🪙 ${v}c brought home.`); commit(); }
         break;
       }
       case 'hardship': {
@@ -482,6 +505,7 @@ export function renderCrew(el) {
             <p class="callout">🎲 Event ${ev.roll}: ${ev.icon} <b>${ev.name}</b>. ${ev.text}</p>`;
           if (ev.roll === 2) c.forceRaid = true;
           if (ev.roll === 3) c.debt = true;
+          if (ev.roll === 6) out += '<div class="actions small"><button type="button" class="btn small" data-act="pressurepay">Pay 15c (pay first, then the Pot)</button><span class="muted small">or lose one more tier</span></div>';
           log(`🎲 Hardship failed: −1 Community. Event ${ev.roll}: ${ev.name}.`);
         }
         c.hardshipDue = false;
@@ -516,6 +540,16 @@ export function renderCrew(el) {
           log(`🛡️ Raid test failed: −${burned ? 2 : 1} Community.`);
         }
         ui.raidCheck = (ui.raidCheck || '').replace(/<div class="actions small"><button type="button" class="btn small primary" data-act="raidtest">[\s\S]*?<\/div>/, '') + `<div class="sub">Raid test</div>${out}`;
+        commit();
+        break;
+      }
+      case 'pressurepay': {
+        const fromPurse = Math.min(c.purse, 15);
+        const fromPot = Math.min(c.pot, 15 - fromPurse);
+        if (fromPurse + fromPot < 15) { toast('Not enough in the pay and the Pot. Characters can chip in from their sheets, or lose a tier.'); break; }
+        c.purse -= fromPurse; c.pot -= fromPot;
+        log(`💧 Pressure drop: paid 15c${fromPot ? ` (${fromPot}c from the Pot)` : ''}.`);
+        ui.hardship = (ui.hardship || '').replace(/<div class="actions small"><button type="button" class="btn small" data-act="pressurepay">[\s\S]*?<\/div>/, '<p class="callout good small">💧 Paid 15c. The pumps are running again.</p>');
         commit();
         break;
       }
@@ -568,13 +602,13 @@ export function renderCrew(el) {
       case 'confidant': c.confidantUsed = true; setExposure(c.exposure - 3, 'the handler takes the blame'); commit(); break;
       case 'lielow': {
         setExposure(c.exposure - (c.projects.safehouse >= 2 ? 3 : 2), 'lying low');
-        c.needDue = needPerJob(); c.needPaid = 0;
+        setNeedDue();
         log('🫥 The crew lies low. No pay, but the Need is due.');
         commit();
         break;
       }
       case 'canceljob': if (confirm('Cancel this job? Exposure already gained stays.')) { c.job = null; commit(); } break;
-      case 'penance': c.exposure = 6; c.waterCut = false; log('⚖️ Penance job succeeded. Exposure 6, the water is back, jobs start again.'); commit(); break;
+      case 'penance': c.exposure = 6; c.waterCut = false; c.cisternUsed = 0; log('⚖️ Penance job succeeded. Exposure 6, the water is back, jobs start again.'); commit(); break;
       case 'export': {
         const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');

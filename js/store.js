@@ -1,6 +1,6 @@
 // Persistent state in localStorage, plus small shared helpers.
 import {
-  PROJECTS, levelFromMarks, BASE_WOUNDS, MAX_WOUNDS, itemById, communityBand,
+  PROJECTS, levelFromMarks, BASE_WOUNDS, MAX_WOUNDS, itemById, communityBand, talentById,
 } from './data.js';
 
 const KEY = 'project-society:v1';
@@ -32,11 +32,19 @@ function fresh() {
   return { version: 1, characters: [], crew: freshCrew(), settings: { playerView: false }, history: [] };
 }
 
+/** Bring older saves up to date. Talents used to be stored by trait name; now they're ids. */
+function migrate(s) {
+  (s.characters || []).forEach((c) => {
+    c.talents = [...new Set((c.talents || []).map((t) => talentById(t)?.id).filter(Boolean))];
+  });
+  return s;
+}
+
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return fresh();
-    const s = JSON.parse(raw);
+    const s = migrate(JSON.parse(raw));
     const base = fresh();
     return {
       ...base,
@@ -61,6 +69,7 @@ export function save() {
 }
 
 export function replaceState(next) {
+  migrate(next);
   const base = fresh();
   Object.keys(state).forEach((k) => delete state[k]);
   Object.assign(state, base, next, {

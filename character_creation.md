@@ -145,7 +145,7 @@ Combat traits (**Brawler** and **Marksman**) cover the **To Hit** roll. **No tra
 
 ## 📜 Trait List
 
-The **Covers** column gives examples, not a complete list. The **Doesn't cover** column helps the DM rule on edge cases. Each trait also has a [talent](progression.md#-talents) that can be unlocked by levelling.
+The **Covers** column gives examples, not a complete list. The **Doesn't cover** column helps the DM rule on edge cases. Each trait also has two [talents](progression.md#-talents) that can be unlocked by levelling.
 
 | Trait | Covers | Doesn't cover |
 | :--- | :--- | :--- |
