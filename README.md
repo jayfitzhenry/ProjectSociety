@@ -1,5 +1,7 @@
 # 🎲 Project Society
 
+GitHub Page: https://jayfitzhenry.github.io/ProjectSociety/ 
+
 A tabletop RPG where every chip is a choice. Roll **2D6**, score **7 or more** to pass.
 
 The rules live in this repo as one markdown file per subsystem. The repo also contains an interactive companion app that runs on GitHub Pages.
