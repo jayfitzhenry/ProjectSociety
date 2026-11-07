@@ -557,6 +557,22 @@ body.player-view .gm-only { display: none !important; }
 .section-ed .row { margin-bottom: var(--s1); }
 .section-ed .who { font-size: var(--t1); color: var(--muted); }
 .section-ed .chosen { margin-bottom: var(--s2); }
+.fmt-bar { display: flex; flex-wrap: wrap; gap: 4px; }
+.fmt {
+  min-width: var(--tap); min-height: var(--tap); padding: 0 var(--s1); border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--fill); color: var(--text); font-weight: 600; cursor: pointer;
+}
+.fmt:hover { color: var(--accent); background: var(--fill-hover); }
+.fmt:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.fmt-bold { font-weight: 800; }
+.fmt-italic { font-style: italic; font-family: Georgia, serif; }
+.rich {
+  max-width: none; min-height: 160px; max-height: 70vh; overflow-y: auto; padding: 10px 12px; line-height: 1.5;
+  background: var(--raised); border: 1px solid var(--line-strong); border-radius: var(--radius); cursor: text;
+}
+.rich:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+.rich:empty::before { content: attr(data-placeholder); color: var(--muted); pointer-events: none; }
+.rich > :last-child { margin-bottom: 0; }
 .segment-view h2 { margin: var(--s4) 0 var(--s1); }
 .dm-section { border-left: 3px solid var(--line-strong); padding-left: var(--s2); }
 .save-status { font-size: var(--t1); color: var(--muted); }

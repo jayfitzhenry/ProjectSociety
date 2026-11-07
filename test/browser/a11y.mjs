@@ -145,7 +145,17 @@ await wait(800);
 await dm.type('#seg-title', 'Session 1: the pump house');
 await dm.type('[data-i="0"] [data-sf="body"]', 'The foreman works for Antioch.');
 await tap(dm, '[data-addsec="players"]');
-await dm.type('[data-i="1"] [data-sf="body"]', 'Steam hangs over the **pump house**.');
+await dm.type('[data-i="1"] [data-sf="body"]', 'Steam hangs over the ');
+// Paste rich text the way a copy from an AI chat arrives: it should land as markdown.
+await dm.$eval('[data-i="1"] .rich', (ed) => {
+  ed.focus();
+  const r = document.createRange(); r.selectNodeContents(ed); r.collapse(false);
+  getSelection().removeAllRanges(); getSelection().addRange(r);
+  const dt = new DataTransfer();
+  dt.setData('text/html', '<p><strong>pump house</strong>.</p><ul><li>A <em>valve</em> hisses</li><li>Boots on the gantry</li></ul>');
+  dt.setData('text/plain', 'pump house.');
+  ed.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));
+});
 await tap(dm, '[data-addsec="dm"]');
 await tap(dm, '[data-i="2"] [data-aud="some"]');
 await tap(dm, '[data-i="2"] [data-to="carol"]');
@@ -154,6 +164,13 @@ await wait(1500);
 await tap(dm, '[data-act="share"]');
 await wait(800);
 await scan(dm, 'Segment editor (DM)');
+await tap(dm, '[data-act="source"]');
+{
+  const md = await dm.$eval('[data-i="1"] textarea', (t) => t.value);
+  const want = 'Steam hangs over the **pump house**.\n\n- A *valve* hisses\n- Boots on the gantry';
+  if (md !== want) errors.push(`dm: pasted rich text became ${JSON.stringify(md)}, not ${JSON.stringify(want)}`);
+}
+await scan(dm, 'Segment editor, markdown (DM)');
 await tap(dm, '[data-act="preview"]');
 await scan(dm, 'Segment preview (DM)');
 await go(dm, `#/c/${cid}/material`);
