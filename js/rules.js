@@ -336,7 +336,7 @@ const DOC_ICONS = {
   progression: '<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   community: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
   exposure_and_trust: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-  world_history: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+  lore: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
 };
 const AZ_ICON = '<path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/>';
 const BOOK_ICON = '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/>';
@@ -383,7 +383,9 @@ function docView(id, doc) {
   const group = RULE_GROUPS.find((g) => g.id === meta.group);
   return `<div class="page wide rules-layout has-toc">
     <article>
-      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/rules">Rules</a> · ${esc(group?.title || '')}</nav>
+      <nav class="crumbs" aria-label="Breadcrumb">${meta.group === 'world'
+        ? (id === 'lore' ? '<a href="#/rules">Rules</a> · Lore' : '<a href="#/rules/lore">Lore</a>')
+        : `<a href="#/rules">Rules</a> · ${esc(group?.title || '')}`}</nav>
       <h1>${esc(meta.title)}</h1>
       <details class="sect toc-inline"><summary>On this page <span class="meta">${doc.toc.filter((t) => t.level === 2).length} sections</span></summary>
         <div class="sect-body">${tocList(doc, id)}${gmToggle() ? `<div style="margin-top:16px">${gmToggle()}</div>` : ''}</div></details>
