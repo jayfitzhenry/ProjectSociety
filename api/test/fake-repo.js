@@ -35,8 +35,6 @@ export function fakeRepo() {
     async list(c, pk, o = {}) {
       let out = [...data[c].values()].filter((d) => PK[c](d) === pk);
       if (o.types?.length) out = out.filter((d) => o.types.includes(d.type));
-      if (o.touchedAfter) out = out.filter((d) => d.touchedAt > o.touchedAfter);
-      if (o.audienceFor) out = out.filter((d) => d.audience === 'all' || (Array.isArray(d.audience) && d.audience.includes(o.audienceFor)));
       if (o.campaignId !== undefined) out = out.filter((d) => (d.campaignId ?? null) === o.campaignId);
       if (o.orderBy) out.sort((a, b) => String(b[o.orderBy]).localeCompare(String(a[o.orderBy])));
       if (o.limit) out = out.slice(0, o.limit);

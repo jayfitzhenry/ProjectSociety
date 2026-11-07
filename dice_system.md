@@ -136,10 +136,9 @@ Combat uses **two rolls**. The **wound roll** is read directly on the Injury Tab
  │ 2D6 ≥ 7        │               │ 2D6 → read Injury Table  │
  └────────────────┘               └──────────────────────────┘
    + Aiming                         + Weapon (+1 / +2)
-   + Trait                          + Trait
-   − Long range                     + Crit on hit
-   − Shaken                         − Armour (−1 / −2)
-                                    − Shaken
+   + Trait                          + Crit on hit
+   − Long range                     − Armour (−1 / −2)
+   − Shaken                         − Shaken
         │ fail (2–6)
         ▼                           2–6  → 🟡 Shaken
       Miss                          7–11 → 🟠 1 wound
@@ -423,4 +422,4 @@ Rulings on the questions raised in the first review. These are **final**.
 
 ---
 
-<sub>🎲 Probabilities were calculated exactly by enumerating every possible dice combination. Last updated 2026-11-02.</sub>
+<sub>🎲 Probabilities were calculated exactly by enumerating every possible dice combination. Last updated 2026-11-07.</sub>

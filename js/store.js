@@ -77,7 +77,8 @@ export const state = {
   campaign: null, // the open campaign: { id, name, role, joinCode, members, me, crewEtag }
   crew: freshCrew(), // the open campaign's crew sheet
   roster: null, // the open campaign's characters; yours are the same objects as in state.characters
-  settings: { playerView: true, ...readLocal(SETTINGS_KEY) },
+  // theme: dark | light | system. currentChar: the sheet the Sheet tab opens. lastCampaign: the one the Campaign tab opens.
+  settings: { playerView: true, theme: 'dark', currentChar: null, lastCampaign: null, ...readLocal(SETTINGS_KEY) },
   history: [],
 };
 
@@ -177,12 +178,17 @@ async function flush(keepalive = false) {
   return undefined;
 }
 
-export function save() {
+/** Keep this device's settings (theme, which character and campaign to open). */
+export function saveSettings() {
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
   } catch {
     // Private mode or full storage: settings just won't persist.
   }
+}
+
+export function save() {
+  saveSettings();
   if (sync.status !== 'conflict') setSync('saving');
   clearTimeout(timer);
   timer = setTimeout(flush, 600);
@@ -387,6 +393,23 @@ export async function refreshFromServer(myUserId) {
 // ---------- helpers ----------
 export const uid = () => Math.random().toString(36).slice(2, 10);
 
+/** The page title in the top bar and the browser tab. */
+export function setTitle(text) {
+  const el = document.getElementById('top-title');
+  if (el) el.textContent = text;
+  document.title = text === 'Project Society' ? text : `${text} · Project Society`;
+}
+
+/** Text without emoji (older saves and logs used them as icons). */
+export const plain = (s) => String(s ?? '').replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}\u{20E3}]/gu, '').replace(/\s{2,}/g, ' ').trim();
+
+/** The character the Sheet tab shows: the last one opened, or the first finished one. */
+export function currentCharacter() {
+  const live = state.characters.filter((c) => !c.dead || c.id === state.settings.currentChar);
+  return state.characters.find((c) => c.id === state.settings.currentChar)
+    || live.find((c) => c.created) || live[0] || null;
+}
+
 export function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -402,7 +425,7 @@ export function toast(msg) {
 }
 
 export function log(text) {
-  state.crew.log.unshift({ t: Date.now(), text });
+  state.crew.log.unshift({ t: Date.now(), text: plain(text) });
   state.crew.log = state.crew.log.slice(0, 200);
 }
 

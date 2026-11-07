@@ -1,18 +1,138 @@
-// Game data used by the interactive tools.
+// Game data used by the interactive tools. (The icon fields are no longer shown; they're kept for old saves and exports.)
 // The rules text itself is read live from the .md files; the numbers here mirror
 // equipment.md, character_creation.md, progression.md, community.md and
 // exposure_and_trust.md. When a rule changes in a .md file, update it here too.
 
-export const RULE_DOCS = [
-  { id: 'getting_started', title: 'Getting Started', icon: '🧭' },
-  { id: 'dice_system', title: 'Dice System', icon: '🎲' },
-  { id: 'character_creation', title: 'Character Creation', icon: '🧰' },
-  { id: 'actions', title: 'Actions', icon: '🏃' },
-  { id: 'equipment', title: 'Equipment & Chips', icon: '🛒' },
-  { id: 'community', title: 'Community', icon: '🏠' },
-  { id: 'exposure_and_trust', title: 'Exposure & Trust', icon: '👁️' },
-  { id: 'progression', title: 'Progression', icon: '📈' },
+// The rules wiki: every page, in reading order, grouped. Each page is a .md file in the repo root.
+export const RULE_GROUPS = [
+  { id: 'start', title: 'Start here' },
+  { id: 'rules', title: 'Core rules' },
+  { id: 'campaign', title: 'The campaign' },
+  { id: 'world', title: 'World' },
 ];
+export const RULE_DOCS = [
+  { id: 'quick_start', title: 'Quick Start', group: 'start' },
+  { id: 'dice_modifiers', title: 'Dice Modifiers', group: 'start' },
+  { id: 'getting_started', title: 'Getting Started', group: 'start' },
+  { id: 'dice_system', title: 'Dice System', group: 'rules' },
+  { id: 'character_creation', title: 'Character Creation', group: 'rules' },
+  { id: 'actions', title: 'Actions', group: 'rules' },
+  { id: 'equipment', title: 'Equipment & Chips', group: 'rules' },
+  { id: 'progression', title: 'Progression', group: 'rules' },
+  { id: 'community', title: 'Community', group: 'campaign' },
+  { id: 'exposure_and_trust', title: 'Exposure & Trust', group: 'campaign' },
+  { id: 'world_history', title: 'World History', group: 'world' },
+];
+
+// ---------- Glossary ----------
+// Terms that can be tapped anywhere in the app. Each points at the rules section that defines it;
+// the text shown comes from that .md section (or the data below for traits, talents and gear).
+// anchor = the section heading with everything but letters and digits removed, lower-cased.
+export const GLOSSARY = [
+  { term: 'Roll', doc: 'dice_system', anchor: 'thebasics' },
+  { term: 'Test', aliases: ['Tests'], doc: 'dice_system', anchor: 'thebasics' },
+  { term: 'Advantage', doc: 'dice_system', anchor: 'dicepoolsadvantagedisadvantage' },
+  { term: 'Disadvantage', doc: 'dice_system', anchor: 'dicepoolsadvantagedisadvantage' },
+  { term: 'Net modifier', aliases: ['net dice'], doc: 'dice_modifiers', anchor: 'workingoutyourdice' },
+  { term: 'Penalty cap', doc: 'dice_modifiers', anchor: 'limits' },
+  { term: 'Critical', aliases: ['Criticals', 'critical'], doc: 'dice_system', anchor: 'criticalsfumbles' },
+  { term: 'Fumble', aliases: ['Fumbles', 'fumble'], doc: 'dice_system', anchor: 'criticalsfumbles' },
+  { term: 'Easy test', aliases: ['Easy'], doc: 'actions', anchor: 'whorolls' },
+  { term: 'Hard test', aliases: ['Hard'], doc: 'actions', anchor: 'whorolls' },
+  { term: 'To Hit', doc: 'dice_system', anchor: 'combatsequence' },
+  { term: 'To Wound', doc: 'dice_system', anchor: 'combatsequence' },
+  { term: 'Injury Table', doc: 'dice_system', anchor: 'injurytable' },
+  { term: 'Free attack', doc: 'dice_system', anchor: 'injurytable' },
+  { term: 'Shaken', doc: 'dice_system', anchor: 'injurytable' },
+  { term: 'Wounds', aliases: ['Wound', 'wounds'], doc: 'character_creation', anchor: 'wounds' },
+  { term: 'Dying', doc: 'actions', anchor: 'dying' },
+  { term: 'Survival roll', aliases: ['survival roll', 'survival rolls'], doc: 'actions', anchor: 'thesurvivalroll' },
+  { term: 'Scar', aliases: ['Scars'], doc: 'actions', anchor: 'scars' },
+  { term: 'Healing', doc: 'actions', anchor: 'healing' },
+  { term: 'Treat Wounds', doc: 'actions', anchor: 'treatwounds' },
+  { term: 'Activation', doc: 'actions', anchor: 'youractivation' },
+  { term: 'Move', doc: 'actions', anchor: 'youractivation' },
+  { term: 'Aim', aliases: ['Aiming'], doc: 'actions', anchor: 'combatactions' },
+  { term: 'Hide', doc: 'actions', anchor: 'combatactions' },
+  { term: 'Stunt', aliases: ['Stunts'], doc: 'actions', anchor: 'stunts' },
+  { term: 'Patch Up', doc: 'actions', anchor: 'patchup' },
+  { term: 'Stabilise', aliases: ['Stabilised'], doc: 'actions', anchor: 'stabilise' },
+  { term: 'Cover', doc: 'actions', anchor: 'cover' },
+  { term: 'Darkness', doc: 'actions', anchor: 'darkness' },
+  { term: 'Long range', doc: 'equipment', anchor: 'ranges' },
+  { term: 'Downtime', doc: 'actions', anchor: 'downtime' },
+  { term: 'Lying low', aliases: ['Lie low'], doc: 'actions', anchor: 'lyinglow' },
+  { term: 'Trait', aliases: ['Traits'], doc: 'character_creation', anchor: 'traitsinsteadofskills' },
+  { term: 'Helping', aliases: ['Helper', 'Help'], doc: 'character_creation', anchor: 'helping' },
+  { term: 'Background', aliases: ['Backgrounds'], doc: 'character_creation', anchor: 'backgrounds' },
+  { term: 'Marks', doc: 'progression', anchor: 'marks' },
+  { term: 'Crew level', doc: 'progression', anchor: 'marks' },
+  { term: 'Level', doc: 'progression', anchor: 'leveltable' },
+  { term: 'Advance', aliases: ['Advances'], doc: 'progression', anchor: 'advances' },
+  { term: 'Talent', aliases: ['Talents'], doc: 'progression', anchor: 'talents' },
+  { term: 'Contact', aliases: ['Contacts'], doc: 'progression', anchor: 'contacts' },
+  { term: 'Chips', doc: 'equipment', anchor: 'chips' },
+  { term: 'Markets', aliases: ['Market'], doc: 'equipment', anchor: 'markets' },
+  { term: 'Tool', aliases: ['Tools'], doc: 'equipment', anchor: 'tools' },
+  { term: 'Consumable', aliases: ['Consumables'], doc: 'equipment', anchor: 'consumables' },
+  { term: 'Graft', aliases: ['Grafts'], doc: 'equipment', anchor: 'refinedgrafts' },
+  { term: 'Community', doc: 'community', anchor: 'thecommunitytrack' },
+  { term: 'Homecoming', doc: 'community', anchor: 'homecoming' },
+  { term: 'Need', doc: 'community', anchor: 'theneed' },
+  { term: 'Pot', doc: 'community', anchor: 'thepotandbuilding' },
+  { term: 'Hardship', aliases: ['Hardship test'], doc: 'community', anchor: 'hardship' },
+  { term: 'Raid', aliases: ['Raids', 'Raid check', 'Raid test'], doc: 'community', anchor: 'raids' },
+  { term: 'Project', aliases: ['Projects', 'Tier'], doc: 'community', anchor: 'projects' },
+  { term: 'Exposure', doc: 'exposure_and_trust', anchor: 'exposure' },
+  { term: 'Clean job', doc: 'exposure_and_trust', anchor: 'cleanjobs' },
+  { term: 'Burned', doc: 'exposure_and_trust', anchor: 'burned' },
+  { term: 'Trust', doc: 'exposure_and_trust', anchor: 'trust' },
+  { term: 'Favour', aliases: ['Favours'], doc: 'exposure_and_trust', anchor: 'favours' },
+];
+
+// ---------- Dice counter ----------
+// What the sheet's dice counter offers. Numbers mirror dice_modifiers.md.
+// mode: test | hit | wound | survival. auto: worked out from the character (see characters.js).
+export const DICE_MODES = [
+  { id: 'test', title: 'Test' },
+  { id: 'hit', title: 'To Hit' },
+  { id: 'wound', title: 'To Wound' },
+  { id: 'survival', title: 'Survival' },
+];
+export const DICE_SOURCES = {
+  test: [
+    { id: 'tool', label: 'Tool', n: 1, note: 'one per roll' },
+    { id: 'help', label: 'Helper', n: 1, note: 'one helper' },
+    { id: 'easy', label: 'Easy', n: 1, group: 'diff' },
+    { id: 'hard', label: 'Hard', n: -1, group: 'diff' },
+    { id: 'bribe', label: 'Bribe', n: 1 },
+    { id: 'consumable', label: 'Consumable', n: 1, note: 'field dressing, strike-oil' },
+    { id: 'hall3', label: 'Hall III', n: 1, note: 'once per job' },
+    { id: 'conspicuous', label: 'Conspicuous gear', n: -1, note: 'sneaking or blending in' },
+  ],
+  hit: [
+    { id: 'trait', label: 'Brawler or Marksman', n: 1 },
+    { id: 'aim', label: 'Aim', n: 1 },
+    { id: 'ghost', label: 'Ghost, from Hide', n: 1, talent: 'ghost' },
+    { id: 'long', label: 'Long range', n: -1 },
+    { id: 'cover', label: 'Cover or darkness', n: -1, note: 'ranged only' },
+    { id: 'smoke', label: 'Through smoke', n: -1 },
+    { id: 'floored', label: 'Floored', n: -1 },
+  ],
+  wound: [
+    { id: 'crit', label: 'Critical hit', n: 1 },
+    { id: 'ghost', label: 'Ghost, from Hide', n: 1, talent: 'ghost' },
+    { id: 'overpressure', label: 'Overpressure', n: 1, talent: 'overpressure', note: 'once per combat' },
+    { id: 'fireproof', label: 'Target is Fireproof', n: -1, fire: true },
+  ],
+  survival: [
+    { id: 'satchel', label: "Medic's satchel", n: 1 },
+    { id: 'dressing', label: 'Field dressing', n: 1 },
+    { id: 'stabilised', label: 'Stabilised in the fight', n: 1 },
+    { id: 'clinic3', label: 'Clinic III', n: 1 },
+    { id: 'hardtokill', label: 'Hard to Kill (the Dying character)', n: 1 },
+  ],
+};
 
 // ---------- Traits ----------
 export const TRAITS = [
@@ -168,9 +288,9 @@ export const ITEMS = [
 ];
 export const itemById = (id) => ITEMS.find((i) => i.id === id);
 
-export const HOMECOMING_STEPS = ['💧 Need', '🎲 Hardship', '🛡️ Raids', '🚱 Water', '🏺 Pot', '🏗️ Build', '💰 Split'];
+export const HOMECOMING_STEPS = ['Need', 'Hardship', 'Raids', 'Water', 'Pot', 'Build', 'Split'];
 
-export const KIND_LABEL = { weapon: '🗡️ Weapons', armour: '🛡️ Armour', tool: '🧰 Tools', consumable: '🔂 Consumables', graft: '🧬 Grafts' };
+export const KIND_LABEL = { weapon: 'Weapons', armour: 'Armour', tool: 'Tools', consumable: 'Consumables', graft: 'Grafts' };
 
 export const SPECIAL_RULES = {
   Concealable: 'Can be hidden on your person. A search can still find it.',
@@ -223,10 +343,10 @@ export const MAX_LEVEL = 10;
 export const levelFromMarks = (m) => Math.min(MAX_LEVEL, Math.floor(m / MARKS_PER_LEVEL) + 1);
 export const marksForLevel = (l) => (l - 1) * MARKS_PER_LEVEL;
 export const LEVEL_REWARDS = {
-  1: 'A new character: 3 traits, 5 wounds, the 🔩 Works market',
-  2: '⭐ Advance', 3: '⭐ Advance · 🧨 Specialist market opens', 4: '⭐ Advance · 🩸 Hardened: +1 maximum wound',
-  5: '⭐ Advance', 6: '⭐ Advance · ✨ Refined market opens', 7: '⭐ Advance', 8: '⭐ Advance · 🩸 Hardened: +1 maximum wound',
-  9: '⭐ Advance', 10: '⭐ Advance · 🏙️ A name on the street',
+  1: 'A new character: 3 traits, 5 wounds, the Works market',
+  2: 'An advance', 3: 'An advance. The Specialist market opens', 4: 'An advance. Hardened: +1 maximum wound',
+  5: 'An advance', 6: 'An advance. The Refined market opens', 7: 'An advance', 8: 'An advance. Hardened: +1 maximum wound',
+  9: 'An advance', 10: 'An advance. A name on the street',
 };
 
 // ---------- Jobs ----------

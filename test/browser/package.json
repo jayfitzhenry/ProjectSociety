@@ -1,0 +1,18 @@
+{
+  "name": "project-society-browser-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local browser checks for the companion app (not deployed). Needs Chrome or Chromium.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node a11y.mjs",
+    "serve": "node server.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "^4.10.0",
+    "puppeteer-core": "^23.11.1"
+  }
+}

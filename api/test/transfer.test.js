@@ -48,3 +48,24 @@ test('export includes the crew and stories of campaigns you run, not ones you pl
   const res = await call(exportAll, { user: 'alice' });
   assert.deepEqual(res.body.campaigns.map((c) => [c.name, c.crew.pot]), [['Mine', 3]]);
 });
+
+test('import: segments come back unshared, and old single-body stories become DM-only sections', async () => {
+  const { listStories } = await import('../src/handlers/stories.js');
+  const res = await call(importAll, { user: 'alice', method: 'POST', body: { campaigns: [{ name: 'Old', stories: [
+    { title: 'Body', body: 'twist' },
+    { title: 'Sections', shared: true, sections: [{ title: 'Hi', body: 'hello', audience: 'players' }] },
+  ] }] } });
+  assert.equal(res.status, 201);
+  const cid = res.body.campaigns[0].id;
+  const segs = (await call(listStories, { user: 'alice', params: { cid } })).body;
+  assert.deepEqual(segs.map((s) => [s.title, s.shared, s.sections[0].audience]).sort(), [['Body', false, 'dm'], ['Sections', false, 'players']]);
+});
+
+test('import: sections for chosen players come back DM only', async () => {
+  const { listStories } = await import('../src/handlers/stories.js');
+  const res = await call(importAll, { user: 'alice', method: 'POST', body: { campaigns: [{ name: 'Old', stories: [
+    { title: 'Secret', shared: true, sections: [{ title: 'For Carol', body: 'x', audience: 'some', to: ['carol'] }] },
+  ] }] } });
+  const segs = (await call(listStories, { user: 'alice', params: { cid: res.body.campaigns[0].id } })).body;
+  assert.deepEqual(segs[0].sections[0], { id: 's1', title: 'For Carol', body: 'x', audience: 'dm' });
+});

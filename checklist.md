@@ -140,7 +140,7 @@ This is a working document for the designer. It isn't one of the rulebooks, so t
 | :---: | :--- |
 | J1 | Shows every rules document |
 | J2 | Uses numbers that match the rules documents |
-| J3 | Offers a tool for **every roll** in the rules |
+| J3 | Helps count the dice for **every roll** in the rules |
 | J4 | Applies rule effects automatically wherever the app already tracks the state |
 | J5 | Handles campaign state correctly through edge cases |
 | J6 | Supports every payment source the rules allow |
@@ -211,6 +211,21 @@ This is a working document for the designer. It isn't one of the rulebooks, so t
 | J6 | ⚠️ | The rules say the Need can be paid from characters' chips. The app only offers the pay and the Pot → **R18** |
 | J7–J9 | ✅ | |
 
+### 🧰 Section J against the new app: 2026-11-07
+
+The UX pass replaced the dice roller with a dice counter (players roll real dice) and rebuilt the app's screens, so section J was checked again.
+
+| # | Result | Notes |
+| :---: | :--- | :--- |
+| J1 | ✅ | Eleven docs, in four groups: Start here (Quick Start, Dice Modifiers, Getting Started), Core rules, The campaign, and World (World History, a placeholder) |
+| J2 | ✅ | Numbers still come from `js/data.js`. The To Wound diagram in the Dice System no longer lists a trait, which matches Character Creation and the counter |
+| J3 | ✅ | Reworded: the app counts dice for tests, To Hit, To Wound and survival rolls, and the crew sheet says what to roll for Hardship and Raids |
+| J4 | ⚠️ | Shaken past `-3` still becomes a wound on the sheet. But the old **End of combat** button went with the combat screen, so **Mending** armour no longer removes a wound by itself → **R19** |
+| J5 | ✅ | The free starting tier still uses `startChosen` |
+| J6 | ✅ | **Characters chip in…** is still on the Need step |
+| J7 | ✅ | Backup and import are under Settings |
+| J8–J9 | ✅ | |
+
 ---
 
 ## 🔧 Remediation
@@ -244,6 +259,7 @@ Each instruction is written so it can be done on its own. New rules are 🟡 **p
 | **R16** | `js/combat.js` | Apply **Shaken overflow** (R3) in the outcome odds and rolls: Shock past −3 Knocks Out, and overflow past −3 becomes wounds. Add a **Haymaker** toggle for melee weapons. Relabel cover as "cover, darkness or a moving vehicle". | ✅ Done |
 | **R17** | `js/store.js`, `js/crew.js` | Track the free starting tier with a `startChosen` flag instead of "the log is empty". Migrate old saves so their behaviour doesn't change. | ✅ Done |
 | **R18** | `js/crew.js` | Add **Characters chip in** to the Need step: record chips paid from characters' own pockets, which they then subtract on their sheets. | ✅ Done |
+| **R19** | `js/characters.js` | Add an **After the fight** action to the character sheet: clear Shaken, and remove 1 wound for a character wearing Mending armour, and say so. | ⬜ To do |
 
 ---
 
@@ -257,4 +273,4 @@ These need the designer's own ideas, not a remediation:
 
 ---
 
-<sub>✅ Last reviewed 2026-11-02.</sub>
+<sub>✅ Last reviewed 2026-11-02. Section J checked again 2026-11-07.</sub>

@@ -8,42 +8,38 @@ const ui = { notes: [], openId: null, preview: false, scope: null };
 const when = (iso) => new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
 function listView() {
-  return `<section class="card">
-    <div class="page-head"><h3>📝 Your notes <small class="muted">only you can see these</small></h3>
-      <button type="button" class="btn primary small" data-act="new-note">➕ New note</button></div>
-    ${ui.notes.length ? `<ul class="char-list">${ui.notes.map((n) => `<li><a href="#" data-open="${n.id}">
-      <b>${esc(n.title || 'Untitled')}</b><span class="muted small">${when(n.updatedAt)}</span></a></li>`).join('')}</ul>`
-      : '<p class="muted">No notes yet. Jot down names, leads, debts, anything you want to remember.</p>'}
-  </section>`;
+  return `<div class="row spread block"><p class="muted" style="margin:0;flex:1 1 240px">Only you can see your notes.</p>
+      <button type="button" class="btn primary" data-act="new-note">New note</button></div>
+    ${ui.notes.length ? `<ul class="rows">${ui.notes.map((n) => `<li><button type="button" class="row-main" data-open="${n.id}">
+      <span class="row-text"><span class="row-title">${esc(n.title || 'Untitled')}</span><span class="row-meta">${when(n.updatedAt)}</span></span><span class="chev" aria-hidden="true"></span></button></li>`).join('')}</ul>`
+      : '<p class="empty">No notes yet. Jot down names, leads, debts, anything you want to remember.</p>'}`;
 }
 
 function editorView(n) {
-  return `<section class="card note-editor">
-    <div class="page-head">
-      <button type="button" class="btn small ghost" data-act="back">← All notes</button>
-      <div class="seg small"><button type="button" class="${ui.preview ? '' : 'on'}" data-act="write">✏️ Write</button><button type="button" class="${ui.preview ? 'on' : ''}" data-act="preview">👁️ Preview</button></div>
+  return `<div class="row spread block">
+      <button type="button" class="btn quiet back" data-act="back">All notes</button>
+      <div class="seg" role="group" aria-label="View"><button type="button" data-act="write" aria-pressed="${!ui.preview}">Write</button><button type="button" data-act="preview" aria-pressed="${ui.preview}">Preview</button></div>
     </div>
-    <input class="title-input" id="note-title" value="${esc(n.title)}" placeholder="Title" maxlength="200">
-    ${ui.preview ? `<div class="md preview">${renderMarkdown(n.body) || '<p class="muted">Nothing yet.</p>'}</div>`
-      : `<textarea id="note-body" rows="14" placeholder="Write in markdown: **bold**, *italic*, - lists, # headings">${esc(n.body)}</textarea>`}
-    <div class="actions">
-      <button type="button" class="btn primary" data-act="save-note">💾 Save</button>
-      <button type="button" class="btn danger" data-act="delete-note">🗑️ Delete</button>
-      <span class="muted small" id="note-status">${n.updatedAt ? `Saved ${when(n.updatedAt)}` : ''}</span>
-    </div>
-  </section>`;
+    <label class="field"><span>Title</span><input class="title-input" id="note-title" value="${esc(n.title)}" maxlength="200"></label>
+    ${ui.preview ? `<div class="md block">${renderMarkdown(n.body) || '<p class="muted">Nothing yet.</p>'}</div>`
+      : `<label class="field"><span>Note</span><textarea id="note-body" rows="14" placeholder="Markdown works: **bold**, *italic*, - lists, # headings">${esc(n.body)}</textarea></label>`}
+    <div class="row">
+      <button type="button" class="btn primary" data-act="save-note">Save</button>
+      <button type="button" class="btn danger" data-act="delete-note">Delete</button>
+      <span class="save-status" id="note-status" role="status">${n.updatedAt ? `Saved ${when(n.updatedAt)}` : ''}</span>
+    </div>`;
 }
 
 /** Render the notes for a scope ({ campaignId } or {}) into el. */
 export async function renderNotes(el, scope = {}) {
   ui.scope = scope;
   ui.openId = null;
-  el.innerHTML = '<p class="muted">Loading notes…</p>';
+  el.innerHTML = '<p class="muted">Opening your notes…</p>';
   try {
     const q = scope.campaignId ? `?campaignId=${encodeURIComponent(scope.campaignId)}` : '';
     ui.notes = await api(`notes${q}`);
   } catch (e) {
-    el.innerHTML = `<p class="callout bad">⚠️ ${esc(e.message)}</p>`;
+    el.innerHTML = `<p class="note bad">${esc(e.message)}</p>`;
     return;
   }
   const current = () => ui.notes.find((n) => n.id === ui.openId);
@@ -61,7 +57,7 @@ export async function renderNotes(el, scope = {}) {
 
   el.onclick = async (e) => {
     const open = e.target.closest('[data-open]');
-    if (open) { e.preventDefault(); ui.openId = open.dataset.open; ui.preview = false; draw(); return; }
+    if (open) { ui.openId = open.dataset.open; ui.preview = false; draw(); return; }
     const b = e.target.closest('button[data-act]');
     if (!b) return;
     const n = current();
@@ -75,7 +71,7 @@ export async function renderNotes(el, scope = {}) {
           ui.preview = false;
           draw();
           el.querySelector('#note-title')?.focus();
-        } catch (err) { b.disabled = false; toast(`⚠️ ${esc(err.message)}`); }
+        } catch (err) { b.disabled = false; toast(esc(err.message)); }
         return;
       }
       case 'back': capture(); ui.openId = null; draw(); return;
@@ -88,11 +84,11 @@ export async function renderNotes(el, scope = {}) {
           const saved = await api(`notes/${encodeURIComponent(n.id)}`, { method: 'PUT', etag: n._etag, body: { title: n.title, body: n.body, campaignId: n.campaignId, characterId: n.characterId } });
           Object.assign(n, saved);
           ui.notes.sort((a, z) => z.updatedAt.localeCompare(a.updatedAt));
-          toast('💾 Saved');
+          toast('Saved');
           draw();
         } catch (err) {
           b.disabled = false;
-          toast(`⚠️ ${esc(err.message)}`);
+          toast(esc(err.message));
         }
         return;
       }
@@ -103,7 +99,7 @@ export async function renderNotes(el, scope = {}) {
           ui.notes = ui.notes.filter((x) => x.id !== n.id);
           ui.openId = null;
           draw();
-        } catch (err) { toast(`⚠️ ${esc(err.message)}`); }
+        } catch (err) { toast(esc(err.message)); }
         return;
       default:
     }

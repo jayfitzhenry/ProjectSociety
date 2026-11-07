@@ -1,42 +1,152 @@
-// Stories (DM only) and the snippets the DM shares from them (members, filtered by audience).
+// Campaign material ("segments", stored as type 'story'), polling and read markers.
+//
+// A segment is the DM's: a title, a shared on/off switch and a list of sections. Each section is
+// for the DM only, for all the players, or for chosen players. Players only ever receive shared
+// segments, and only the sections meant for them: nothing else leaves the server for a player,
+// not even who else a chosen-players section went to.
 import {
-  route, ok, created, readJson, requireIfMatch, clean, badRequest, notFound, now,
+  route, ok, created, readJson, requireIfMatch, clean, badRequest, notFound, now, HttpError,
 } from '../lib/http.js';
 import { repo, update } from '../lib/repo.js';
-import { checkId, optionalId, newId, text } from '../lib/validate.js';
+import { checkId, newId, text } from '../lib/validate.js';
 import { requireMember, requireDm, membershipId } from '../lib/access.js';
 
-const MAX_STORY = 200_000;
-const MAX_SNIPPET = 50_000;
+export const MAX_SEGMENT = 200_000; // characters across all sections
+export const MAX_SECTIONS = 100;
+export const MAX_CHOSEN = 50;
 const STATUSES = new Set(['draft', 'archived']);
+const AUDIENCES = new Set(['dm', 'players', 'some']);
+const SECTION_ID = /^[A-Za-z0-9_-]{1,40}$/;
 
-// ---------- stories: DM only ----------
-function storyFields(body) {
+// ---------- shape ----------
+/** Older stories had one markdown body. They become a segment with one DM-only section. */
+export function normalizeSegment(doc) {
+  const out = { ...doc };
+  if (!Array.isArray(out.sections)) {
+    out.sections = out.body ? [{ id: 's1', title: '', body: String(out.body), audience: 'dm' }] : [];
+  }
+  delete out.body;
+  out.shared = !!out.shared;
+  out.status = STATUSES.has(out.status) ? out.status : 'draft';
+  return out;
+}
+
+/** The chosen players of a section: unique user ids. */
+function readChosen(to) {
+  if (to === undefined || to === null) return [];
+  if (!Array.isArray(to)) throw badRequest('Chosen players must be a list.');
+  if (to.length > MAX_CHOSEN) throw badRequest(`At most ${MAX_CHOSEN} chosen players.`);
+  return [...new Set(to.map((u) => checkId(u, 'player id')))];
+}
+
+/** Validate sections sent by the DM. Accepts the old { body } shape too (old clients, imports). */
+export function readSections(body) {
+  let list = body.sections;
+  if (list === undefined && body.body !== undefined) list = body.body ? [{ id: 's1', title: '', body: body.body, audience: 'dm' }] : [];
+  if (list === undefined) list = [];
+  if (!Array.isArray(list)) throw badRequest('Sections must be a list.');
+  if (list.length > MAX_SECTIONS) throw badRequest(`At most ${MAX_SECTIONS} sections.`);
+  const seen = new Set();
+  let total = 0;
+  const sections = list.map((s, i) => {
+    if (!s || typeof s !== 'object') throw badRequest('Each section must be an object.');
+    let id = typeof s.id === 'string' && SECTION_ID.test(s.id) ? s.id : `s${i + 1}`;
+    while (seen.has(id)) id = `${id}x`;
+    seen.add(id);
+    const sec = {
+      id,
+      title: text(s.title, { max: 200, what: 'A section title' }),
+      body: text(s.body, { max: MAX_SEGMENT, what: 'A section' }),
+      audience: AUDIENCES.has(s.audience) ? s.audience : 'dm',
+    };
+    if (sec.audience === 'some') sec.to = readChosen(s.to);
+    total += sec.title.length + sec.body.length;
+    return sec;
+  });
+  if (total > MAX_SEGMENT) throw new HttpError(413, `This segment is too long (max ${MAX_SEGMENT} characters).`, 'too_big');
+  return sections;
+}
+
+function segmentFields(body) {
   return {
     title: text(body.title, { max: 200, what: 'The title' }),
-    body: text(body.body, { max: MAX_STORY, what: 'The story' }),
+    sections: readSections(body),
     status: STATUSES.has(body.status) ? body.status : 'draft',
+    shared: body.shared === true,
   };
 }
 
-export const listStories = route(async ({ user, params }) => {
-  await requireDm(params.cid, user);
+/** Is this section meant for this player? */
+const sectionFor = (x, userId) => x.audience === 'players' || (x.audience === 'some' && Array.isArray(x.to) && x.to.includes(userId));
+
+/** What one player may see of a segment, or null if they may see none of it. */
+export function forPlayer(doc, userId) {
+  const s = normalizeSegment(doc);
+  if (!s.shared || s.status === 'archived') return null;
+  const sections = s.sections.filter((x) => sectionFor(x, userId)).map(({ id, title, body, audience }) => ({
+    id, title, body, ...(audience === 'some' ? { forYou: true } : {}),
+  }));
+  if (!sections.length) return null;
+  const playersAt = s.playersAtBy?.[userId] || s.playersAt || s.createdAt;
+  return { id: s.id, title: s.title, sections, createdAt: s.createdAt, playersAt };
+}
+
+const playerSig = (doc, userId) => {
+  const v = doc && forPlayer(doc, userId);
+  return v ? JSON.stringify([v.title, v.sections]) : '';
+};
+
+/** The players in a campaign (one single-partition query). */
+async function playerIds(cid) {
   const r = await repo();
-  return ok((await r.list('campaigns', params.cid, { types: ['story'], orderBy: 'updatedAt' })).map(clean));
+  return (await r.list('campaigns', cid, { types: ['membership'] })).filter((m) => m.role !== 'dm').map((m) => m.userId);
+}
+
+/**
+ * Mark the segment as new for every player whose view of it changed, and move those players'
+ * material markers so their polls notice. Other players see no change at all.
+ */
+async function stampPlayers(cid, before, doc, t) {
+  const changed = (await playerIds(cid)).filter((u) => forPlayer(doc, u) && playerSig(before, u) !== playerSig(doc, u));
+  if (!changed.length) return [];
+  doc.playersAt = t;
+  doc.playersAtBy = { ...(doc.playersAtBy || {}) };
+  for (const u of changed) doc.playersAtBy[u] = t;
+  return changed;
+}
+
+async function bumpMaterial(cid, users, t) {
+  await Promise.all(users.map((u) => update('campaigns', cid, membershipId(u), (m) => {
+    if (m.type !== 'membership') return false;
+    m.materialAt = t;
+  })));
+}
+
+// ---------- segments ----------
+export const listStories = route(async ({ user, params }) => {
+  const m = await requireMember(params.cid, user);
+  const r = await repo();
+  const docs = (await r.list('campaigns', params.cid, { types: ['story'], orderBy: 'createdAt' })).map(clean);
+  if (m.role === 'dm') return ok(docs.map(normalizeSegment));
+  return ok(docs.map((d) => forPlayer(d, m.userId)).filter(Boolean));
 });
 
 export const createStory = route(async ({ request, user, params }) => {
   await requireDm(params.cid, user);
   const t = now();
-  const doc = { ...storyFields(await readJson(request)), id: newId(), type: 'story', campaignId: params.cid, createdAt: t, updatedAt: t };
+  const fields = segmentFields(await readJson(request, 1_000_000));
+  const doc = { ...fields, id: newId(), type: 'story', campaignId: params.cid, createdAt: t, updatedAt: t };
+  const changed = await stampPlayers(params.cid, null, doc, t);
   const r = await repo();
-  return created(clean(await r.create('campaigns', doc)));
+  const saved = clean(await r.create('campaigns', doc));
+  await bumpMaterial(params.cid, changed, t);
+  return created(normalizeSegment(saved));
 });
 
 async function story(cid, sid) {
   const r = await repo();
-  const s = await r.read('campaigns', cid, checkId(sid, 'story id'));
-  if (!s || s.type !== 'story') throw notFound('Story not found.');
+  const s = await r.read('campaigns', cid, checkId(sid, 'segment id'));
+  if (!s || s.type !== 'story') throw notFound('Segment not found.');
   return s;
 }
 
@@ -44,9 +154,14 @@ export const putStory = route(async ({ request, user, params }) => {
   await requireDm(params.cid, user);
   const etag = requireIfMatch(request);
   const { _etag, ...existing } = clean(await story(params.cid, params.sid));
-  const doc = { ...existing, ...storyFields(await readJson(request)), updatedAt: now() };
+  const t = now();
+  const doc = { ...normalizeSegment(existing), ...segmentFields(await readJson(request, 1_000_000)), updatedAt: t };
+  // A player sees something new only when what they can see changed.
+  const changed = await stampPlayers(params.cid, existing, doc, t);
   const r = await repo();
-  return ok(clean(await r.replace('campaigns', doc, etag)));
+  const saved = clean(await r.replace('campaigns', doc, etag));
+  await bumpMaterial(params.cid, changed, t);
+  return ok(normalizeSegment(saved));
 });
 
 export const deleteStory = route(async ({ user, params }) => {
@@ -57,99 +172,22 @@ export const deleteStory = route(async ({ user, params }) => {
   return { status: 204 };
 });
 
-// ---------- snippets ----------
-/** 'all', or a non-empty list of current members' ids. */
-async function checkAudience(cid, audience) {
-  if (audience === 'all') return 'all';
-  if (!Array.isArray(audience) || !audience.length || audience.length > 100) throw badRequest('Choose who sees this: everyone, or at least one player.');
-  const r = await repo();
-  const members = new Set((await r.list('campaigns', cid, { types: ['membership'] })).map((m) => m.userId));
-  const ids = [...new Set(audience.map((id) => checkId(id, 'user id')))];
-  if (ids.some((id) => !members.has(id))) throw badRequest('Everyone you share with must be in the campaign.');
-  return ids;
-}
-
-/** What a player gets: no list of who else it went to. */
-const forPlayer = (s) => {
-  const { audience, ...rest } = clean(s);
-  return { ...rest, shared: audience === 'all' ? 'all' : 'you' };
-};
-
-const visibleTo = (m) => (m.role === 'dm' ? {} : { audienceFor: m.userId });
-const shape = (m) => (m.role === 'dm' ? clean : forPlayer);
-
-export const listSnippets = route(async ({ user, params }) => {
-  const m = await requireMember(params.cid, user);
-  const r = await repo();
-  const list = await r.list('campaigns', params.cid, { types: ['snippet'], orderBy: 'sharedAt', limit: 200, ...visibleTo(m) });
-  return ok({ snippets: list.map(shape(m)), lastReadAt: m.lastReadAt || null });
-});
-
-export const createSnippet = route(async ({ request, user, params }) => {
-  await requireDm(params.cid, user);
-  const body = await readJson(request);
-  const t = now();
-  const doc = {
-    id: newId(),
-    type: 'snippet',
-    campaignId: params.cid,
-    storyId: optionalId(body.storyId, 'story id'),
-    title: text(body.title, { max: 200, what: 'The title' }),
-    body: text(body.body, { max: MAX_SNIPPET, what: 'The snippet', required: true }),
-    audience: await checkAudience(params.cid, body.audience),
-    sharedBy: user.id,
-    sharedAt: t,
-    touchedAt: t,
-  };
-  const r = await repo();
-  return created(clean(await r.create('campaigns', doc)));
-});
-
-export const patchSnippet = route(async ({ request, user, params }) => {
-  await requireDm(params.cid, user);
-  const body = await readJson(request);
-  const audience = body.audience === undefined ? undefined : await checkAudience(params.cid, body.audience);
-  const saved = await update('campaigns', params.cid, checkId(params.id, 'snippet id'), (s) => {
-    if (s.type !== 'snippet') throw notFound('Snippet not found.');
-    const t = now();
-    if (body.title !== undefined) s.title = text(body.title, { max: 200, what: 'The title' });
-    if (body.body !== undefined) s.body = text(body.body, { max: MAX_SNIPPET, what: 'The snippet', required: true });
-    if (audience !== undefined && JSON.stringify(audience) !== JSON.stringify(s.audience)) {
-      s.audience = audience;
-      s.sharedAt = t; // re-shared: new readers see it as new
-    }
-    s.editedAt = t;
-    s.touchedAt = t;
-  });
-  if (!saved) throw notFound('Snippet not found.');
-  return ok(clean(saved));
-});
-
-export const deleteSnippet = route(async ({ user, params }) => {
-  await requireDm(params.cid, user);
-  const r = await repo();
-  const s = await r.read('campaigns', params.cid, checkId(params.id, 'snippet id'));
-  if (!s || s.type !== 'snippet') throw notFound('Snippet not found.');
-  await r.remove('campaigns', params.cid, s.id);
-  return { status: 204 };
-});
-
 // ---------- polling ----------
 /**
- * Called every ~20 seconds while a campaign is open: snippets shared or edited since `since`
- * (only ones the caller may see), the crew sheet's ETag, and the caller's read marker.
- * Three cheap single-partition reads.
+ * Called every ~20 seconds while a campaign is open: the crew sheet's ETag, when the caller's
+ * material last changed, and the caller's read marker. Two point reads plus the membership read.
  */
-export const poll = route(async ({ user, params, query }) => {
+export const poll = route(async ({ user, params }) => {
   const m = await requireMember(params.cid, user);
-  const since = query.get('since');
-  if (since && !/^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(since)) throw badRequest('Invalid since.');
   const r = await repo();
-  const [crew, list] = await Promise.all([
+  const [crew, campaign] = await Promise.all([
     r.read('campaigns', params.cid, 'crew'),
-    r.list('campaigns', params.cid, { types: ['snippet'], orderBy: 'touchedAt', limit: 100, ...(since ? { touchedAfter: since } : {}), ...visibleTo(m) }),
+    r.read('campaigns', params.cid, params.cid),
   ]);
-  return ok({ crewEtag: crew?._etag || null, snippets: list.map(shape(m)), lastReadAt: m.lastReadAt || null, now: now() });
+  // Each player has their own material marker. Campaigns from before chosen-player sections kept
+  // one marker on the campaign doc: use whichever is later.
+  const materialAt = [m.materialAt, campaign?.materialAt].filter(Boolean).sort().pop() || null;
+  return ok({ crewEtag: crew?._etag || null, materialAt, lastReadAt: m.lastReadAt || null, now: now() });
 });
 
 export const markRead = route(async ({ user, params }) => {
