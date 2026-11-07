@@ -2,6 +2,11 @@
 // full-text search and a player view that hides GM-only material.
 import { RULE_DOCS } from './data.js';
 import { state, save, esc } from './store.js';
+import { isDmAnywhere } from './auth.js';
+
+// Players always get player view. Only a DM (of any campaign) can show GM-only sections.
+// This is cosmetic: the .md files are public. See the README for moving GM text behind the API.
+const playerView = () => !isDmAnywhere() || state.settings.playerView;
 
 const raw = new Map(); // docId -> markdown
 const rendered = new Map(); // docId -> { html, toc, title }
@@ -153,9 +158,9 @@ async function search(q) {
   const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) return [];
   const idx = await buildIndex();
-  const playerView = state.settings.playerView;
+  const hideGm = playerView();
   return idx
-    .filter((e) => !(playerView && e.gm))
+    .filter((e) => !(hideGm && e.gm))
     .map((e) => {
       const hay = `${e.title} ${e.text}`.toLowerCase();
       if (!terms.every((t) => hay.includes(t))) return null;
@@ -180,10 +185,10 @@ function sidebar(activeId, toc) {
       <div class="side-title">On this page</div>
       ${toc.map((t) => `<a class="toc-l${t.level} ${isGmHeading(t.text) ? 'gm-only' : ''}" href="#/rules/${activeId}/${t.anchor}">${esc(t.text)}</a>`).join('')}
     </nav>` : ''}
-    <label class="side-block toggle">
+    ${isDmAnywhere() ? `<label class="side-block toggle">
       <input type="checkbox" id="player-view" ${state.settings.playerView ? 'checked' : ''}>
       <span>🙈 Player view <small class="muted">(hide GM-only sections)</small></span>
-    </label>
+    </label>` : ''}
   </aside>`;
 }
 
@@ -207,7 +212,7 @@ function bindSidebar(el) {
       body.hidden = true;
     }, 150);
   });
-  el.querySelector('#player-view').addEventListener('change', (e) => {
+  el.querySelector('#player-view')?.addEventListener('change', (e) => {
     state.settings.playerView = e.target.checked;
     save();
     document.body.classList.toggle('player-view', state.settings.playerView);
@@ -218,7 +223,7 @@ function bindSidebar(el) {
 }
 
 export async function renderRules(el, [docId, anchor]) {
-  document.body.classList.toggle('player-view', state.settings.playerView);
+  document.body.classList.toggle('player-view', playerView());
   if (!docId) {
     el.innerHTML = `<div class="rules-layout">
       ${sidebar(null, null)}

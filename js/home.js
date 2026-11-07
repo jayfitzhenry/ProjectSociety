@@ -4,7 +4,8 @@ import { state, esc, toast, charLevel, maxWounds } from './store.js';
 import { BACKGROUNDS, traitIcon } from './data.js';
 import { roll, renderRoll } from './dice.js';
 import { api } from './api.js';
-import { session, renderAccount } from './auth.js';
+import { session, renderAccount, refreshUser } from './auth.js';
+import { freshCrew } from './store.js';
 import { pendingLocalSave, dismissLocalSave, importData, readFile, downloadBackup } from './importer.js';
 
 const ROLE = { dm: '🎭 DM', player: '🧑 Player' };
@@ -27,8 +28,8 @@ function importCard() {
   const names = old.characters.map((c) => esc(c.name || 'Unnamed')).join(', ');
   return `<section class="card import-card">
     <h3>📦 Found data from before sign-in</h3>
-    <p>This browser has <b>${old.characters.length}</b> character(s) saved locally: ${names}.</p>
-    <p class="muted small">Import adds them to your account. The copy in this browser isn't deleted.</p>
+    <p>This browser has ${old.characters.length ? `<b>${old.characters.length}</b> character(s) (${names})` : 'no characters'}${old.crew ? ` and the crew sheet for <b>${esc(old.crew.name || 'your crew')}</b>` : ''}.</p>
+    <p class="muted small">Import adds the characters to your account${old.crew ? ' and turns the crew sheet into a new campaign that you run, with those characters in it' : ''}. The copy in this browser isn't deleted.</p>
     <div class="actions">
       <button type="button" class="btn primary" data-act="import-local">⬆️ Import into my account</button>
       <button type="button" class="btn ghost" data-act="dismiss-local">Not now</button>
@@ -53,7 +54,12 @@ function campaignsCard() {
     <h3>🏠 Campaigns</h3>
     ${list.length ? `<ul class="char-list">${list.map((c) => `<li><a href="#/c/${encodeURIComponent(c.campaignId)}">
       <b>${esc(c.name)}</b><span class="muted small">${ROLE[c.role] || c.role}</span></a></li>`).join('')}</ul>`
-      : '<p class="muted">You\'re not in a campaign yet.</p>'}
+      : '<p class="muted">You\'re not in a campaign yet. Run one, or ask your DM for a join code.</p>'}
+    <form class="form-row" id="join-form">
+      <input name="code" maxlength="8" placeholder="Join code" autocomplete="off" autocapitalize="characters" aria-label="Join code" required>
+      <button class="btn">🔑 Join campaign</button>
+    </form>
+    <div class="actions"><button type="button" class="btn primary" data-act="create">➕ Create campaign</button></div>
   </section>`;
 }
 
@@ -89,7 +95,8 @@ export function renderHome(el) {
     el.querySelector('#home-roll-out').innerHTML = renderRoll(roll(0), 'test', { animate: true });
   };
   const done = (res) => {
-    toast(`⬆️ Imported ${res.characters.length} character(s)${res.notes ? ` and ${res.notes} note(s)` : ''}`);
+    const made = res.campaigns?.length ? ` and ${res.campaigns.length} campaign(s)` : '';
+    toast(`⬆️ Imported ${res.characters.length} character(s)${res.notes ? `, ${res.notes} note(s)` : ''}${made}`);
     renderHome(el);
   };
   el.onclick = async (e) => {
@@ -100,6 +107,13 @@ export function renderHome(el) {
     try {
       if (b.dataset.act === 'import-local') { const res = await importData(pendingLocalSave()); dismissLocalSave(); done(res); }
       if (b.dataset.act === 'export') await downloadBackup();
+      if (b.dataset.act === 'create') {
+        const name = prompt('Name the campaign (you can change it later):', 'Ward 9');
+        if (!name?.trim()) return;
+        const made = await api('campaigns', { method: 'POST', body: { name: name.trim(), crew: freshCrew() } });
+        await refreshUser();
+        location.hash = `#/c/${encodeURIComponent(made.id)}/members`;
+      }
     } catch (err) {
       toast(`⚠️ ${esc(err.message)}`);
     } finally {
@@ -116,6 +130,20 @@ export function renderHome(el) {
       toast(`⚠️ ${esc(err.message)}`);
     }
   };
+  el.querySelector('#join-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.disabled = true;
+    try {
+      const joined = await api('join', { method: 'POST', body: { code: new FormData(e.target).get('code') } });
+      await refreshUser();
+      toast(`🔑 Joined ${esc(joined.name)}`);
+      location.hash = `#/c/${encodeURIComponent(joined.id)}/members`;
+    } catch (err) {
+      btn.disabled = false;
+      toast(`⚠️ ${esc(err.message)}`);
+    }
+  });
   el.querySelector('#name-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const displayName = new FormData(e.target).get('displayName');

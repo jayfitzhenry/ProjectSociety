@@ -63,16 +63,20 @@ function readLocal(key) {
   try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch { return null; }
 }
 
-function loadLocalCrew() {
+/** The crew sheet a phase-2 build kept on this device, or the one inside the pre-sign-in save. */
+export function localCrew() {
   const own = readLocal(CREW_KEY);
   if (own) return migrateCrew(own);
-  return migrateCrew(readLocal(OLD_KEY)?.crew);
+  const old = readLocal(OLD_KEY)?.crew;
+  return old ? migrateCrew(old) : null;
 }
 
 export const state = {
   version: 2,
   characters: [], // the signed-in user's characters, from the API
-  crew: loadLocalCrew(),
+  campaign: null, // the open campaign: { id, name, role, joinCode, members, me, crewEtag }
+  crew: freshCrew(), // the open campaign's crew sheet
+  roster: null, // the open campaign's characters; yours are the same objects as in state.characters
   settings: { playerView: true, ...readLocal(SETTINGS_KEY) },
   history: [],
 };
@@ -161,6 +165,7 @@ async function flush(keepalive = false) {
   running = (async () => {
     try {
       for (const c of [...state.characters]) await flushCharacter(c, keepalive);
+      await flushCrew(keepalive);
       if (sync.status !== 'conflict') setSync('saved');
     } catch (e) {
       setSync('error', e.message);
@@ -175,7 +180,6 @@ async function flush(keepalive = false) {
 export function save() {
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
-    localStorage.setItem(CREW_KEY, JSON.stringify(state.crew));
   } catch {
     // Private mode or full storage: settings just won't persist.
   }
@@ -202,10 +206,182 @@ export async function removeCharacter(id) {
   snaps.delete(id);
 }
 
-/** Reset the crew sheet kept on this device. */
-export function resetLocalCrew() {
+export const forgetLocalCrew = () => localStorage.removeItem(CREW_KEY);
+
+// ---------- campaigns ----------
+const CREW_SERVER_KEYS = new Set(['_etag', 'id', 'type', 'campaignId', 'updatedAt']);
+const crewFrom = (doc) => migrateCrew(Object.fromEntries(Object.entries(doc || {}).filter(([k]) => !CREW_SERVER_KEYS.has(k))));
+const AWARD_FIELDS = ['marks', 'chips', 'wounds', 'shaken'];
+const awardValues = (c) => Object.fromEntries(AWARD_FIELDS.map((k) => [k, Number(c[k]) || 0]));
+
+let crewSnap = null; // the crew sheet as the server last confirmed it (serialized)
+let crewBlocked = false;
+const rosterSnaps = new Map(); // crewmate character id → award fields as last confirmed
+
+export const isDm = () => state.campaign?.role === 'dm';
+const myId = () => state.campaign?.myId;
+
+function applyCampaign(data, myUserId) {
+  const { campaign, me, members } = data;
+  state.campaign = {
+    id: campaign.id, name: campaign.name, joinCode: campaign.joinCode, createdBy: campaign.createdBy,
+    role: me.role, me, members, myId: myUserId, crewEtag: data.crew?._etag || null,
+  };
+  state.crew = crewFrom(data.crew);
+  crewSnap = JSON.stringify(state.crew);
+  crewBlocked = false;
+  rosterSnaps.clear();
+  const others = data.roster.filter((c) => c.ownerId !== myUserId).map((c) => (me.role === 'dm' ? migrateCharacter(c) : c));
+  if (me.role === 'dm') others.forEach((c) => rosterSnaps.set(c.id, awardValues(c)));
+  state.roster = [...others, ...state.characters.filter((c) => c.campaignId === campaign.id)];
+}
+
+/** Load a campaign (crew sheet, members, roster) and make it the open one. */
+export async function openCampaign(cid, myUserId, { force = false } = {}) {
+  if (!force && state.campaign?.id === cid) return state.campaign;
+  await flushNow();
+  applyCampaign(await api(`campaigns/${encodeURIComponent(cid)}`), myUserId);
+  return state.campaign;
+}
+
+/** No campaign open: a character on its own is its own crew. */
+export function closeCampaign(alone = null) {
+  state.campaign = null;
   state.crew = freshCrew();
-  save();
+  state.roster = alone ? [alone] : [];
+  crewSnap = null;
+  rosterSnaps.clear();
+}
+
+/** Crewmates' Marks, chips, wounds and Shaken the DM changed from the crew sheet, as deltas. */
+function pendingAwards() {
+  if (!isDm()) return [];
+  return (state.roster || []).filter((c) => rosterSnaps.has(c.id)).map((c) => {
+    const before = rosterSnaps.get(c.id);
+    const now = awardValues(c);
+    const delta = Object.fromEntries(AWARD_FIELDS.map((k) => [k, now[k] - before[k]]).filter(([, v]) => v));
+    return Object.keys(delta).length ? { ownerId: c.ownerId, characterId: c.id, ...delta, sent: now } : null;
+  }).filter(Boolean);
+}
+
+const sameJson = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+/**
+ * Someone else saved the crew sheet first (often a player sending chips home).
+ * Keep both sides when they changed different things; the Pot adds up; the log is merged.
+ * Only a real clash (both changed the same thing) stops and asks for a reload.
+ */
+function mergeCrew(base, local, theirs) {
+  const merged = {};
+  const keys = new Set([...Object.keys(base), ...Object.keys(local), ...Object.keys(theirs)]);
+  for (const k of keys) {
+    if (k === 'log') {
+      const seen = new Set();
+      merged.log = [...(theirs.log || []), ...(local.log || [])]
+        .filter((e) => { const id = `${e.t}|${e.text}`; if (seen.has(id)) return false; seen.add(id); return true; })
+        .sort((a, b) => b.t - a.t).slice(0, 200);
+    } else if (k === 'pot') {
+      merged.pot = (theirs.pot || 0) + ((local.pot || 0) - (base.pot || 0));
+    } else if (sameJson(local[k], base[k])) {
+      merged[k] = theirs[k];
+    } else if (sameJson(theirs[k], base[k]) || sameJson(theirs[k], local[k])) {
+      merged[k] = local[k];
+    } else {
+      return null;
+    }
+  }
+  return merged;
+}
+
+async function flushCrew(keepalive, retried = false) {
+  const camp = state.campaign;
+  if (!camp || camp.role !== 'dm' || crewBlocked) return;
+  const sent = JSON.stringify(state.crew);
+  const awards = pendingAwards();
+  if (sent === crewSnap && !awards.length) return;
+  try {
+    const res = await api(`campaigns/${encodeURIComponent(camp.id)}/crew`, {
+      method: 'PUT', etag: camp.crewEtag, keepalive,
+      body: { crew: state.crew, awards: awards.map(({ sent: _, ...a }) => a) },
+    });
+    camp.crewEtag = res.crew._etag;
+    crewSnap = sent;
+    awards.forEach((a) => rosterSnaps.set(a.characterId, a.sent));
+    res.awards.filter((a) => !a.ok).forEach((a) => rosterSnaps.delete(a.characterId));
+  } catch (e) {
+    if (e.status !== 412 || retried) throw e;
+    const fresh = await api(`campaigns/${encodeURIComponent(camp.id)}`);
+    const theirs = crewFrom(fresh.crew);
+    const merged = mergeCrew(JSON.parse(crewSnap), JSON.parse(sent), theirs);
+    if (!merged) {
+      crewBlocked = true;
+      showConflict('the crew sheet');
+      return;
+    }
+    camp.crewEtag = fresh.crew._etag;
+    crewSnap = JSON.stringify(theirs);
+    Object.keys(state.crew).forEach((k) => delete state.crew[k]);
+    Object.assign(state.crew, merged);
+    window.dispatchEvent(new CustomEvent('ps:remote'));
+    await flushCrew(keepalive, true);
+  }
+}
+
+/** Attach one of your characters to a campaign (or detach it with null). */
+export async function attachCharacter(c, campaignId) {
+  await flushNow();
+  const saved = migrateCharacter(await api(`characters/${encodeURIComponent(c.id)}/campaign`, { method: 'PUT', body: { campaignId } }));
+  adopt(c, saved);
+  snapshot(c);
+  return c;
+}
+
+/** Send chips from your own character to the Pot. */
+export async function sendChipsHome(c, chips) {
+  await flushNow();
+  const res = await api(`campaigns/${encodeURIComponent(state.campaign.id)}/pot`, { method: 'POST', body: { characterId: c.id, chips } });
+  adopt(c, migrateCharacter(res.character));
+  snapshot(c);
+  if (!isDm() || JSON.stringify(state.crew) === crewSnap) {
+    state.crew = crewFrom(res.crew);
+    crewSnap = JSON.stringify(state.crew);
+    state.campaign.crewEtag = res.crew._etag;
+  }
+  return res;
+}
+
+const unsaved = () => sync.status === 'saving' || running
+  || (crewSnap !== null && JSON.stringify(state.crew) !== crewSnap)
+  || pendingAwards().length
+  || state.characters.some((c) => snaps.get(c.id) !== ser(c));
+
+/**
+ * Pick up other people's changes (the DM's awards, a crewmate levelling up, the crew sheet)
+ * when nothing local is waiting to be saved. Returns true if anything changed.
+ */
+export async function refreshFromServer(myUserId) {
+  if (unsaved() || sync.status === 'conflict') return false;
+  let changed = false;
+  const list = await api('characters');
+  if (unsaved()) return false;
+  for (const fresh of list) {
+    const c = state.characters.find((x) => x.id === fresh.id);
+    if (!c) { state.characters.push(migrateCharacter(fresh)); snapshot(fresh); changed = true; continue; }
+    if (c._etag !== fresh._etag) { adopt(c, migrateCharacter(fresh)); snapshot(c); changed = true; }
+  }
+  const ids = new Set(list.map((x) => x.id));
+  if (state.characters.some((c) => !ids.has(c.id))) { state.characters = state.characters.filter((c) => ids.has(c.id)); changed = true; }
+  if (state.campaign) {
+    const data = await api(`campaigns/${encodeURIComponent(state.campaign.id)}`);
+    if (unsaved()) return changed;
+    const rosterSig = (r) => JSON.stringify((r || []).map((c) => [c.id, c._etag || c.marks, c.name, c.dead]));
+    if (data.crew?._etag !== state.campaign.crewEtag || rosterSig(data.roster) !== rosterSig((state.roster || []).filter((c) => c.ownerId !== myUserId))
+      || data.members.length !== state.campaign.members.length) {
+      applyCampaign(data, myUserId);
+      changed = true;
+    }
+  }
+  return changed;
 }
 
 // ---------- helpers ----------
@@ -247,7 +423,7 @@ export function maxWounds(c) {
 }
 
 /** The characters that make up the crew. */
-export const crewChars = () => state.characters;
+export const crewChars = () => state.roster ?? state.characters;
 
 /** "The level most of the crew is at." Ties go to the higher level. */
 export function crewLevel() {

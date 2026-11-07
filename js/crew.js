@@ -5,14 +5,16 @@ import {
 } from './data.js';
 import {
   state, save, esc, toast, log, clamp, community, needPerJob, crewLevel, charLevel, hasContact,
-  resetLocalCrew, marketOpen,
+  marketOpen, crewChars, isDm, sendChipsHome,
 } from './store.js';
 import { roll, rollD6, renderRoll, netOf, distribution, pct, signed, poolLabel } from './dice.js';
 
 const ui = { hardship: null, hardshipEvent: null, raidCheck: null, raidTest: null, onJob: null };
 
 const crew = () => state.crew;
-const alive = () => state.characters.filter((c) => c.created && !c.dead);
+const alive = () => crewChars().filter((c) => c.created && !c.dead);
+/** Your own living characters in this campaign: the ones you can send chips home from. */
+const mine = () => state.characters.filter((c) => c.campaignId === state.campaign?.id && c.created && !c.dead);
 
 function favoursAvailable() {
   const c = crew();
@@ -325,13 +327,18 @@ function manual() {
   </section>`;
 }
 
-function dataCard() {
-  return `<section class="card" id="save-data">
-    <h3>💾 This crew sheet</h3>
-    <p class="muted small">Characters are saved to your account. The crew sheet stays on this device for now; campaigns will move it to the cloud and share it with your players.</p>
-    <div class="actions">
-      <button type="button" class="btn danger" data-act="reset">🗑️ Reset the crew sheet</button>
-    </div>
+function sendHomeCard() {
+  const own = mine();
+  if (!own.length) return '';
+  return `<section class="card send-home">
+    <h3>🏺 Send chips home</h3>
+    <p class="muted small">Chips sent home go into the Pot and belong to the district. They can't be taken back.</p>
+    <form class="form-row" id="send-home">
+      ${own.length > 1 ? `<label class="field"><span>From</span><select name="characterId">${own.map((x) => `<option value="${x.id}">${esc(x.name)} (${x.chips}c)</option>`).join('')}</select></label>`
+        : `<input type="hidden" name="characterId" value="${own[0].id}"><span class="muted">${esc(own[0].name)} has <b>${own[0].chips}c</b></span>`}
+      <label class="field"><span>Chips</span><input class="num-input" name="chips" type="number" min="1" step="1" inputmode="numeric" required></label>
+      <button class="btn primary">🏺 Send home</button>
+    </form>
   </section>`;
 }
 
@@ -345,17 +352,21 @@ function logCard() {
 
 function view() {
   const c = crew();
-  return `<div class="page crew">
+  const dm = isDm();
+  return `<div class="crew">
+    ${dm ? '' : '<p class="callout">👀 The DM runs the crew sheet. You can see everything and send your own chips home.</p>'}
+    ${sendHomeCard()}
+    <fieldset class="bare" ${dm ? '' : 'disabled'}>
     <div class="page-head">
-      <h1>🏠 Crew</h1>
-      <input class="crew-name" data-f="crewname" value="${esc(c.name)}" placeholder="Name the crew or district…">
+      <input class="crew-name" data-f="crewname" value="${esc(c.name)}" placeholder="Name the crew or district…" aria-label="Crew name">
     </div>
     ${tracks()}
     ${projects()}
-    <div class="cols">${jobCard()}${homecoming()}</div>
+    ${dm ? `<div class="cols">${jobCard()}${homecoming()}</div>
     ${downtime()}
-    ${manual()}
-    <div class="cols">${logCard()}${dataCard()}</div>
+    ${manual()}` : ''}
+    ${logCard()}
+    </fieldset>
   </div>`;
 }
 
@@ -372,7 +383,24 @@ export function renderCrew(el) {
   const commit = () => { save(); draw(); };
 
   el.oninput = (e) => {
-    if (e.target.dataset.f === 'crewname') { crew().name = e.target.value; save(); }
+    if (e.target.dataset.f === 'crewname' && isDm()) { crew().name = e.target.value; save(); }
+  };
+  el.onsubmit = async (e) => {
+    if (e.target.id !== 'send-home') return;
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const who = state.characters.find((x) => x.id === f.get('characterId'));
+    const chips = Math.floor(Number(f.get('chips')));
+    if (!who || !(chips > 0)) return;
+    if (chips > who.chips) { toast(`⚠️ ${esc(who.name)} only has ${who.chips}c`); return; }
+    if (!confirm(`Send ${chips}c from ${who.name} home to the Pot? It can't be taken back.`)) return;
+    try {
+      await sendChipsHome(who, chips);
+      toast(`🏺 ${chips}c sent home`);
+      draw();
+    } catch (err) {
+      toast(`⚠️ ${esc(err.message)}`);
+    }
   };
   el.onchange = (e) => {
     const t = e.target;
@@ -608,9 +636,6 @@ export function renderCrew(el) {
       }
       case 'canceljob': if (confirm('Cancel this job? Exposure already gained stays.')) { c.job = null; commit(); } break;
       case 'penance': c.exposure = 6; c.waterCut = false; c.cisternUsed = 0; log('⚖️ Penance job succeeded. Exposure 6, the water is back, jobs start again.'); commit(); break;
-      case 'reset':
-        if (confirm('Reset the crew sheet on this device? Characters are not affected.')) { resetLocalCrew(); ui.hardship = null; ui.raidCheck = null; draw(); }
-        break;
       default: break;
     }
   };

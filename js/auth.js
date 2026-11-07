@@ -22,6 +22,13 @@ export async function initAuth() {
 
 export const signedIn = () => !!session.user;
 
+/** Re-read the user (their campaign list changes when they create, join or leave). */
+export async function refreshUser() {
+  session.user = await api('me');
+  renderAccount();
+  return session.user;
+}
+
 /** Is this user a DM in any campaign? */
 export const isDmAnywhere = () => (session.user?.campaigns || []).some((c) => c.role === 'dm');
 

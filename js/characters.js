@@ -6,17 +6,19 @@ import {
 } from './data.js';
 import {
   state, save, esc, uid, toast, charLevel, maxWounds, crewLevel, marketOpen, buyPrice, sellPrice, gearItem,
-  addCharacter, removeCharacter,
+  addCharacter, removeCharacter, openCampaign, closeCampaign, attachCharacter,
 } from './store.js';
+import { session } from './auth.js';
 import { roll, renderRoll, netOf, poolLabel, distribution, pct, signed } from './dice.js';
 
 const ui = { shopOpen: false, shopKind: 'weapon', editing: false, roll: { trait: '', tool: false, easy: 0, help: false, extra: 0 }, lastRoll: null, advance: '' };
 
 export const traitsOf = (c) => [...(c.bgTraits || []), c.personalTrait, ...(c.extraTraits || [])].filter(Boolean);
 
-function newCharacter() {
+/** A blank character. Its starting level comes from the open campaign's crew, if any. */
+export function newCharacter() {
   const startLevel = Math.max(1, crewLevel() - (state.crew.projects.hall >= 2 ? 0 : 1));
-  const hasCrew = state.characters.some((c) => c.created && !c.dead);
+  const hasCrew = (state.roster || []).some((c) => c.created && !c.dead);
   return {
     id: uid(), created: false, dead: false, name: '', concept: '', background: '', bgTraits: [], personalTrait: '',
     extraTraits: [], talents: [], contacts: [], marks: hasCrew ? marksForLevel(startLevel) : 0, wounds: 0, shaken: 0,
@@ -46,15 +48,16 @@ function addGear(c, itemId, qty = 1) {
 }
 
 // ---------- list ----------
+const campaignName = (cid) => (session.user?.campaigns || []).find((x) => x.campaignId === cid)?.name;
+
 function listView() {
   const chars = state.characters;
-  const cl = crewLevel();
   return `<div class="page">
     <div class="page-head">
       <h1>🧰 Characters</h1>
       <div class="actions"><button type="button" class="btn primary" data-act="new">➕ New character</button></div>
     </div>
-    <p class="lead">Crew level <b>${cl}</b>. Characters are saved to your account. Back them up from the <a href="#/">home screen</a>.</p>
+    <p class="lead">Saved to your account. Attach a character to a campaign from its sheet. Back up everything from the <a href="#/">home screen</a>.</p>
     ${chars.length ? `<div class="card-grid">${chars.map((c) => {
       const bg = BACKGROUNDS.find((b) => b.id === c.background);
       const mw = maxWounds(c);
@@ -62,12 +65,35 @@ function listView() {
         <div class="big">${c.dead ? '⚰️' : bg?.icon || '🪪'}</div>
         <b>${esc(c.name || 'Unnamed')}</b>
         <small class="muted">${c.created ? `${esc(c.background)} · Level ${charLevel(c)}` : '✏️ In creation'}</small>
+        <small class="muted">${c.campaignId ? `🏠 ${esc(campaignName(c.campaignId) || 'Campaign')}` : 'Not in a campaign'}</small>
         ${c.created ? `<div class="mini-stats"><span title="Wounds">🩸 ${c.wounds}/${mw}</span><span title="Shaken">🟡 ${c.shaken}</span><span title="Chips">🪙 ${c.chips}c</span></div>
         <small class="muted">${traitsOf(c).map((t) => `${traitIcon(t)} ${t}`).join(' · ')}</small>` : ''}
       </a>`;
     }).join('')}</div>` : `<div class="card empty"><p>No characters yet.</p><p class="muted">A new player should finish in about ten minutes.</p>
       <button type="button" class="btn primary" data-act="new">➕ Create the first character</button></div>`}
   </div>`;
+}
+
+// ---------- campaign ----------
+function campaignPicker(c) {
+  if (ui.readOnly) return '';
+  const list = session.user?.campaigns || [];
+  return `<div class="campaign-pick no-print">
+    <label class="field inline"><span>🏠 Campaign</span>
+      <select data-campaign>
+        <option value="">Not in a campaign</option>
+        ${list.map((x) => `<option value="${esc(x.campaignId)}" ${x.campaignId === c.campaignId ? 'selected' : ''}>${esc(x.name)}${x.role === 'dm' ? ' (you run it)' : ''}</option>`).join('')}
+      </select></label>
+    ${c.campaignId ? `<a class="btn small" href="#/c/${encodeURIComponent(c.campaignId)}">Open campaign →</a>` : ''}
+  </div>`;
+}
+
+/** A character sheet the DM can look at but not change. */
+export function readOnlySheet(c) {
+  ui.readOnly = true;
+  const html = `<fieldset class="bare read-only" disabled>${c.created ? sheetView(c) : creationView(c)}</fieldset>`;
+  ui.readOnly = false;
+  return html;
 }
 
 // ---------- creation ----------
@@ -312,6 +338,7 @@ function sheetView(c) {
       </div>
     </div>
     ${c.dead ? '<div class="callout bad">⚰️ This character is dead. Make a new one: they join at crew level − 1.</div>' : ''}
+    ${campaignPicker(c)}
     ${dying && !c.dead ? `<div class="callout bad"><b>🫀 Dying.</b> Can't act or take more wounds. After the combat, someone makes a survival roll (a Medic test).
       <div class="actions"><a class="btn" href="#/rules/actions/dying">Rules</a><a class="btn" href="#/dice/survival">🎲 Survival roll odds</a><button type="button" class="btn" data-act="survive">✅ Survived (−1 wound, gain a Scar)</button><button type="button" class="btn" data-act="survivecrit">💥 Critical (−2 wounds, no Scar)</button><button type="button" class="btn danger" data-act="die">⚰️ Died</button></div></div>` : ''}
     ${ui.editing ? `<section class="card">
@@ -400,6 +427,17 @@ export function renderCharacters(el, [id]) {
   const draw = () => {
     const c = id && state.characters.find((x) => x.id === id);
     if (id && !c) { el.innerHTML = '<div class="page"><p>Character not found.</p><a class="btn" href="#/characters">← All characters</a></div>'; return; }
+    // Prices, markets and starting level depend on the crew this character belongs to.
+    if (c && c.campaignId && state.campaign?.id !== c.campaignId) {
+      el.innerHTML = '<div class="page"><p class="muted">Loading the crew…</p></div>';
+      openCampaign(c.campaignId, session.user.id).then(draw).catch((err) => {
+        closeCampaign(c);
+        toast(`⚠️ ${esc(err.message)}`);
+        draw();
+      });
+      return;
+    }
+    if (c && !c.campaignId) closeCampaign(c);
     const y = window.scrollY;
     el.innerHTML = !c ? listView() : c.created ? sheetView(c) : creationView(c);
     window.scrollTo(0, y);
@@ -420,6 +458,13 @@ export function renderCharacters(el, [id]) {
     const c = current();
     if (!c) return;
     const t = e.target;
+    if (t.dataset.campaign !== undefined) {
+      t.disabled = true;
+      attachCharacter(c, t.value || null)
+        .then(() => { toast(t.value ? '🏠 Joined the campaign' : 'Left the campaign'); draw(); })
+        .catch((err) => { toast(`⚠️ ${esc(err.message)}`); draw(); });
+      return;
+    }
     if (t.dataset.f === 'name' || t.dataset.f === 'dependsOn') { if (!c.created) draw(); return; }
     if (t.dataset.f === 'startLevel') { c.marks = marksForLevel(Number(t.value)); commit(); return; }
     if (t.dataset.why) {
@@ -443,6 +488,7 @@ export function renderCharacters(el, [id]) {
 
     if (d.act === 'new') {
       b.disabled = true;
+      closeCampaign(); // made from the list, it isn't in a campaign yet
       addCharacter(newCharacter())
         .then((n) => { ui.shopOpen = false; location.hash = `#/characters/${n.id}`; })
         .catch((err) => { b.disabled = false; toast(`⚠️ ${esc(err.message)}`); });

@@ -548,3 +548,36 @@ mark { background: rgba(255, 204, 0, .4); color: inherit; border-radius: 3px; pa
   .sync { display: none; }
   .sync.error, .sync.conflict { display: inline; }
 }
+
+/* ---------- read-only sections ---------- */
+fieldset.bare { border: 0; padding: 0; margin: 0; min-width: 0; }
+fieldset.bare:disabled button, fieldset.bare:disabled .btn, fieldset.bare:disabled .tiny, fieldset.bare:disabled .no-readonly { display: none; }
+fieldset.bare:disabled input, fieldset.bare:disabled select, fieldset.bare:disabled textarea { opacity: .85; }
+
+/* ---------- campaigns ---------- */
+.campaign-head h1 { margin-bottom: .1rem; }
+.subtabs { display: flex; gap: 2px; background: var(--fill); padding: 2px; border-radius: 10px; margin: .4rem 0 1rem; overflow-x: auto; scrollbar-width: none; }
+.subtabs::-webkit-scrollbar { display: none; }
+.subtabs a { flex: 1; text-align: center; white-space: nowrap; color: var(--text); padding: .45rem .8rem; border-radius: 8px; font-size: .9rem; font-weight: 500; }
+.subtabs a:hover { opacity: 1; background: var(--fill); }
+.subtabs a.on { background: var(--seg-on); box-shadow: 0 3px 8px rgba(0, 0, 0, .12), 0 3px 1px rgba(0, 0, 0, .04); font-weight: 600; }
+.subtabs .badge { display: inline-block; min-width: 1.2rem; padding: 0 .35rem; margin-left: .25rem; border-radius: 999px; background: var(--fail); color: #fff; font-size: .72rem; font-weight: 700; line-height: 1.2rem; }
+.join-code { font: 700 2.2rem/1.2 var(--mono); letter-spacing: .25em; padding: .4rem 0; user-select: all; }
+.member-list { list-style: none; padding: 0; margin: 0; }
+.member-list li { display: flex; justify-content: space-between; align-items: center; gap: .8rem; padding: .65rem 0; border-bottom: .5px solid var(--line); }
+.member-list li:last-child { border-bottom: 0; }
+.member-chars { margin-top: .15rem; font-size: .92rem; }
+.campaign-pick { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin: 0 0 1rem; }
+.campaign-pick select { min-width: 12rem; }
+.send-home .num-input { width: 6rem; }
+.read-only .page-head .actions { display: none; }
+
+/* ---------- notes & editors ---------- */
+.title-input { width: 100%; font-size: 1.2rem; font-weight: 600; margin: .4rem 0 .6rem; }
+.note-editor textarea, .story-editor textarea { font-family: var(--mono); font-size: .92rem; line-height: 1.5; min-height: 14rem; }
+.preview { background: var(--panel2); border-radius: var(--radius-s); padding: .8rem 1rem; min-height: 6rem; }
+@media (max-width: 720px) {
+  .subtabs a { padding: .5rem .6rem; font-size: .85rem; }
+  .join-code { font-size: 1.8rem; }
+  .title-input { font-size: 1.05rem; }
+}

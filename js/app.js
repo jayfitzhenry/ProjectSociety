@@ -3,10 +3,10 @@ import { renderRules } from './rules.js';
 import { renderDice } from './dice-view.js';
 import { renderCombat } from './combat.js';
 import { renderCharacters } from './characters.js';
-import { renderCrew } from './crew.js';
+import { renderCampaign } from './campaign.js';
 import { renderHome } from './home.js';
 import { initAuth, signedIn, renderAccount, renderSignIn, session } from './auth.js';
-import { loadCharacters, sync, esc } from './store.js';
+import { loadCharacters, refreshFromServer, sync, esc } from './store.js';
 
 const app = document.getElementById('app');
 
@@ -16,7 +16,8 @@ const routes = {
   dice: renderDice,
   combat: renderCombat,
   characters: renderCharacters,
-  crew: renderCrew,
+  c: renderCampaign,
+  crew: (el) => { location.hash = '#/'; },
   signin: renderSignIn,
 };
 
@@ -30,7 +31,8 @@ function route() {
   let view = routes[name] || renderHome;
   if (!signedIn() && !PUBLIC.has(name)) view = renderSignIn;
   if (signedIn() && name === 'signin') view = renderHome;
-  document.querySelectorAll('#tabs a').forEach((a) => a.classList.toggle('active', a.dataset.tab === name));
+  const tabName = name === 'c' ? '' : name;
+  document.querySelectorAll('#tabs a').forEach((a) => a.classList.toggle('active', a.dataset.tab === tabName));
   // Clear handlers left by the previous view.
   const sameRulesDoc = name === 'rules' && lastRoute.startsWith(`rules/${rest[0] || ''}`) && rest[0];
   if (!sameRulesDoc) {
@@ -77,6 +79,22 @@ window.addEventListener('ps:remote', () => {
   const a = document.activeElement;
   if (!a || !['INPUT', 'TEXTAREA', 'SELECT'].includes(a.tagName)) route();
 });
+
+// Coming back to the app: pick up what others changed (DM awards, the crew sheet, crewmates).
+let refreshing = false;
+async function refresh() {
+  if (!signedIn() || refreshing || document.hidden) return;
+  refreshing = true;
+  try {
+    if (await refreshFromServer(session.user.id)) window.dispatchEvent(new CustomEvent('ps:remote'));
+  } catch {
+    // Offline or signed out: the next save or action will say so.
+  } finally {
+    refreshing = false;
+  }
+}
+window.addEventListener('focus', refresh);
+document.addEventListener('visibilitychange', refresh);
 
 await initAuth();
 if (session.user) {
