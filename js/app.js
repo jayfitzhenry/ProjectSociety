@@ -4,6 +4,7 @@ import { renderDice } from './dice-view.js';
 import { renderCombat } from './combat.js';
 import { renderCharacters } from './characters.js';
 import { renderCampaign } from './campaign.js';
+import { stopPolling } from './feed.js';
 import { renderHome } from './home.js';
 import { initAuth, signedIn, renderAccount, renderSignIn, session } from './auth.js';
 import { loadCharacters, refreshFromServer, sync, esc } from './store.js';
@@ -32,6 +33,7 @@ function route() {
   if (!signedIn() && !PUBLIC.has(name)) view = renderSignIn;
   if (signedIn() && name === 'signin') view = renderHome;
   const tabName = name === 'c' ? '' : name;
+  if (name !== 'c') stopPolling();
   document.querySelectorAll('#tabs a').forEach((a) => a.classList.toggle('active', a.dataset.tab === tabName));
   // Clear handlers left by the previous view.
   const sameRulesDoc = name === 'rules' && lastRoute.startsWith(`rules/${rest[0] || ''}`) && rest[0];
@@ -77,7 +79,9 @@ window.addEventListener('ps:sync', renderSync);
 // Something changed underneath the current view (a merged save): redraw unless the player is typing.
 window.addEventListener('ps:remote', () => {
   const a = document.activeElement;
-  if (!a || !['INPUT', 'TEXTAREA', 'SELECT'].includes(a.tagName)) route();
+  if (a && ['INPUT', 'TEXTAREA', 'SELECT'].includes(a.tagName)) return;
+  if (/\/(stories|notes)(\/|$)/.test(location.hash)) return; // editors: nothing there depends on it
+  route();
 });
 
 // Coming back to the app: pick up what others changed (DM awards, the crew sheet, crewmates).

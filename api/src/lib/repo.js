@@ -10,12 +10,12 @@ export const PK = {
   campaigns: (d) => d.campaignId,
 };
 
-const ORDERABLE = new Set(['sharedAt', 'updatedAt', 'createdAt']);
+const ORDERABLE = new Set(['sharedAt', 'touchedAt', 'updatedAt', 'createdAt']);
 
 /**
  * Build the SQL for list(). Options:
  *   types        only docs whose `type` is in this list
- *   sharedAfter  only docs with sharedAt later than this ISO time
+ *   touchedAfter only docs with touchedAt later than this ISO time (created or edited since)
  *   audienceFor  only snippets visible to this user id
  *   campaignId   only docs with this campaignId (used inside the notes/characters partitions)
  *   orderBy      newest first by this field
@@ -28,9 +28,9 @@ export function buildQuery(opts = {}) {
     where.push('ARRAY_CONTAINS(@types, c.type)');
     parameters.push({ name: '@types', value: opts.types });
   }
-  if (opts.sharedAfter) {
-    where.push('c.sharedAt > @since');
-    parameters.push({ name: '@since', value: opts.sharedAfter });
+  if (opts.touchedAfter) {
+    where.push('c.touchedAt > @since');
+    parameters.push({ name: '@since', value: opts.touchedAfter });
   }
   if (opts.audienceFor) {
     where.push("(c.audience = 'all' OR ARRAY_CONTAINS(c.audience, @uid))");

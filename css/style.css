@@ -581,3 +581,21 @@ fieldset.bare:disabled input, fieldset.bare:disabled select, fieldset.bare:disab
   .join-code { font-size: 1.8rem; }
   .title-input { font-size: 1.05rem; }
 }
+
+/* ---------- feed & snippets ---------- */
+.snippet header { margin-bottom: .4rem; }
+.snippet header h3 { margin: 0 0 .15rem; }
+.snippet.unread { box-shadow: inset 4px 0 0 var(--tint), var(--shadow); }
+.new-dot { float: right; background: var(--tint); color: var(--on-tint); font-size: .72rem; font-weight: 700; border-radius: 999px; padding: .1rem .55rem; }
+.snippet-body { padding: 0; background: none; box-shadow: none; }
+.snippet-body > :first-child { margin-top: 0; }
+.snippet-body img { max-width: 100%; height: auto; border-radius: var(--radius-s); }
+.audience { border: 0; padding: 0; margin: .6rem 0; }
+.audience legend { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .02em; padding: 0 .2rem; }
+.toggle-chip { display: inline-flex; align-items: center; gap: .35rem; cursor: pointer; }
+.toggle-chip input { accent-color: var(--tint); }
+.share-form textarea { min-height: 7rem; }
+.share-form { box-shadow: inset 0 0 0 2px var(--tint-soft), var(--shadow); }
+ul.plain { list-style: none; padding: 0; margin: 0 0 .6rem; }
+ul.plain li { padding: .3rem 0; border-bottom: .5px solid var(--line); }
+details.card summary { cursor: pointer; font-weight: 600; }

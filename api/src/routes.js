@@ -8,6 +8,9 @@ import {
   createCampaign, getCampaign, patchCampaign, deleteCampaign, regenerateCode, joinCampaign, removeMember,
   attachCharacter, getMemberCharacter, putCrew, sendHome,
 } from './handlers/campaigns.js';
+import {
+  listStories, createStory, putStory, deleteStory, listSnippets, createSnippet, patchSnippet, deleteSnippet, poll, markRead,
+} from './handlers/stories.js';
 
 export const ROUTES = [
   { name: 'me', route: 'me', map: { GET: getMe, PATCH: patchMe } },
@@ -26,4 +29,10 @@ export const ROUTES = [
   { name: 'memberCharacter', route: 'campaigns/{cid}/characters/{ownerId}/{charId}', map: { GET: getMemberCharacter } },
   { name: 'crew', route: 'campaigns/{cid}/crew', map: { PUT: putCrew } },
   { name: 'pot', route: 'campaigns/{cid}/pot', map: { POST: sendHome } },
+  { name: 'stories', route: 'campaigns/{cid}/stories', map: { GET: listStories, POST: createStory } },
+  { name: 'story', route: 'campaigns/{cid}/stories/{sid}', map: { PUT: putStory, DELETE: deleteStory } },
+  { name: 'snippets', route: 'campaigns/{cid}/snippets', map: { GET: listSnippets, POST: createSnippet } },
+  { name: 'snippet', route: 'campaigns/{cid}/snippets/{id}', map: { PATCH: patchSnippet, DELETE: deleteSnippet } },
+  { name: 'poll', route: 'campaigns/{cid}/poll', map: { GET: poll } },
+  { name: 'read', route: 'campaigns/{cid}/read', map: { POST: markRead } },
 ];

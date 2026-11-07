@@ -7,6 +7,8 @@ import {
 import { session, refreshUser } from './auth.js';
 import { renderCrew } from './crew.js';
 import { renderNotes } from './notes.js';
+import { renderFeed, startPolling, unreadCount } from './feed.js';
+import { renderStories } from './stories.js';
 import { newCharacter, readOnlySheet } from './characters.js';
 import { BACKGROUNDS } from './data.js';
 
@@ -14,11 +16,22 @@ const enc = encodeURIComponent;
 
 function tabsFor() {
   return [
+    ['feed', '📣 Feed'],
     ['crew', '🏠 Crew'],
     ['notes', '📝 Notes'],
+    ...(isDm() ? [['stories', '📖 Stories']] : []),
     ['members', isDm() ? '👥 Members' : '👥 Crew list'],
   ];
 }
+
+const badge = () => { const n = unreadCount(); return n ? `<span class="badge" aria-label="${n} unread">${n}</span>` : ''; };
+
+function updateBadge() {
+  const a = document.querySelector('.subtabs a[data-tab="feed"]');
+  if (a) a.innerHTML = `📣 Feed${badge()}`;
+}
+window.addEventListener('ps:feed', updateBadge);
+window.addEventListener('ps:feed-read', updateBadge);
 
 function header(tab) {
   const camp = state.campaign;
@@ -26,7 +39,7 @@ function header(tab) {
       <div><h1>${esc(camp.name)}</h1>
       <div class="muted">${isDm() ? '🎭 You run this campaign' : '🧑 Player'} · crew level ${crewLevel()}</div></div>
     </div>
-    <nav class="subtabs" aria-label="Campaign sections">${tabsFor().map(([id, label]) => `<a href="#/c/${enc(camp.id)}/${id}" class="${id === tab ? 'on' : ''}">${label}</a>`).join('')}</nav>`;
+    <nav class="subtabs" aria-label="Campaign sections">${tabsFor().map(([id, label]) => `<a href="#/c/${enc(camp.id)}/${id}" data-tab="${id}" class="${id === tab ? 'on' : ''}">${label}${id === 'feed' ? badge() : ''}</a>`).join('')}</nav>`;
 }
 
 // ---------- members ----------
@@ -182,22 +195,25 @@ async function memberSheet(el, [ownerId, charId]) {
 }
 
 // ---------- the view ----------
-export async function renderCampaign(el, [cid, tab = 'crew', ...rest]) {
+export async function renderCampaign(el, [cid, tab = 'feed', ...rest]) {
   if (!cid) { location.hash = '#/'; return; }
   if (state.campaign?.id !== cid) el.innerHTML = '<div class="page"><p class="muted">Loading campaign…</p></div>';
   try {
     await openCampaign(cid, session.user.id);
+    await startPolling(cid);
   } catch (err) {
     el.innerHTML = `<div class="page"><section class="card empty">
       <p>⚠️ ${esc(err.message)}</p>
       <a class="btn" href="#/">← Home</a></section></div>`;
     return;
   }
-  if (!tabsFor().some(([id]) => id === tab)) tab = 'crew';
+  if (!tabsFor().some(([id]) => id === tab)) tab = 'feed';
   el.innerHTML = `<div class="page campaign">${header(tab)}<div id="campaign-body"></div></div>`;
   const body = el.querySelector('#campaign-body');
   const rerender = () => renderCampaign(el, [cid, tab, ...rest]);
-  if (tab === 'crew') renderCrew(body);
+  if (tab === 'feed') renderFeed(body);
+  else if (tab === 'stories') renderStories(body, rest);
+  else if (tab === 'crew') renderCrew(body);
   else if (tab === 'notes') renderNotes(body, { campaignId: cid });
   else if (tab === 'members' && rest.length === 2 && isDm()) memberSheet(body, rest);
   else { body.innerHTML = membersView(); bindMembers(body, rerender); }
