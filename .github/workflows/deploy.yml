@@ -39,10 +39,10 @@ jobs:
           rm -rf _site && mkdir _site
           cp index.html legacy-export.html staticwebapp.config.json _site/
           cp -r css js vendor _site/
-          # Rules pages: js/rules.js fetches `${id}.md` for each entry in RULE_DOCS (js/data.js).
-          docs=$(sed -n '/^export const RULE_DOCS = \[/,/^\];/p' js/data.js | grep -oE "id: '[A-Za-z0-9_-]+'" | cut -d"'" -f2)
+          # Rules pages: js/rules.js fetches `${id}.md` (or `${dir}/${id}.md`) for each entry in RULE_DOCS (js/data.js).
+          docs=$(sed -n '/^export const RULE_DOCS = \[/,/^\];/p' js/data.js | grep -oE "id: '[A-Za-z0-9_-]+'[^}]*" | sed -E "s/^id: '([^']+)'.*dir: '([^']+)'.*/\2\/\1/; s/^id: '([^']+)'.*/\1/")
           [ -n "$docs" ] || { echo "No RULE_DOCS found in js/data.js" >&2; exit 1; }
-          for d in $docs; do cp "$d.md" _site/; done
+          for d in $docs; do mkdir -p "_site/$(dirname "$d")"; cp "$d.md" "_site/$d.md"; done
           find _site -type f | sort
       - name: Deploy to Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
