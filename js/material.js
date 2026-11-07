@@ -5,10 +5,14 @@
 import { api } from './api.js';
 import { state, esc, toast, isDm, uid } from './store.js';
 import { renderMarkdown } from './md.js';
+import { htmlToMarkdown } from './html-md.js';
 import { poll, markMaterialRead } from './poll.js';
 
 const enc = encodeURIComponent;
-const ui = { cid: null, segs: [], preview: false, dirty: false, timer: null };
+// mode: 'rich' (formatted editor), 'source' (the markdown itself) or 'preview' (as players see it).
+// New lines in the rich editor are paragraphs (Chrome would make divs).
+document.execCommand('defaultParagraphSeparator', false, 'p');
+const ui = { cid: null, segs: [], mode: 'rich', dirty: false, timer: null, range: null };
 
 const when = (iso) => (iso ? new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '');
 const base = () => `#/c/${enc(state.campaign.id)}/material`;
@@ -78,6 +82,25 @@ function chosenEditor(x, i) {
   </fieldset>`;
 }
 
+const PLACEHOLDER = { players: 'Read aloud', some: 'A secret', dm: 'What’s really going on' };
+const FORMATS = [['bold', 'B', 'Bold'], ['italic', 'I', 'Italic'], ['heading', 'H', 'Heading'],
+  ['ul', 'List', 'Bulleted list'], ['ol', 'Numbered', 'Numbered list'], ['quote', 'Quote', 'Quote']];
+
+/** The section's text: a formatted editor (stored as markdown) or the markdown itself. */
+function bodyEditor(x, i) {
+  const label = BODY_LABEL[x.audience] || BODY_LABEL.dm;
+  if (ui.mode === 'source') {
+    return `<label class="field"><span>${label}</span>
+      <textarea data-sf="body" rows="8" placeholder="Markdown works: **bold**, *italic*, - lists, # headings">${esc(x.body)}</textarea></label>`;
+  }
+  return `<div class="field"><span id="sb-${i}">${label}</span>
+    <div class="fmt-bar" role="group" aria-label="Formatting for section ${i + 1}">
+      ${FORMATS.map(([f, text, name]) => `<button type="button" class="fmt fmt-${f}" data-fmt="${f}" aria-label="${name}" title="${name}">${text}</button>`).join('')}
+    </div>
+    <div class="rich md" data-sf="body" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="sb-${i}"
+      data-placeholder="Write here, or paste from an AI chat or a document: formatting comes with it.">${renderMarkdown(x.body)}</div></div>`;
+}
+
 function sectionEditor(x, i, n) {
   return `<fieldset class="section-ed" data-i="${i}">
     <legend class="sr-only">Section ${i + 1}</legend>
@@ -94,9 +117,8 @@ function sectionEditor(x, i, n) {
       </span>
     </div>
     ${x.audience === 'some' ? chosenEditor(x, i) : ''}
-    <label class="field"><span>Section title</span><input data-sf="title" value="${esc(x.title)}" maxlength="200" placeholder="${{ players: 'Read aloud', some: 'A secret', dm: 'What’s really going on' }[x.audience] || ''}"></label>
-    <label class="field"><span>${BODY_LABEL[x.audience] || BODY_LABEL.dm}</span>
-      <textarea data-sf="body" rows="8" placeholder="Markdown works: **bold**, *italic*, - lists, # headings">${esc(x.body)}</textarea></label>
+    <label class="field"><span>Section title</span><input data-sf="title" value="${esc(x.title)}" maxlength="200" placeholder="${PLACEHOLDER[x.audience] || ''}"></label>
+    ${bodyEditor(x, i)}
   </fieldset>`;
 }
 
@@ -105,11 +127,12 @@ function editorView(s) {
     <div class="row spread block">
       <a class="btn quiet back" href="${base()}">All material</a>
       <div class="seg" role="group" aria-label="View">
-        <button type="button" data-act="edit" aria-pressed="${!ui.preview}">Edit</button>
-        <button type="button" data-act="preview" aria-pressed="${ui.preview}">As players see it</button>
+        <button type="button" data-act="edit" aria-pressed="${ui.mode === 'rich'}">Edit</button>
+        <button type="button" data-act="source" aria-pressed="${ui.mode === 'source'}">Markdown</button>
+        <button type="button" data-act="preview" aria-pressed="${ui.mode === 'preview'}">Player view</button>
       </div>
     </div>
-    ${ui.preview ? readView(s, true) : `
+    ${ui.mode === 'preview' ? readView(s, true) : `
     <label class="field"><span>Segment title</span><input class="title-input" id="seg-title" value="${esc(s.title)}" maxlength="200" placeholder="Session 3: the pump house"></label>
     <button type="button" class="switch" role="switch" aria-checked="${s.shared ? 'true' : 'false'}" data-act="share">
       <span class="track" aria-hidden="true"></span>
@@ -205,7 +228,7 @@ export async function renderMaterial(el, [sid]) {
     if (fresh?.members && state.campaign?.id === ui.cid) state.campaign.members = fresh.members;
   } catch { /* the list we have will do */ }
   if (!el.isConnected || !location.hash.startsWith(`${base()}/${enc(s.id)}`)) return;
-  ui.preview = false;
+  ui.mode = ui.mode === 'source' ? 'source' : 'rich';
   const draw = () => { el.innerHTML = editorView(s); };
   draw();
   const status = () => el.querySelector('#seg-status');
@@ -224,7 +247,85 @@ export async function renderMaterial(el, [sid]) {
   };
   window.addEventListener('hashchange', leave);
 
+  const secOf = (node) => s.sections[Number(node.closest('[data-i]').dataset.i)];
+  const syncRich = (ed) => { secOf(ed).body = htmlToMarkdown(ed); schedule(); };
+
+  // Pasted or dropped content arrives as clean markdown, then shows formatted. Rich text (an AI chat,
+  // a document, a web page) brings its formatting; plain text is read as markdown, so an AI tool's
+  // "copy" button works too.
+  const insertFrom = (e, data) => {
+    const ed = e.target.closest?.('.rich');
+    if (!ed || !data) return;
+    const html = data.getData('text/html');
+    const text = data.getData('text/plain');
+    if (!html && !text) return;
+    e.preventDefault();
+    if (e.type === 'drop') {
+      const range = document.caretRangeFromPoint?.(e.clientX, e.clientY);
+      if (range) { const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+    }
+    const md = html ? htmlToMarkdown(window.DOMPurify.sanitize(html, { RETURN_DOM_FRAGMENT: true, FORBID_TAGS: ['style', 'form', 'input', 'button', 'svg', 'math'] })) : text;
+    if (!md.trim()) return;
+    if (!md.includes('\n') && !html && !/[*_`#>[~|\\]|^\s*([-+]|\d+[.)])\s/.test(md)) {
+      document.execCommand('insertText', false, md);
+    } else {
+      let out = renderMarkdown(md).trim();
+      if (!md.includes('\n')) out = out.replace(/^<p>([\s\S]*)<\/p>$/, '$1'); // one line stays inside the paragraph
+      document.execCommand('insertHTML', false, out);
+    }
+    syncRich(ed);
+  };
+  el.onpaste = (e) => insertFrom(e, e.clipboardData);
+  el.ondrop = (e) => insertFrom(e, e.dataTransfer);
+
+  // Formatting buttons act on the editor's selection: keep it when a button is pressed, and remember it
+  // when focus leaves (a keyboard user tabs to the buttons).
+  el.onmousedown = (e) => { if (e.target.closest('[data-fmt]')) e.preventDefault(); };
+  el.onfocusout = (e) => {
+    if (!e.target.classList?.contains('rich')) return;
+    const sel = getSelection();
+    ui.range = sel.rangeCount && e.target.contains(sel.anchorNode) ? sel.getRangeAt(0).cloneRange() : null;
+  };
+  const format = (ed, f) => {
+    if (document.activeElement !== ed) {
+      ed.focus();
+      const sel = getSelection();
+      sel.removeAllRanges();
+      if (ui.range && ed.contains(ui.range.startContainer)) sel.addRange(ui.range);
+      else { const r = document.createRange(); r.selectNodeContents(ed); r.collapse(false); sel.addRange(r); }
+    }
+    const sel = getSelection();
+    const at = sel.anchorNode?.nodeType === 1 ? sel.anchorNode : sel.anchorNode?.parentElement;
+    const inside = (sel2) => { const b = at?.closest(sel2); return b && ed.contains(b) ? b : null; };
+    if (f === 'bold' || f === 'italic') document.execCommand(f);
+    else if (f === 'ul') document.execCommand('insertUnorderedList');
+    else if (f === 'ol') document.execCommand('insertOrderedList');
+    else if (f === 'heading') document.execCommand('formatBlock', false, inside('h1,h2,h3,h4,h5,h6') ? '<p>' : '<h3>');
+    else if (f === 'quote') {
+      const q = inside('blockquote');
+      if (q) { q.replaceWith(...q.childNodes); } else document.execCommand('formatBlock', false, '<blockquote>');
+    }
+    syncRich(ed);
+  };
+
+  // Enter on an empty line of a quote leaves the quote, as it does in a list.
+  el.onkeydown = (e) => {
+    const ed = e.target.closest?.('.rich');
+    if (!ed || e.key !== 'Enter' || e.shiftKey) return;
+    const node = getSelection().anchorNode;
+    const q = (node?.nodeType === 1 ? node : node?.parentElement)?.closest('blockquote');
+    if (!q || !ed.contains(q) || q.textContent.trim()) return;
+    e.preventDefault();
+    const para = document.createElement('p');
+    para.append(document.createElement('br'));
+    q.replaceWith(para);
+    const r = document.createRange(); r.setStart(para, 0); r.collapse(true);
+    getSelection().removeAllRanges(); getSelection().addRange(r);
+    syncRich(ed);
+  };
+
   el.oninput = (e) => {
+    if (e.target.classList?.contains('rich')) { syncRich(e.target); return; }
     if (e.target.id === 'seg-title') { s.title = e.target.value; schedule(); return; }
     if (e.target.dataset.to) {
       const x = s.sections[Number(e.target.closest('[data-i]').dataset.i)];
@@ -243,6 +344,7 @@ export async function renderMaterial(el, [sid]) {
     if (!b) return;
     const sec = b.closest('[data-i]');
     const i = sec ? Number(sec.dataset.i) : -1;
+    if (b.dataset.fmt) { format(sec.querySelector('.rich'), b.dataset.fmt); return; }
     if (b.dataset.aud) {
       const x = s.sections[i];
       x.audience = b.dataset.aud;
@@ -272,8 +374,9 @@ export async function renderMaterial(el, [sid]) {
       return;
     }
     switch (b.dataset.act) {
-      case 'edit': ui.preview = false; draw(); return;
-      case 'preview': ui.preview = true; draw(); return;
+      case 'edit': ui.mode = 'rich'; draw(); return;
+      case 'source': ui.mode = 'source'; draw(); return;
+      case 'preview': ui.mode = 'preview'; draw(); return;
       case 'share':
         if (!s.shared && !playerCount(s) && !confirm('No section is marked Players or for chosen players yet, so players won’t see anything. Share anyway?')) return;
         s.shared = !s.shared;
