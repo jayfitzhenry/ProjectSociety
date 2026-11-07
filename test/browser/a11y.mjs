@@ -77,6 +77,8 @@ for (const doc of ['quick_start', 'dice_modifiers', 'dice_system', 'actions', 'e
   await go(visitor, `#/rules/${doc}`);
   await scan(visitor, `Rules: ${doc}`);
 }
+await go(visitor, '#/rules/a-z');
+await scan(visitor, 'Rules: topics A to Z');
 await go(visitor, '#/rules/dice_system');
 await tap(visitor, '#rules-body .term');
 await scan(visitor, 'Term sheet (peek)', { openAll: false });

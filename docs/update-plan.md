@@ -35,9 +35,13 @@
 - Prefer no loading spinners for local data.
 
 ## Visual direction
-Restrained and typographic. One font family, a clear type scale (4–5 sizes, no more), 8px
-spacing grid, one accent colour used only for interactive or active states. Hierarchy comes from
-size, weight and spacing, not boxes and borders.
-Avoid: cards nested in cards, gradients, drop-shadow-heavy panels, emoji as icons, decorative
+Restrained and typographic, with a modern app feel. One font family, a clear type scale (4–5 sizes, no more), 8px
+spacing grid, one accent colour used only for interactive or active states. A warm dark palette.
+Content sits on **one layer of soft cards** (vitals, sections, lists, crew tracks, rules tiles); a card never
+sits inside another card, so lists and sections inside a card go flat. Buttons are tonal (filled, no outline).
+Numbers are shown as well as stated where it helps: wound boxes, progress bars, filled tiers. Those visuals
+are decoration; the number or text is always there too. Soft shadows only on floating layers (the bottom sheet, the toast).
+Avoid: cards nested in cards, gradients, heavy drop shadows, emoji as icons, decorative
 illustrations, generic admin-dashboard layouts.
 Tone reference: a well-set reference book. Restrained and typographic, dark by default, one amber accent. (Confirmed by the author, 2026-11-07.)
+Cards, tonal controls and meters added in the UI refresh, 2026-11-07, at the author's request.

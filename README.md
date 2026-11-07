@@ -31,7 +31,7 @@ The bottom bar has four destinations. Settings (theme, your name, characters, ba
 | Destination | What it does |
 | :--- | :--- |
 | **Sheet** | Opens on your character: wounds, Shaken, chips and level as big numbers, with your traits, weapons, armour and active rules underneath. Everything else is one tap away in sections: count your dice, traits and advances, gear and the market, saved rules, background and ties, notes |
-| **Rules** | The `.md` files, rendered live and grouped like a wiki (Start here, Core rules, The campaign, World), with an A to Z topic index. Underlined terms open their rule in a sheet from the bottom of the screen. **Save** next to a section keeps it on your character |
+| **Rules** | The `.md` files, rendered live and grouped like a wiki (Start here, Core rules, The campaign, World) as tiles, with an A to Z topic index on its own page. Underlined terms open their rule in a sheet from the bottom of the screen. **Save** next to a section keeps it on your character |
 | **Campaign** | Opens the campaign you used last. Material, Crew, Notes and People |
 | **Search** | One box for your sheet, your saved rules, game terms and every rules page, with results grouped by type |
 

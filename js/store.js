@@ -414,6 +414,15 @@ export function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+/** A round badge with someone's initials. Decoration: the name is always written beside it. */
+export function avatar(name, size = '') {
+  const words = plain(name).split(/\s+/).filter((w) => /\p{L}|\p{N}/u.test(w));
+  const chars = (w) => Array.from(w || '');
+  const letters = (words.length > 1 ? chars(words[0])[0] + chars(words[words.length - 1])[0]
+    : chars(words[0] || '?').slice(0, 2).join('')).toUpperCase();
+  return `<span class="avatar ${size}" aria-hidden="true">${esc(letters)}</span>`;
+}
+
 let toastTimer;
 export function toast(msg) {
   const el = document.getElementById('toast');

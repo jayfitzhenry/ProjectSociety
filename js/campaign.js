@@ -4,7 +4,7 @@
 import { api } from './api.js';
 import {
   state, esc, toast, openCampaign, isDm, crewLevel, charLevel, attachCharacter, addCharacter, freshCrew,
-  saveSettings, setTitle,
+  saveSettings, setTitle, avatar,
 } from './store.js';
 import { session, refreshUser, renderAccount } from './auth.js';
 import { renderCrew } from './crew.js';
@@ -43,7 +43,7 @@ function hubView() {
       </form>
       <p class="muted small" style="margin-top:8px">Everyone in your campaigns sees this. Change it later in Settings.</p>
     </section>`}
-    ${list.length ? `<ul class="rows block">${list.map((c) => `<li><a href="#/c/${enc(c.campaignId)}"><span class="row-text">
+    ${list.length ? `<ul class="rows block">${list.map((c) => `<li><a href="#/c/${enc(c.campaignId)}">${avatar(c.name)}<span class="row-text">
         <span class="row-title">${esc(c.name)}</span><span class="row-meta">${ROLE[c.role] || c.role}</span></span><span class="chev" aria-hidden="true"></span></a></li>`).join('')}</ul>`
       : '<p class="empty">You\'re not in a campaign yet. Ask your DM for a join code, or run one yourself.</p>'}
     <section class="block">
@@ -110,7 +110,7 @@ function peopleView() {
   const mineHere = state.characters.filter((c) => c.campaignId === camp.id);
   const free = state.characters.filter((c) => !c.campaignId);
   return `
-    ${dm ? `<section class="block">
+    ${dm ? `<section class="block card">
       <h2>Join code</h2>
       <p class="muted small">Players sign in, open Campaign and enter this code.</p>
       <div class="join-code" aria-label="Join code ${esc(camp.joinCode.split('').join(' '))}">${esc(camp.joinCode)}</div>
@@ -125,7 +125,7 @@ function peopleView() {
       <ul class="rows" style="margin-top:8px">${camp.members.map((m) => {
         const chars = roster.filter((c) => c.ownerId === m.userId);
         return `<li><div class="row-main" style="flex-wrap:wrap">
-          <span class="row-text" style="flex:1 1 200px"><span class="row-title">${esc(m.displayName)}${m.role === 'dm' ? ' <span class="tag">DM</span>' : ''}${m.userId === session.user.id ? ' <span class="muted small">(you)</span>' : ''}</span>
+          ${avatar(m.displayName)}<span class="row-text" style="flex:1 1 200px"><span class="row-title">${esc(m.displayName)}${m.role === 'dm' ? ' <span class="tag">DM</span>' : ''}${m.userId === session.user.id ? ' <span class="muted small">(you)</span>' : ''}</span>
             <span class="row-meta">${chars.map(charLink).join(' · ') || 'No character yet'}</span></span>
           ${dm && m.role !== 'dm' ? `<button type="button" class="btn quiet danger" data-remove="${esc(m.userId)}" data-name="${esc(m.displayName)}">Remove</button>` : ''}
         </div></li>`;
@@ -133,7 +133,7 @@ function peopleView() {
     </section>
     <section class="block">
       <h2>Your characters here</h2>
-      ${mineHere.length ? `<ul class="rows" style="margin-top:8px">${mineHere.map((c) => `<li><a href="#/characters/${enc(c.id)}"><span class="row-text"><span class="row-title">${esc(c.name || 'Unnamed')}</span>
+      ${mineHere.length ? `<ul class="rows" style="margin-top:8px">${mineHere.map((c) => `<li><a href="#/characters/${enc(c.id)}">${avatar(c.name || 'Unnamed')}<span class="row-text"><span class="row-title">${esc(c.name || 'Unnamed')}</span>
         <span class="row-meta">${c.created ? `Level ${charLevel(c)}` : 'Still being made'}${c.dead ? ' · dead' : ''}</span></span><span class="chev" aria-hidden="true"></span></a></li>`).join('')}</ul>` : '<p class="muted">None yet.</p>'}
       <div class="row" style="margin-top:16px">
         <button type="button" class="btn primary" data-act="new-char">New character for this campaign</button>

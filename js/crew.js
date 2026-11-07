@@ -86,6 +86,7 @@ function tracks() {
     <section class="track">
       <p class="label">${term('Community')}</p>
       <p class="hero num">${com}<small>/10</small></p>
+      <div class="bar" aria-hidden="true"><i style="width:${com * 10}%"></i></div>
       <p><b>${band.name}</b> · ${term('Need')} <b class="num">${needPerJob()}c</b>${c.debt ? ' <span class="tag">doubled: Debt</span>' : ''}</p>
       <p class="muted small">${band.text}</p>
       <p>${term('Pot')} <b class="num">${c.pot}c</b>${com < MAX_COMMUNITY ? ` <span class="muted small">· the next tier costs ${communityCost(next)}c</span>` : ''}</p>
