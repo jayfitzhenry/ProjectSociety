@@ -13,7 +13,7 @@ export function applyTheme() {
   const t = state.settings.theme;
   const light = t === 'light' || (t === 'system' && matchMedia('(prefers-color-scheme: light)').matches);
   document.documentElement.dataset.theme = light ? 'light' : 'dark';
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#faf9f6' : '#0f1012');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f5f2ed' : '#100f0d');
 }
 
 function importBlock() {

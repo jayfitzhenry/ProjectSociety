@@ -7,7 +7,7 @@ import {
 } from './data.js';
 import {
   state, save, saveSettings, esc, uid, toast, charLevel, maxWounds, crewLevel, marketOpen, buyPrice, sellPrice, gearItem,
-  addCharacter, removeCharacter, openCampaign, closeCampaign, attachCharacter, setTitle, currentCharacter,
+  addCharacter, removeCharacter, openCampaign, closeCampaign, attachCharacter, setTitle, currentCharacter, avatar,
 } from './store.js';
 import { session } from './auth.js';
 import { netOf, pool, signed } from './dice.js';
@@ -69,7 +69,7 @@ function listView() {
   return `<div class="page">
     <div class="page-head"><div><h1>Characters</h1><p class="sub">Saved to your account, on every device.</p></div></div>
     ${chars.length ? `<ul class="rows block">${chars.map((c) => `<li><a href="#/characters/${enc(c.id)}">
-        <span class="row-text"><span class="row-title">${esc(c.name || 'Unnamed')}</span><span class="row-meta">${esc(meta(c))}</span></span>
+        ${avatar(c.name || 'Unnamed')}<span class="row-text"><span class="row-title">${esc(c.name || 'Unnamed')}</span><span class="row-meta">${esc(meta(c))}</span></span>
         ${c.created && !c.dead ? `<span class="row-side num">${c.wounds}/${maxWounds(c)} wounds<br>${c.chips}c</span>` : ''}</a></li>`).join('')}</ul>`
       : '<p class="empty">No characters yet. A new player should finish one in about ten minutes.</p>'}
     <button type="button" class="btn primary" data-act="new">New character</button>
@@ -410,8 +410,9 @@ function sheetView(c) {
   const free = (lvl - 1) - ((c.extraTraits?.length || 0) + (c.talents?.length || 0) + (c.contacts?.length || 0));
   return `<div class="page sheet">
     <div class="sheet-head">
-      <div><h1>${esc(c.name || 'Unnamed')}</h1>
-        <p class="sub muted">${[bg ? esc(bg.id) : '', `Level ${lvl}`, camp ? esc(camp) : ''].filter(Boolean).join(' · ')}${c.dead ? ' · Dead' : ''}</p></div>
+      ${avatar(c.name || 'Unnamed', 'lg')}
+      <div class="who"><h1>${esc(c.name || 'Unnamed')}</h1>
+        <p class="pills">${[bg ? esc(bg.id) : '', `Level ${lvl}`, camp ? esc(camp) : '', c.dead ? 'Dead' : ''].filter(Boolean).map((x) => `<span class="tag">${x}</span>`).join('')}</p></div>
       ${ro ? '' : '<a class="btn quiet" href="#/characters">Switch</a>'}
     </div>
     ${c.dead ? '<p class="note bad"><b>This character is dead.</b> Make a new one: they join at crew level − 1.</p>' : ''}
@@ -421,12 +422,15 @@ function sheetView(c) {
         <button type="button" class="btn" data-act="survivecrit">Critical: −2 wounds, no Scar</button>
         <button type="button" class="btn danger" data-act="die">Died</button></div>`}</div>` : ''}
 
-    <section class="vitals" aria-label="At a glance">
-      ${vital(term('Wounds'), `<span class="hero num">${c.wounds}<small>/${mw}</small></span>`, dying ? 'Dying' : `${mw - c.wounds} until Dying`, stepper('data-wounds', 'Wounds', ro), dying)}
+    <section class="vitals card" aria-label="At a glance">
+      ${vital(term('Wounds'), `<span class="hero num">${c.wounds}<small>/${mw}</small></span>
+        <span class="boxes-track ${mw - c.wounds <= 1 ? 'bad' : ''}" aria-hidden="true">${Array.from({ length: mw }, (_, i) => `<i class="${i < c.wounds ? 'on' : ''}"></i>`).join('')}</span>`,
+        dying ? 'Dying' : `${mw - c.wounds} until Dying`, stepper('data-wounds', 'Wounds', ro), dying)}
       ${vital(term('Shaken'), `<span class="hero num">${c.shaken}</span>`, c.shaken ? `−${c.shaken} dice on every roll` : 'Clears after the fight', stepper('data-shaken', 'Shaken', ro))}
       ${vital(term('Chips'), ro ? `<span class="hero num">${c.chips}<small>c</small></span>`
         : `<button type="button" class="hero-btn" data-act="chips" aria-expanded="${ui.chipsOpen}" aria-controls="chips-adjust"><span class="hero num">${c.chips}<small>c</small></span></button>`, ro ? '' : 'Tap to spend or gain', '')}
-      ${vital(term('Level'), `<span class="hero num">${lvl}</span>`, nextMarks !== null ? `${c.marks} ${term('Marks')}, ${nextMarks - c.marks} to level ${lvl + 1}` : `${c.marks} Marks, top level`, stepper('data-marks', 'Marks', ro))}
+      ${vital(term('Level'), `<span class="hero num">${lvl}</span>${nextMarks !== null
+        ? `<span class="bar" aria-hidden="true"><i style="width:${Math.round(100 * Math.min(1, (c.marks - marksForLevel(lvl)) / Math.max(1, nextMarks - marksForLevel(lvl))))}%"></i></span>` : ''}`, nextMarks !== null ? `${c.marks} ${term('Marks')}, ${nextMarks - c.marks} to level ${lvl + 1}` : `${c.marks} Marks, top level`, stepper('data-marks', 'Marks', ro))}
     </section>
     ${ui.chipsOpen && !ro ? `<div class="adjust" id="chips-adjust">
       <label class="sr-only" for="chip-amt">Amount</label><input type="number" id="chip-amt" class="narrow" value="5" min="1" inputmode="numeric">

@@ -201,6 +201,13 @@ function renderDoc(id, md) {
     wrap.appendChild(t);
   });
 
+  // Diagrams (pre blocks) scroll sideways too, so keyboards need to reach them (WCAG 2.1.1).
+  root.querySelectorAll('pre').forEach((pre) => {
+    pre.tabIndex = 0;
+    pre.setAttribute('role', 'region');
+    pre.setAttribute('aria-label', 'Diagram');
+  });
+
   linkTerms(root);
 
   const toc = Array.from(root.querySelectorAll('h2, h3'))
@@ -316,22 +323,45 @@ function azHtml(list) {
         : `<a href="${t.href}">${esc(t.title)} <small>${esc(t.where)}</small></a>`}</li>`).join('')}</ul>`).join('')}`;
 }
 
+// Line icons for the tiles on the Rules home (decoration: each tile has its title).
+const svg = (d) => `<span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${d}</svg></span>`;
+const DOC_ICONS = {
+  quick_start: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  dice_modifiers: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 10h6M10 7v6M12 17h5"/>',
+  getting_started: '<path d="M5 21V4h11l-2 4 2 4H5"/>',
+  dice_system: '<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="15.5" cy="15.5" r="1.2"/>',
+  character_creation: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+  actions: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+  equipment: '<path d="M5 8h14l-1 13H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  progression: '<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  community: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  exposure_and_trust: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  world_history: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+};
+const AZ_ICON = '<path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/>';
+const BOOK_ICON = '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/>';
+
 function homeView() {
   return `<div class="page">
     <div class="page-head"><div><h1>Rules</h1><p class="sub">New to the game? Start with the Quick Start.</p></div></div>
     ${searchBox()}
+    <p class="block"><a class="tile wide" href="#/rules/a-z">${svg(AZ_ICON)}<span><b>Topics A to Z</b><small>Every term and rule section, in one list</small></span><span class="chev" aria-hidden="true"></span></a></p>
     ${RULE_GROUPS.map((g) => {
       const docs = RULE_DOCS.filter((d) => d.group === g.id);
       return `<section class="block" aria-labelledby="g-${g.id}">
         <h2 class="label" id="g-${g.id}">${esc(g.title)}</h2>
-        <ul class="rows">${docs.map((d) => `<li><a href="#/rules/${d.id}"><span class="row-text"><span class="row-title">${esc(d.title)}</span>
-          <span class="row-meta" data-blurb="${d.id}"></span></span><span class="chev" aria-hidden="true"></span></a></li>`).join('')}</ul>
+        <ul class="tiles">${docs.map((d) => `<li><a class="tile" href="#/rules/${d.id}">${svg(DOC_ICONS[d.id] || BOOK_ICON)}<b>${esc(d.title)}</b>
+          <small data-blurb="${d.id}"></small></a></li>`).join('')}</ul>
       </section>`;
     }).join('')}
-    <section class="block" aria-labelledby="az-title">
-      <h2 class="label" id="az-title">Topics A to Z</h2>
-      <div id="az"><p class="muted">Gathering topics…</p></div>
-    </section>
+  </div>`;
+}
+
+function azView() {
+  return `<div class="page">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="#/rules">Rules</a></nav>
+    <div class="page-head"><div><h1>Topics A to Z</h1><p class="sub">Every glossary term and rule section. Tap a term to read it here.</p></div></div>
+    <div id="az"><p class="muted">Gathering topics…</p></div>
   </div>`;
 }
 
@@ -386,22 +416,15 @@ function bindDoc(el) {
 export async function renderRules(el, [docId, anchor]) {
   document.body.classList.toggle('player-view', playerView());
   document.body.classList.toggle('signed-out', !signedIn());
-  if (!docId) {
-    setTitle('Rules');
-    el.innerHTML = homeView();
-    bindSearchBox(el);
+  if (docId === 'a-z') {
+    setTitle('Topics A to Z');
+    delete el.dataset.doc;
+    el.innerHTML = azView();
     el.onclick = (e) => {
       const L = e.target.closest('[data-az]');
       if (L) { e.preventDefault(); el.querySelector(`#az-${CSS.escape(L.dataset.az)}`)?.scrollIntoView({ block: 'start' }); }
     };
-    RULE_DOCS.forEach(async (d) => {
-      try {
-        const md = await fetchDoc(d.id);
-        const line = md.split('\n').find((l) => l.startsWith('> '));
-        const target = el.querySelector(`[data-blurb="${d.id}"]`);
-        if (target && line) target.textContent = plain(line.replace(/^>\s*/, '').replace(/\*\*/g, ''));
-      } catch { /* the page link still works */ }
-    });
+    window.scrollTo(0, 0);
     try {
       const list = await topics();
       const az = el.querySelector('#az');
@@ -410,6 +433,21 @@ export async function renderRules(el, [docId, anchor]) {
       const az = el.querySelector('#az');
       if (az) az.innerHTML = `<p class="note bad">${esc(e.message)}</p>`;
     }
+    return;
+  }
+  if (!docId) {
+    setTitle('Rules');
+    el.innerHTML = homeView();
+    bindSearchBox(el);
+    el.onclick = null;
+    RULE_DOCS.forEach(async (d) => {
+      try {
+        const md = await fetchDoc(d.id);
+        const line = md.split('\n').find((l) => l.startsWith('> '));
+        const target = el.querySelector(`[data-blurb="${d.id}"]`);
+        if (target && line) target.textContent = plain(line.replace(/^>\s*/, '').replace(/\*\*/g, ''));
+      } catch { /* the page link still works */ }
+    });
     return;
   }
 
