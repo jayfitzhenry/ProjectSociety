@@ -522,3 +522,15 @@ mark { background: rgba(255, 204, 0, .4); color: inherit; border-radius: 3px; pa
   input, textarea { background: none; color: #000; }
   .app { padding: 0; max-width: none; }
 }
+
+/* ---------- account & sign-in ---------- */
+.account { display: flex; align-items: center; gap: .6rem; font-size: .85rem; white-space: nowrap; }
+.account .who { color: var(--muted); max-width: 12rem; overflow: hidden; text-overflow: ellipsis; }
+.signin { display: grid; place-items: center; min-height: 60vh; }
+.signin-card { max-width: 30rem; width: 100%; text-align: center; padding: 2rem 1.5rem; }
+.signin-buttons { display: flex; flex-direction: column; gap: .6rem; margin: 1.4rem 0; }
+@media (max-width: 720px) {
+  .topbar { justify-content: space-between; }
+  .account .who span { display: inline-block; max-width: 7rem; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+}
+@media print { .account { display: none !important; } }

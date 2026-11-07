@@ -1,0 +1,5 @@
+# API local settings hold real keys: never commit them.
+api/local.settings.json
+api/node_modules/
+node_modules/
+.DS_Store

@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: API tests
         if: hashFiles('api/package.json') != ''
         working-directory: api
@@ -37,6 +37,6 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: upload
           app_location: "/"          # the site is the repo root (index.html, js/, css/, *.md)
-          api_location: ""           # change to "api" once the api/ folder exists
+          api_location: "api"        # managed Azure Functions (Node 22), see api/
           output_location: ""
           skip_app_build: true       # no front-end build step, files are served as-is
