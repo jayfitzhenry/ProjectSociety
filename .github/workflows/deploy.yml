@@ -1,0 +1,42 @@
+name: Test and deploy to Azure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; a newer push cancels an older one still running.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: API tests
+        if: hashFiles('api/package.json') != ''
+        working-directory: api
+        run: |
+          npm ci
+          npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: "/"          # the site is the repo root (index.html, js/, css/, *.md)
+          api_location: ""           # change to "api" once the api/ folder exists
+          output_location: ""
+          skip_app_build: true       # no front-end build step, files are served as-is
