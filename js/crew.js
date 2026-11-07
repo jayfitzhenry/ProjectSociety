@@ -83,7 +83,7 @@ function tracks() {
       <div class="pot">🏺 Pot <b>${c.pot}c</b>${com < MAX_COMMUNITY ? ` <span class="muted small">· next point costs ${communityCost(next)}c</span>` : ''}
         <span class="inline-step"><input type="number" id="pot-amt" value="10" min="1" class="num-input" aria-label="amount">
         <button type="button" class="tiny" data-pot="-1">−</button><button type="button" class="tiny" data-pot="1">+</button></span></div>
-      ${com < MAX_COMMUNITY && c.pot >= communityCost(next) ? '<div class="callout good small">🏗️ The Pot can build a tier. Click the next tier of any project below.</div>' : ''}
+      ${isDm() && com < MAX_COMMUNITY && c.pot >= communityCost(next) ? '<div class="callout good small">🏗️ The Pot can build a tier. Click the next tier of any project below.</div>' : ''}
       <label class="check small"><input type="checkbox" data-flag="waterCut" ${c.waterCut ? 'checked' : ''}> 💧 Water is cut</label>
     </section>
     <section class="card track">
@@ -107,7 +107,7 @@ function projects() {
   const c = crew();
   const com = community();
   const cost = communityCost(com + 1);
-  const starting = com === 2 && !c.startChosen;
+  const starting = com === 2 && !c.startChosen && isDm();
   return `<section class="card">
     <h3>🧱 Projects <span class="muted small">Community = tiers built (max 10). Build I → II → III. Lost tiers are always the top one.</span></h3>
     ${starting ? '<div class="callout">🆕 New campaign: the district starts with Clinic I and Hall I. <b>Pick one more starting tier</b> (free).</div>' : ''}
@@ -446,7 +446,7 @@ export function renderCrew(el) {
       }
       if (com >= MAX_COMMUNITY) { toast('Community is at 10. No district can have everything.'); return; }
       const cost = communityCost(com + 1);
-      const starting = com === 2 && !c.startChosen;
+      const starting = com === 2 && !c.startChosen && isDm();
       if (starting) {
         c.projects[p.id] = n;
         c.startChosen = true;

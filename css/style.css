@@ -551,13 +551,17 @@ mark { background: rgba(255, 204, 0, .4); color: inherit; border-radius: 3px; pa
 
 /* ---------- read-only sections ---------- */
 fieldset.bare { border: 0; padding: 0; margin: 0; min-width: 0; }
-fieldset.bare:disabled button, fieldset.bare:disabled .btn, fieldset.bare:disabled .tiny, fieldset.bare:disabled .no-readonly { display: none; }
+fieldset.bare:disabled button:not(.tier), fieldset.bare:disabled .btn, fieldset.bare:disabled .tiny, fieldset.bare:disabled .no-readonly, fieldset.bare:disabled .inline-step { display: none; }
+/* Project tiers are information as well as controls: keep them visible, just not clickable. */
+fieldset.bare:disabled .tier { cursor: default; opacity: .55; }
+fieldset.bare:disabled .tier.built { opacity: 1; }
 fieldset.bare:disabled input, fieldset.bare:disabled select, fieldset.bare:disabled textarea { opacity: .85; }
 
 /* ---------- campaigns ---------- */
 .campaign-head h1 { margin-bottom: .1rem; }
 .subtabs { display: flex; gap: 2px; background: var(--fill); padding: 2px; border-radius: 10px; margin: .4rem 0 1rem; overflow-x: auto; scrollbar-width: none; }
 .subtabs::-webkit-scrollbar { display: none; }
+.subtabs .ti { margin-right: .3rem; }
 .subtabs a { flex: 1; text-align: center; white-space: nowrap; color: var(--text); padding: .45rem .8rem; border-radius: 8px; font-size: .9rem; font-weight: 500; }
 .subtabs a:hover { opacity: 1; background: var(--fill); }
 .subtabs a.on { background: var(--seg-on); box-shadow: 0 3px 8px rgba(0, 0, 0, .12), 0 3px 1px rgba(0, 0, 0, .04); font-weight: 600; }
@@ -577,7 +581,11 @@ fieldset.bare:disabled input, fieldset.bare:disabled select, fieldset.bare:disab
 .note-editor textarea, .story-editor textarea { font-family: var(--mono); font-size: .92rem; line-height: 1.5; min-height: 14rem; }
 .preview { background: var(--panel2); border-radius: var(--radius-s); padding: .8rem 1rem; min-height: 6rem; }
 @media (max-width: 720px) {
-  .subtabs a { padding: .5rem .6rem; font-size: .85rem; }
+  .subtabs a { position: relative; display: flex; flex-direction: column; align-items: center; gap: .05rem; padding: .35rem .2rem; font-size: .72rem; line-height: 1.15; }
+  .subtabs .ti { font-size: 1.15rem; margin: 0; }
+  .subtabs .badge { position: absolute; top: .1rem; right: calc(50% - 1.6rem); margin: 0; }
+  .story-editor textarea { min-height: 0; height: 45vh; }
+  .home-tools { display: none; } /* the tab bar already has Rules, Dice and Combat */
   .join-code { font-size: 1.8rem; }
   .title-input { font-size: 1.05rem; }
 }

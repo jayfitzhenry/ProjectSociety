@@ -16,11 +16,11 @@ const enc = encodeURIComponent;
 
 function tabsFor() {
   return [
-    ['feed', '📣 Feed'],
-    ['crew', '🏠 Crew'],
-    ['notes', '📝 Notes'],
-    ...(isDm() ? [['stories', '📖 Stories']] : []),
-    ['members', isDm() ? '👥 Members' : '👥 Crew list'],
+    ['feed', '📣', 'Feed'],
+    ['crew', '🏠', 'Crew'],
+    ['notes', '📝', 'Notes'],
+    ...(isDm() ? [['stories', '📖', 'Stories']] : []),
+    ['members', '👥', isDm() ? 'Members' : 'People'],
   ];
 }
 
@@ -28,7 +28,7 @@ const badge = () => { const n = unreadCount(); return n ? `<span class="badge" a
 
 function updateBadge() {
   const a = document.querySelector('.subtabs a[data-tab="feed"]');
-  if (a) a.innerHTML = `📣 Feed${badge()}`;
+  if (a) a.innerHTML = `<span class="ti">📣</span><span class="tt">Feed</span>${badge()}`;
 }
 window.addEventListener('ps:feed', updateBadge);
 window.addEventListener('ps:feed-read', updateBadge);
@@ -39,7 +39,7 @@ function header(tab) {
       <div><h1>${esc(camp.name)}</h1>
       <div class="muted">${isDm() ? '🎭 You run this campaign' : '🧑 Player'} · crew level ${crewLevel()}</div></div>
     </div>
-    <nav class="subtabs" aria-label="Campaign sections">${tabsFor().map(([id, label]) => `<a href="#/c/${enc(camp.id)}/${id}" data-tab="${id}" class="${id === tab ? 'on' : ''}">${label}${id === 'feed' ? badge() : ''}</a>`).join('')}</nav>`;
+    <nav class="subtabs" aria-label="Campaign sections">${tabsFor().map(([id, icon, label]) => `<a href="#/c/${enc(camp.id)}/${id}" data-tab="${id}" class="${id === tab ? 'on' : ''}"><span class="ti">${icon}</span><span class="tt">${label}</span>${id === 'feed' ? badge() : ''}</a>`).join('')}</nav>`;
 }
 
 // ---------- members ----------
