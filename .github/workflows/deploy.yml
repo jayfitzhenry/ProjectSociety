@@ -31,12 +31,25 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v6
+      # Publish only what the website needs. The repo root also holds api/ (with
+      # node_modules), infra/, docs/, .github/ and CLAUDE.md, which must not be public.
+      - name: Collect website files into _site/
+        run: |
+          set -euo pipefail
+          rm -rf _site && mkdir _site
+          cp index.html legacy-export.html staticwebapp.config.json _site/
+          cp -r css js vendor _site/
+          # Rules pages: js/rules.js fetches `${id}.md` for each entry in RULE_DOCS (js/data.js).
+          docs=$(sed -n '/^export const RULE_DOCS = \[/,/^\];/p' js/data.js | grep -oE "id: '[A-Za-z0-9_-]+'" | cut -d"'" -f2)
+          [ -n "$docs" ] || { echo "No RULE_DOCS found in js/data.js" >&2; exit 1; }
+          for d in $docs; do cp "$d.md" _site/; done
+          find _site -type f | sort
       - name: Deploy to Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: upload
-          app_location: "/"          # the site is the repo root (index.html, js/, css/, *.md)
+          app_location: "_site"      # built by the step above: index.html, css/, js/, vendor/, rules .md
           api_location: "api"        # managed Azure Functions (Node 22), see api/
           output_location: ""
           skip_app_build: true       # no front-end build step, files are served as-is

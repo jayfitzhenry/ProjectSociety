@@ -3,3 +3,5 @@ api/local.settings.json
 api/node_modules/
 node_modules/
 .DS_Store
+# Website files collected for deploy (see .github/workflows/deploy.yml).
+_site/
