@@ -8,6 +8,8 @@ The rules live in this repo as one markdown file per subsystem. The repo also co
 
 | Document | What it covers |
 | :--- | :--- |
+| [Quick Start](quick_start.md) | Everything a new player needs for their first session, on one page |
+| [Dice Modifiers](dice_modifiers.md) | Every bonus and penalty in one place, and how to turn them into dice |
 | [Getting Started](getting_started.md) | The game on one page, the world in brief, session zero, running a job, quick reference |
 | [Dice System](dice_system.md) | How every roll works |
 | [Character Creation](character_creation.md) | Backgrounds, traits, wounds |
@@ -16,36 +18,45 @@ The rules live in this repo as one markdown file per subsystem. The repo also co
 | [Community](community.md) | The home district and sending chips home |
 | [Exposure & Trust](exposure_and_trust.md) | Staying deniable, and the handler |
 | [Progression](progression.md) | Levels, talents, contacts |
+| [World History](world_history.md) | The setting's history (waiting for its files) |
 
 Design reviews are tracked in [checklist.md](checklist.md) (not shown in the app).
 
 ## 🧰 The app
 
-Sign in with a Microsoft or GitHub account. Rules, Dice and Combat also work without signing in.
+Players use it on their phones at the table, so it's built around finding things fast: any piece of information is at most two taps from opening the app. Dice are rolled for real; the app helps count them. Sign in with a Microsoft or GitHub account. Rules and Search also work without signing in.
 
-| Section | What it does |
+The bottom bar has four destinations. Settings (theme, your name, characters, backup, sign out) is the gear in the top bar.
+
+| Destination | What it does |
 | :--- | :--- |
-| 📜 **Rules** | Renders the `.md` files above live, with search, contents and cross-links. Players always see the player view; DMs can show GM-only sections |
-| 🎲 **Dice** | Build a pool from modifier sources, see exact odds, roll |
-| ⚔️ **Combat** | Weapon vs armour: To Hit and To Wound odds, special rules, full attack rolls |
-| 🧰 **Characters** | The creation wizard and in-play sheet, saved to your account. Attach a character to a campaign |
-| 🏠 **Campaigns** | Create a campaign (you're its DM) or join one with a code |
+| **Sheet** | Opens on your character: wounds, Shaken, chips and level as big numbers, with your traits, weapons, armour and active rules underneath. Everything else is one tap away in sections: count your dice, traits and advances, gear and the market, saved rules, background and ties, notes |
+| **Rules** | The `.md` files, rendered live and grouped like a wiki (Start here, Core rules, The campaign, World), with an A to Z topic index. Underlined terms open their rule in a sheet from the bottom of the screen. **Save** next to a section keeps it on your character |
+| **Campaign** | Opens the campaign you used last. Material, Crew, Notes and People |
+| **Search** | One box for your sheet, your saved rules, game terms and every rules page, with results grouped by type |
+
+**Saved rules** belong to a character: a title, short text, source and an active switch. Save them from the rules, from a term, or write your own. Active ones show at the top of the sheet.
+
+**Count your dice** on the sheet works out the dice for a test, To Hit, To Wound or a survival roll from your traits, gear, talents and Shaken, and shows how each modifier adds up. The full list is in [Dice Modifiers](dice_modifiers.md).
 
 Inside a campaign:
 
 | Tab | Players | DM |
 | :--- | :--- | :--- |
-| 📣 **Feed** | Snippets the DM shared with everyone or with you, newest first, with New markers | Everything shared, who sees it, change audience, unshare, share something new |
-| 🏠 **Crew** | The shared crew sheet (read-only), and **Send chips home** to the Pot from your own character | Runs the crew sheet: jobs, Homecoming, Exposure, Trust, projects. Marks, pay and recovery reach players' characters |
-| 📝 **Notes** | Your private notes | Your private notes |
-| 📖 **Stories** | | Session notes, scenes and handouts in markdown. Share a selection or a new block with chosen players |
-| 👥 **Members** | Who's in, Leave | Join code, remove players, read-only character sheets, rename, delete |
+| **Material** | The segments the DM has shared, with only the sections meant for you (a section just for you says so). New and Updated markers | Write material in segments. Each section is **DM only**, **Players** (everyone) or **Chosen** players; one switch shares the segment. Preview it as players see it. Archive or delete |
+| **Crew** | The crew sheet (read-only), and **Send chips home** to the Pot from your own character | Runs the crew sheet: jobs, Homecoming, Exposure, Trust, projects. Hardship and Raid rolls happen with real dice: the sheet says what to roll and you enter the result. Marks, pay and recovery reach players' characters |
+| **Notes** | Your private notes | Your private notes |
+| **People** | Who's in, your characters here, leave | Join code, remove players, read-only character sheets, rename, delete |
 
-The feed checks for new snippets every 20 seconds while a campaign is open, and whenever you come back to the app.
+A player only ever receives the sections meant for them: the API removes the rest, and never says who else a chosen-players section went to. New and Updated markers and the unread dot are worked out per player, so a secret for one player doesn't show up as a change for anyone else.
 
-**Backups:** Home › Backup exports everything in your account as JSON and imports a backup. Importing only adds. A save from the old, pre-sign-in app imports too: its characters come into your account and its crew sheet becomes a campaign you run.
+The app checks for new material and crew sheet changes every 20 seconds while a campaign is open, and whenever you come back to it.
+
+**Backups:** Settings › Backup exports everything in your account as JSON and imports a backup. Importing only adds, and imported material starts unshared. Sections for chosen players come back as DM only, because those players belonged to the old campaign. A save from the old, pre-sign-in app imports too: its characters come into your account and its crew sheet becomes a campaign you run.
 
 **Data from before sign-in** lived only in the browser that made it. Open `legacy-export.html` on the site you used then (for example `https://jayfitzhenry.github.io/ProjectSociety/legacy-export.html`) in that browser to download it, then import the file. Leave the old GitHub Pages site switched on until every player has done this.
+
+**Accessibility:** built to WCAG 2.2 AA and checked with axe-core (see [Tests](#tests)). Dark by default with a light theme in Settings, contrast of at least 4.5:1 for text, 44px tap targets, visible keyboard focus that never hides behind the bars, labelled controls, and no pop-ups the user didn't ask for. The bottom sheet closes with a tap outside, a swipe down or Escape.
 
 ## ☁️ How it's built
 
@@ -104,18 +115,27 @@ cd api && npm test
 
 The tests use an in-memory stand-in for Cosmos (`api/test/fake-repo.js`), so they need no database. Every access rule has at least one allowed and one refused case.
 
+**Accessibility check** (local only, needs Chrome or Chromium; set `CHROME` if it isn't at `/usr/bin/chromium`):
+
+```sh
+cd test/browser && npm install && npm test
+```
+
+It starts a local server (the site plus the real API handlers on the in-memory fake), walks the app on a phone-sized screen as a visitor, a DM and two players, and runs [axe-core](https://github.com/dequelabs/axe-core) against WCAG 2.2 A and AA on every screen, in both themes. It exits 1 if anything fails. `npm run serve` starts the same server on its own, for trying the app by hand: open `http://localhost:8787/login?as=alice`. It isn't part of the deploy.
+
 ### Where things are
 
 | Path | Contents |
 | :--- | :--- |
-| `index.html`, `css/style.css` | Page shell and styles |
-| `js/app.js` | Router, sign-in check, save status |
+| `index.html`, `css/style.css`, `js/theme.js` | Page shell, styles (design tokens at the top), theme applied before first paint |
+| `js/app.js` | Router, bottom navigation, sign-in check, save status |
 | `js/store.js` | App state and syncing: views change `state` and call `save()`; the store sends only what changed, with ETags |
-| `js/api.js`, `js/auth.js` | API calls; sign-in page and account menu |
-| `js/home.js`, `js/campaign.js`, `js/feed.js`, `js/stories.js`, `js/notes.js` | Home, campaign tabs, snippet feed, DM stories, notes |
-| `js/rules.js`, `js/dice-view.js`, `js/combat.js`, `js/characters.js`, `js/crew.js` | One file per game section |
-| `js/data.js` | Game numbers: traits, backgrounds, gear, projects, bands. **Update this when a rule's numbers change** |
-| `js/dice.js` | Dice engine and exact probabilities |
+| `js/api.js`, `js/auth.js`, `js/account.js` | API calls; sign-in; the Settings page |
+| `js/characters.js` | The character sheet, the dice counter, saved rules, creation |
+| `js/rules.js`, `js/peek.js`, `js/search.js` | The rules wiki; the bottom sheet for terms and saving rules; search |
+| `js/campaign.js`, `js/material.js`, `js/crew.js`, `js/notes.js`, `js/poll.js` | Campaign list and tabs, material segments, crew sheet, notes, polling |
+| `js/data.js` | Game numbers: traits, backgrounds, gear, projects, bands, the rules pages and their groups, the glossary, and the dice counter's modifiers. **Update this when a rule's numbers change** |
+| `js/dice.js` | Counting dice: net modifier, cap, how many to roll and which to keep |
 | `js/md.js` | Safe markdown for user-written text (marked + DOMPurify) |
 | `vendor/` | [marked](https://github.com/markedjs/marked) (MIT), [DOMPurify](https://github.com/cure53/DOMPurify) (Apache-2.0 / MPL-2.0) |
 | `api/src/handlers/` | API endpoints; routes listed in `api/src/routes.js` |

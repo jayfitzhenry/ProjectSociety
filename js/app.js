@@ -1,49 +1,61 @@
-// App shell: sign-in check and the hash router.
+// App shell: sign-in check, the hash router and the bottom navigation.
 import { renderRules } from './rules.js';
-import { renderDice } from './dice-view.js';
-import { renderCombat } from './combat.js';
-import { renderCharacters } from './characters.js';
+import { renderSheet, renderCharacters } from './characters.js';
 import { renderCampaign } from './campaign.js';
-import { stopPolling } from './feed.js';
-import { renderHome } from './home.js';
+import { stopPolling } from './poll.js';
+import { renderSearch } from './search.js';
+import { renderAccountPage } from './account.js';
+import { initPeek, closePeek } from './peek.js';
 import { initAuth, signedIn, renderAccount, renderSignIn, session } from './auth.js';
-import { loadCharacters, refreshFromServer, sync, esc } from './store.js';
+import { loadCharacters, refreshFromServer, sync, esc, setTitle } from './store.js';
 
 const app = document.getElementById('app');
 
 const routes = {
-  '': renderHome,
-  rules: renderRules,
-  dice: renderDice,
-  combat: renderCombat,
+  sheet: renderSheet,
   characters: renderCharacters,
+  rules: renderRules,
+  search: renderSearch,
   c: renderCampaign,
-  crew: (el) => { location.hash = '#/'; },
+  account: renderAccountPage,
   signin: renderSignIn,
 };
 
 // Usable without an account. Everything else needs sign-in (and the API checks again).
-const PUBLIC = new Set(['rules', 'dice', 'combat', 'signin']);
+const PUBLIC = new Set(['rules', 'search', 'signin', 'account']);
+// Which bottom-nav destination each route belongs to.
+const TAB = { sheet: 'sheet', characters: 'sheet', rules: 'rules', c: 'c', search: 'search' };
 
-let lastRoute = '';
+let lastRoute = null;
 function route() {
   const parts = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
-  const [name, ...rest] = parts;
-  let view = routes[name] || renderHome;
+  let [name, ...rest] = parts;
+  // Old links: the dice and combat tools became the Dice Modifiers page.
+  if (name === 'dice' || name === 'combat') { location.replace('#/rules/dice_modifiers'); return; }
+  if (!name) name = signedIn() ? 'sheet' : 'rules';
+  let view = routes[name];
+  if (!view) { name = signedIn() ? 'sheet' : 'rules'; view = routes[name]; }
   if (!signedIn() && !PUBLIC.has(name)) view = renderSignIn;
-  if (signedIn() && name === 'signin') view = renderHome;
-  const tabName = name === 'c' ? '' : name;
+  if (signedIn() && name === 'signin') { name = 'sheet'; view = renderSheet; }
   if (name !== 'c') stopPolling();
-  document.querySelectorAll('#tabs a').forEach((a) => a.classList.toggle('active', a.dataset.tab === tabName));
-  // Clear handlers left by the previous view.
-  const sameRulesDoc = name === 'rules' && lastRoute.startsWith(`rules/${rest[0] || ''}`) && rest[0];
-  if (!sameRulesDoc) {
+  closePeek(false);
+
+  document.querySelectorAll('.bottomnav a').forEach((a) => {
+    if (a.dataset.tab === TAB[name]) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  });
+
+  // Moving within one rules page (to a section) keeps the page and its handlers.
+  const samePage = name === 'rules' && lastRoute?.[0] === 'rules' && rest[0] && lastRoute[1] === rest[0];
+  if (!samePage) {
     app.onclick = null; app.onchange = null; app.oninput = null; app.onsubmit = null;
     window.scrollTo(0, 0);
+    // Screen readers: announce the new page by moving focus to it (not on the first load).
+    if (lastRoute) app.focus({ preventScroll: true });
   }
-  lastRoute = parts.join('/');
-  document.body.dataset.view = name || 'home';
-  document.body.classList.toggle('signed-out', !signedIn());
+  lastRoute = [name, ...rest];
+  document.body.dataset.view = name;
+  setTitle('Project Society');
   view(app, rest);
 }
 
@@ -52,12 +64,11 @@ window.addEventListener('ps:signedout', () => {
   location.reload();
 });
 
-// Save status in the header, and the conflict banner.
+// Save status in the top bar, and the conflict banner.
 function renderSync() {
   const el = document.getElementById('sync');
   if (el) {
-    const label = { saved: '☁️ Saved', saving: '⏳ Saving…', error: '⚠️ Not saved', conflict: '⚠️ Conflict' }[sync.status];
-    el.textContent = signedIn() ? label : '';
+    el.textContent = signedIn() ? { saved: 'Saved', saving: 'Saving…', error: 'Not saved', conflict: 'Conflict' }[sync.status] : '';
     el.title = sync.message || '';
     el.className = `sync ${sync.status}`;
   }
@@ -65,8 +76,8 @@ function renderSync() {
   const show = sync.status === 'conflict' || sync.status === 'error';
   banner.hidden = !show;
   if (show) {
-    banner.innerHTML = `<span>${sync.status === 'conflict' ? '⚠️' : '📡'} ${esc(sync.message)}</span>
-      <button type="button" class="btn small" data-act="reload">${sync.status === 'conflict' ? 'Reload' : 'Retry'}</button>`;
+    banner.innerHTML = `<span>${esc(sync.message)}</span>
+      <button type="button" class="btn" data-act="reload">${sync.status === 'conflict' ? 'Reload' : 'Try again'}</button>`;
   }
 }
 document.getElementById('banner').onclick = (e) => {
@@ -80,7 +91,9 @@ window.addEventListener('ps:sync', renderSync);
 window.addEventListener('ps:remote', () => {
   const a = document.activeElement;
   if (a && ['INPUT', 'TEXTAREA', 'SELECT'].includes(a.tagName)) return;
-  if (/\/(stories|notes)(\/|$)/.test(location.hash)) return; // editors: nothing there depends on it
+  if (/\/(material|notes)\//.test(location.hash)) return; // editors: nothing there depends on it
+  if (document.querySelector('.peek')) return; // don't pull the page out from under an open sheet
+  lastRoute = null;
   route();
 });
 
@@ -109,6 +122,7 @@ if (session.user) {
     session.user = null;
   }
 }
+initPeek();
 renderAccount();
 renderSync();
 window.addEventListener('hashchange', route);

@@ -1,5 +1,5 @@
-// Markdown written by people (stories, snippets, notes), rendered safely.
-// marked doesn't sanitize, and a DM's snippet is shown in players' browsers, so everything goes through DOMPurify.
+// Markdown written by people (campaign material, notes), rendered safely.
+// marked doesn't sanitize, and a DM's material is shown in players' browsers, so everything goes through DOMPurify.
 // The trusted rules .md files are rendered by rules.js directly.
 
 export function renderMarkdown(src) {

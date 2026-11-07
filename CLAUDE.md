@@ -5,17 +5,21 @@ A tabletop RPG (rules as markdown) plus a companion web app on Azure Static Web 
 ## Rules and numbers
 
 - Rules text lives in the root `.md` files, one per subsystem. The app renders them live (`js/rules.js`). Never hard-code rules text in JS.
-- Game numbers (prices, bands, tiers, traits) live in `js/data.js`. When a rule's numbers change in a `.md`, change `js/data.js` in the same commit.
+- Game numbers (prices, bands, tiers, traits, the dice counter's modifiers) live in `js/data.js`. When a rule's numbers change in a `.md`, change `js/data.js` in the same commit. A new rules page or glossary term goes in `RULE_DOCS` / `GLOSSARY` there too.
+- The app doesn't roll dice: players roll real dice. It only counts them (`js/dice.js`).
 - Don't change rules text or `js/data.js` unless the task needs it, and say so when you do.
+- Open questions for the author (rule conflicts, design decisions) go in `docs/questions/`, one file per batch, each question with options and an **Answer:** line. When the author has answered, apply the answers and mark each question ✅ done in that file's status table.
 
 ## Front end
 
 - No build step. Vanilla JS ES modules in `js/`, plain CSS in `css/style.css`, `vendor/` for the few third-party files (marked, DOMPurify). No frameworks, bundlers, TypeScript or CSS frameworks.
 - Match the existing style: one module per section, views render HTML strings with `esc()` for every user value, event delegation via `el.onclick`/`el.oninput`.
-- User-written markdown (stories, snippets, notes) goes through `js/md.js` (marked + DOMPurify). Only the trusted rules `.md` files use `marked` directly.
+- UX rules (see `docs/update-plan.md`): any information within two taps, at most four bottom-nav destinations, 44px tap targets, WCAG 2.2 AA, no emoji as icons, one accent colour only for interactive or active states, no pop-ups the user didn't ask for. Tappable terms use `data-term` (opens the bottom sheet in `js/peek.js`).
+- User-written markdown (campaign material, notes) goes through `js/md.js` (marked + DOMPurify). Only the trusted rules `.md` files use `marked` directly.
 - Talk to the API only through `js/api.js`. `js/store.js` owns syncing: views mutate `state` and call `save()`, which diffs and sends changes.
 - The front end hides things for convenience only. It is never the permission check.
 - Mobile first: players use phones at the table.
+- After UI changes, run the accessibility check: `cd test/browser && npm install && npm test` (axe-core over a walk of the app). Add new screens to the walk in `test/browser/a11y.mjs`.
 
 ## API (`api/`)
 
@@ -33,7 +37,7 @@ A tabletop RPG (rules as markdown) plus a companion web app on Azure Static Web 
 | `users` | `/id` | user doc, including a copy of their campaign list |
 | `characters` | `/ownerId` | characters |
 | `notes` | `/ownerId` | private notes |
-| `campaigns` | `/campaignId` | `type`: `campaign`, `membership`, `crew`, `story`, `snippet`; plus `joincode` docs in partition `code:<CODE>` |
+| `campaigns` | `/campaignId` | `type`: `campaign`, `membership`, `crew`, `story` (a material segment; each section is for the DM, all players or chosen players), `snippet` (old, no longer read; deleted with the campaign); plus `joincode` docs in partition `code:<CODE>` |
 
 - Normal page loads must be single-partition reads or point reads. No cross-partition queries.
 - Don't add containers without asking: the free tier's throughput is shared.

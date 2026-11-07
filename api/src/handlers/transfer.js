@@ -5,6 +5,7 @@ import { repo, update } from '../lib/repo.js';
 import { newCharacterDoc } from './characters.js';
 import { newNoteDoc } from './notes.js';
 import { createCampaignFor } from './campaigns.js';
+import { normalizeSegment, readSections } from './stories.js';
 import { ensureUser } from './me.js';
 import { membershipId } from '../lib/access.js';
 
@@ -17,7 +18,7 @@ export const exportAll = route(async ({ user }) => {
     r.list('characters', user.id, { orderBy: 'createdAt' }),
     r.list('notes', user.id, { orderBy: 'updatedAt' }),
   ]);
-  // Campaigns you run: the crew sheet and your stories. (Snippets are copies of stories, so they're left out.)
+  // Campaigns you run: the crew sheet and your material.
   const campaigns = [];
   for (const c of (u.campaigns || []).filter((x) => x.role === 'dm')) {
     const docs = await r.list('campaigns', c.campaignId, { types: ['campaign', 'crew', 'story'] });
@@ -28,7 +29,8 @@ export const exportAll = route(async ({ user }) => {
     campaigns.push({
       name: campaign.name,
       crew,
-      stories: docs.filter((d) => d.type === 'story').map((s) => ({ title: s.title, body: s.body, status: s.status })),
+      stories: docs.filter((d) => d.type === 'story').map(normalizeSegment)
+        .map((s) => ({ title: s.title, sections: s.sections, shared: s.shared, status: s.status })),
     });
   }
   return ok({
@@ -57,9 +59,13 @@ export const importAll = route(async ({ request, user }) => {
       name: text(c?.name || 'Imported campaign', { max: 80, what: 'The campaign name' }).trim() || 'Imported campaign',
       crew: payload(c?.crew || {}, 400_000, 'The crew sheet'),
       attach: !!c?.attachCharacters,
+      // Imported material starts unshared: the DM shares it again when ready. Chosen players
+      // were people in the old campaign, so those sections come back as DM only.
       stories: stories.map((s) => ({
-        title: text(s?.title, { max: 200, what: 'A story title' }),
-        body: text(s?.body, { max: 200_000, what: 'A story' }),
+        title: text(s?.title, { max: 200, what: 'A segment title' }),
+        sections: readSections(s && typeof s === 'object' ? s : {})
+          .map(({ to, ...x }) => (x.audience === 'some' ? { ...x, audience: 'dm' } : x)),
+        shared: false,
         status: s?.status === 'archived' ? 'archived' : 'draft',
       })),
     };
