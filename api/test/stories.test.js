@@ -144,7 +144,8 @@ test('chosen players: everyone else is refused the section, and the DM sees who 
   await make({ title: 'Only Carol', shared: true, sections: [secret.sections[1]] });
   assert.equal((await list('bob')).body.length, 1, 'a segment with nothing for Bob is hidden from him');
   assert.equal((await list('carol')).body.length, 2);
-  assert.deepEqual((await list('alice')).body[0].sections[1].to, ['carol']);
+  const letters = (await list('alice')).body.find((x) => x.title === 'Letters');
+  assert.deepEqual(letters.sections[1].to, ['carol']);
 });
 
 test('chosen players: a secret for one player is not new for anyone else', async () => {
