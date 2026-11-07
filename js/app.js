@@ -4,6 +4,8 @@ import { renderSheet, renderCharacters } from './characters.js';
 import { renderCampaign } from './campaign.js';
 import { stopPolling } from './poll.js';
 import { renderSearch } from './search.js';
+import { renderMarket } from './market.js';
+import { RULE_DOCS } from './data.js';
 import { renderAccountPage } from './account.js';
 import { initPeek, closePeek } from './peek.js';
 import { initAuth, signedIn, renderAccount, renderSignIn, session } from './auth.js';
@@ -16,15 +18,19 @@ const routes = {
   characters: renderCharacters,
   rules: renderRules,
   search: renderSearch,
+  market: renderMarket,
   c: renderCampaign,
   account: renderAccountPage,
   signin: renderSignIn,
 };
 
 // Usable without an account. Everything else needs sign-in (and the API checks again).
-const PUBLIC = new Set(['rules', 'search', 'signin', 'account']);
+const PUBLIC = new Set(['rules', 'search', 'market', 'signin', 'account']);
 // Which bottom-nav destination each route belongs to.
-const TAB = { sheet: 'sheet', characters: 'sheet', rules: 'rules', c: 'c', search: 'search' };
+const TAB = { sheet: 'sheet', characters: 'sheet', market: 'market', rules: 'rules', c: 'c', search: 'search' };
+// Pages in the World group (the lore) belong to the Lore tab, not Rules.
+const LORE = new Set(RULE_DOCS.filter((d) => d.group === 'world').map((d) => d.id));
+const tabOf = (name, rest) => (name === 'rules' && LORE.has(rest[0]) ? 'lore' : TAB[name]);
 
 let lastRoute = null;
 function route() {
@@ -32,6 +38,9 @@ function route() {
   let [name, ...rest] = parts;
   // Old links: the dice and combat tools became the Dice Modifiers page.
   if (name === 'dice' || name === 'combat') { location.replace('#/rules/dice_modifiers'); return; }
+  // Old links: World History became the History section of the Lore page.
+  if (name === 'rules' && rest[0] === 'world_history') { location.replace('#/rules/lore/history'); return; }
+  if (name === 'lore') { location.replace(`#/rules/lore${rest[0] ? `/${rest[0]}` : ''}`); return; }
   if (!name) name = signedIn() ? 'sheet' : 'rules';
   let view = routes[name];
   if (!view) { name = signedIn() ? 'sheet' : 'rules'; view = routes[name]; }
@@ -40,8 +49,9 @@ function route() {
   if (name !== 'c') stopPolling();
   closePeek(false);
 
-  document.querySelectorAll('.bottomnav a').forEach((a) => {
-    if (a.dataset.tab === TAB[name]) a.setAttribute('aria-current', 'page');
+  const tab = tabOf(name, rest);
+  document.querySelectorAll('[data-tab]').forEach((a) => {
+    if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
   });
 

@@ -130,7 +130,7 @@ img { max-width: 100%; }
 
 .bottomnav {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-  display: grid; grid-template-columns: repeat(4, minmax(0, 160px)); justify-content: center;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 140px)); justify-content: center;
   background: var(--bar-bg);
   -webkit-backdrop-filter: saturate(1.4) blur(16px); backdrop-filter: saturate(1.4) blur(16px);
   border-top: 1px solid var(--line);
@@ -144,7 +144,7 @@ img { max-width: 100%; }
 .bottomnav a[aria-current="page"] { color: var(--accent); font-weight: 650; }
 .bottomnav svg, .icon-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 /* The icon sits in a pill that fills in for the page you're on. */
-.nav-icon { display: flex; align-items: center; justify-content: center; width: 60px; height: 32px; border-radius: 16px; transition: background .2s var(--ease); }
+.nav-icon { display: flex; align-items: center; justify-content: center; width: 56px; height: 32px; border-radius: 16px; transition: background .2s var(--ease); }
 .bottomnav a:hover .nav-icon { background: var(--fill); }
 .bottomnav a[aria-current="page"] .nav-icon { background: var(--accent-soft); }
 .badge-dot { position: relative; }
@@ -212,6 +212,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--muted); background: none; border: 0; cursor: pointer; text-decoration: none;
 }
 .icon-btn:hover { color: var(--accent); background: var(--fill); }
+.icon-btn[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
 .linklike { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: auto; }
 
 /* toggle options: on/off choices */
@@ -612,6 +613,19 @@ body.player-view .gm-only { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+/* ---------- market ---------- */
+.mk-who { margin-bottom: var(--s3); }
+.mk-who > * + * { margin-top: var(--s1); }
+.mk-who .field { margin: 0; flex: 1 1 180px; }
+.mk-who select { min-height: var(--tap); }
+.mk-chips { text-align: right; }
+.mk-kinds { overflow-x: auto; margin-bottom: var(--s3); }
+.mk-kinds button { flex: 0 0 auto; }
+.rows > li > .mk-row { flex-wrap: wrap; cursor: default; }
+.mk-row > .row-text { flex: 1 1 220px; }
+.mk-buy { display: flex; align-items: center; gap: var(--s2); margin-left: auto; }
+.mk-status { color: var(--text); }
+
 @media print {
   .topbar, .bottomnav, .toast, .banner, .no-print, .peek, .peek-scrim { display: none !important; }
   body { padding: 0; background: #fff; color: #000; }

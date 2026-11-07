@@ -18,22 +18,24 @@ The rules live in this repo as one markdown file per subsystem. The repo also co
 | [Community](community.md) | The home district and sending chips home |
 | [Exposure & Trust](exposure_and_trust.md) | Staying deniable, and the handler |
 | [Progression](progression.md) | Levels, talents, contacts |
-| [World History](world_history.md) | The setting's history (waiting for its files) |
+| [Lore](lore.md) | The world of Allaneus, player facing: the layers, Refinement, the houses, Antioch, history (sections waiting to be written) |
 
 Design reviews are tracked in [checklist.md](checklist.md) (not shown in the app).
 
 ## 🧰 The app
 
-Players use it on their phones at the table, so it's built around finding things fast: any piece of information is at most two taps from opening the app. Dice are rolled for real; the app helps count them. Sign in with a Microsoft or GitHub account. Rules and Search also work without signing in.
+Players use it on their phones at the table, so it's built around finding things fast: any piece of information is at most two taps from opening the app. Dice are rolled for real; the app helps count them. Sign in with a Microsoft or GitHub account. Rules, Lore, the Market price list and Search also work without signing in.
 
-The bottom bar has four destinations. Settings (theme, your name, characters, backup, sign out) is the gear in the top bar.
+The bottom bar has five destinations. Search is the magnifier in the top bar, and Settings (theme, your name, characters, backup, sign out) is the gear beside it.
 
 | Destination | What it does |
 | :--- | :--- |
-| **Sheet** | Opens on your character: wounds, Shaken, chips and level as big numbers, with your traits, weapons, armour and active rules underneath. Everything else is one tap away in sections: count your dice, traits and advances, gear and the market, saved rules, background and ties, notes |
-| **Rules** | The `.md` files, rendered live and grouped like a wiki (Start here, Core rules, The campaign, World) as tiles, with an A to Z topic index on its own page. Underlined terms open their rule in a sheet from the bottom of the screen. **Save** next to a section keeps it on your character |
+| **Sheet** | Opens on your character: wounds, Shaken, chips and level as big numbers, with your traits, weapons, armour and active rules underneath. Everything else is one tap away in sections: count your dice, traits and advances, gear (with a link to the Market), saved rules, background and ties, notes |
+| **Market** | Everything for sale (weapons, armour, tools, consumables, grafts, services) with prices, checked against your character: what you own, how it compares with your gear, your chips, and which markets your crew has opened. **Buy** takes the chips and adds the item to your gear; **Pay** covers a service |
+| **Rules** | The `.md` files, rendered live and grouped like a wiki (Start here, Core rules, The campaign, Lore) as tiles, with an A to Z topic index on its own page. Underlined terms open their rule in a sheet from the bottom of the screen. **Save** next to a section keeps it on your character |
 | **Campaign** | Opens the campaign you used last. Material, Crew, Notes and People |
-| **Search** | One box for your sheet, your saved rules, game terms and every rules page, with results grouped by type |
+| **Lore** | The world of Allaneus ([lore.md](lore.md)), player facing, rendered like a rules page so its terms, sections and search all work. More world pages go in the same group |
+| **Search** (top bar) | One box for your sheet, your saved rules, game terms and every rules page, with results grouped by type |
 
 **Saved rules** belong to a character: a title, short text, source and an active switch. Save them from the rules, from a term, or write your own. Active ones show at the top of the sheet.
 
@@ -132,6 +134,7 @@ It starts a local server (the site plus the real API handlers on the in-memory f
 | `js/store.js` | App state and syncing: views change `state` and call `save()`; the store sends only what changed, with ETags |
 | `js/api.js`, `js/auth.js`, `js/account.js` | API calls; sign-in; the Settings page |
 | `js/characters.js` | The character sheet, the dice counter, saved rules, creation |
+| `js/market.js` | The Market: the price list, checked against a character, and buying |
 | `js/rules.js`, `js/peek.js`, `js/search.js` | The rules wiki; the bottom sheet for terms and saving rules; search |
 | `js/campaign.js`, `js/material.js`, `js/crew.js`, `js/notes.js`, `js/poll.js` | Campaign list and tabs, material segments, crew sheet, notes, polling |
 | `js/data.js` | Game numbers: traits, backgrounds, gear, projects, bands, the rules pages and their groups, the glossary, and the dice counter's modifiers. **Update this when a rule's numbers change** |

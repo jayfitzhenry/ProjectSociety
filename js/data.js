@@ -8,7 +8,7 @@ export const RULE_GROUPS = [
   { id: 'start', title: 'Start here' },
   { id: 'rules', title: 'Core rules' },
   { id: 'campaign', title: 'The campaign' },
-  { id: 'world', title: 'World' },
+  { id: 'world', title: 'Lore' },
 ];
 export const RULE_DOCS = [
   { id: 'quick_start', title: 'Quick Start', group: 'start' },
@@ -21,7 +21,7 @@ export const RULE_DOCS = [
   { id: 'progression', title: 'Progression', group: 'rules' },
   { id: 'community', title: 'Community', group: 'campaign' },
   { id: 'exposure_and_trust', title: 'Exposure & Trust', group: 'campaign' },
-  { id: 'world_history', title: 'World History', group: 'world' },
+  { id: 'lore', title: 'Lore', group: 'world' },
 ];
 
 // ---------- Glossary ----------
@@ -287,6 +287,19 @@ export const ITEMS = [
   { id: 'secondskin', kind: 'graft', name: 'Second skin', effect: "Counts as -1 armour that can't be found or taken. With worn armour, use the better rating", price: 120, market: 'refined' },
 ];
 export const itemById = (id) => ITEMS.find((i) => i.id === id);
+
+// Services (equipment.md, Services): paid for, not carried. price null = no fixed price.
+export const SERVICES = [
+  { id: 'bribe-works', name: 'Bribe (Works)', effect: '+1 dice on one social test with the person you pay', price: 5 },
+  { id: 'bribe-terraces', name: 'Bribe (Terraces)', effect: '+1 dice on one social test with the person you pay', price: 15 },
+  { id: 'bribe-heights', name: 'Bribe (Heights)', effect: '+1 dice on one social test. A failed roll means they report you: +1 Exposure', price: 40 },
+  { id: 'informant', name: 'Informant', effect: 'One useful answer to one question', price: 10 },
+  { id: 'streetdoctor', name: 'Street doctor', effect: 'Remove 2 wounds during downtime', price: 10 },
+  { id: 'cleaner', name: 'Cleaner (the Sunk)', effect: '-1 Exposure, once per downtime', price: 20 },
+  { id: 'fence', name: 'Fence', effect: 'Sells your goods for you, and takes half', price: null },
+  { id: 'forger', name: 'Hired forger', effect: 'One set of Papers for the next job, as the favour', price: 20 },
+  { id: 'muscle', name: 'Hired muscle', effect: "A gang tough joins the crew for one job. The DM runs them. They don't earn Marks", price: 15 },
+];
 
 export const HOMECOMING_STEPS = ['Need', 'Hardship', 'Raids', 'Water', 'Pot', 'Build', 'Split'];
 

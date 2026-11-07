@@ -14,7 +14,7 @@ A tabletop RPG (rules as markdown) plus a companion web app on Azure Static Web 
 
 - No build step. Vanilla JS ES modules in `js/`, plain CSS in `css/style.css`, `vendor/` for the few third-party files (marked, DOMPurify). No frameworks, bundlers, TypeScript or CSS frameworks.
 - Match the existing style: one module per section, views render HTML strings with `esc()` for every user value, event delegation via `el.onclick`/`el.oninput`.
-- UX rules (see `docs/update-plan.md`): any information within two taps, at most four bottom-nav destinations, 44px tap targets, WCAG 2.2 AA, no emoji as icons, one accent colour only for interactive or active states, no pop-ups the user didn't ask for. Tappable terms use `data-term` (opens the bottom sheet in `js/peek.js`).
+- UX rules (see `docs/update-plan.md`): any information within two taps, at most five bottom-nav destinations, 44px tap targets, WCAG 2.2 AA, no emoji as icons, one accent colour only for interactive or active states, no pop-ups the user didn't ask for. Tappable terms use `data-term` (opens the bottom sheet in `js/peek.js`).
 - User-written markdown (campaign material, notes) goes through `js/md.js` (marked + DOMPurify). Only the trusted rules `.md` files use `marked` directly.
 - Talk to the API only through `js/api.js`. `js/store.js` owns syncing: views mutate `state` and call `save()`, which diffs and sends changes.
 - The front end hides things for convenience only. It is never the permission check.

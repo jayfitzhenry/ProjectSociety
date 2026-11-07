@@ -73,7 +73,7 @@ async function scan(p, screen, { openAll = true } = {}) {
 // ---------- a visitor ----------
 const visitor = await newUser('visitor');
 await scan(visitor, 'Rules: contents');
-for (const doc of ['quick_start', 'dice_modifiers', 'dice_system', 'actions', 'equipment', 'world_history']) {
+for (const doc of ['quick_start', 'dice_modifiers', 'dice_system', 'actions', 'equipment', 'lore']) {
   await go(visitor, `#/rules/${doc}`);
   await scan(visitor, `Rules: ${doc}`);
 }
@@ -83,6 +83,8 @@ await go(visitor, '#/rules/dice_system');
 await tap(visitor, '#rules-body .term');
 await scan(visitor, 'Term sheet (peek)', { openAll: false });
 await visitor.keyboard.press('Escape');
+await go(visitor, '#/market');
+await scan(visitor, 'Market, signed out');
 await go(visitor, '#/search/shaken');
 await scan(visitor, 'Search');
 await go(visitor, '#/signin');
@@ -105,6 +107,12 @@ await scan(dm, 'Character creation');
 await tap(dm, '[data-act="finish"]');
 await wait(600);
 await scan(dm, 'Character sheet');
+await go(dm, '#/market');
+await scan(dm, 'Market (with a character)');
+await tap(dm, '[data-buy="knife"]');
+await tap(dm, '[data-canbuy]');
+await tap(dm, '[data-kind="service"]');
+await scan(dm, 'Market: services, only what I can buy');
 await go(dm, '#/characters');
 await scan(dm, 'Characters');
 await go(dm, '#/c');

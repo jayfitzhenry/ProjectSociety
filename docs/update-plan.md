@@ -28,7 +28,7 @@
 
 ## Hard constraints
 - Any piece of information: at most 2 taps from opening the app.
-- Navigation at the bottom, in thumb reach. At most 4 top-level destinations.
+- Navigation at the bottom, in thumb reach. At most 5 top-level destinations (Sheet, Market, Campaign, Rules, Lore; Search sits in the top bar).
 - Dark theme by default, high contrast. Light theme optional.
 - Numbers are the hero: large, tabular figures, with labels small and muted.
 - Tap targets of at least 44px.

@@ -1,12 +1,12 @@
 // The character sheet, the character list and the creation steps.
 // The sheet opens on the numbers you need every turn; everything else is one tap away in a section.
 import {
-  TRAITS, TALENTS, CONTACTS, BACKGROUNDS, ITEMS, MARKETS, KIND_LABEL, STARTING_CHIPS,
-  MAX_TRAITS, MAX_CONTACTS, MAX_GRAFTS, WHY_ANTIOCH, LEVEL_REWARDS, MAX_LEVEL, DICE_MODES, DICE_SOURCES,
+  TRAITS, TALENTS, CONTACTS, BACKGROUNDS, STARTING_CHIPS,
+  MAX_TRAITS, MAX_CONTACTS, WHY_ANTIOCH, LEVEL_REWARDS, MAX_LEVEL, DICE_MODES, DICE_SOURCES,
   itemById, marksForLevel, talentById, MAX_TALENTS_PER_TRAIT,
 } from './data.js';
 import {
-  state, save, saveSettings, esc, uid, toast, charLevel, maxWounds, crewLevel, marketOpen, buyPrice, sellPrice, gearItem,
+  state, save, saveSettings, esc, uid, toast, charLevel, maxWounds, crewLevel, sellPrice, gearItem,
   addCharacter, removeCharacter, openCampaign, closeCampaign, attachCharacter, setTitle, currentCharacter, avatar,
 } from './store.js';
 import { session } from './auth.js';
@@ -14,7 +14,7 @@ import { netOf, pool, signed } from './dice.js';
 import { renderMarkdown } from './md.js';
 
 const ui = {
-  shopOpen: false, shopKind: 'weapon', chipsOpen: false, advance: '', readOnly: false,
+  chipsOpen: false, advance: '', readOnly: false,
   open: new Set(), // which sections of the sheet are open
   counter: { mode: 'test', trait: '', on: new Set(), weapon: '', armour: 0, extra: 0 },
   addingRule: false,
@@ -49,7 +49,7 @@ function setBackground(c, bgId) {
   bg.kit.forEach(([item, qty, name]) => c.gear.push({ id: uid(), item, qty, name: name || itemById(item).name, kit: true }));
 }
 
-function addGear(c, itemId, qty = 1) {
+export function addGear(c, itemId, qty = 1) {
   const item = itemById(itemId);
   const existing = item.kind === 'consumable' && c.gear.find((g) => g.item === itemId);
   if (existing) existing.qty += qty;
@@ -129,7 +129,7 @@ function creationView(c) {
       ${bg ? '' : '<p class="muted">Choose a background first to get its starting kit.</p>'}
       ${gearList(c, true)}
       <p><b class="num">${c.chips}c</b> to spend on the market now, or keep.</p>
-      ${shopView(c)}
+      ${shopLink(c)}
     </section>
 
     <section class="step">
@@ -199,31 +199,10 @@ function gearList(c, creation = false) {
   }).join('')}</ul>`;
 }
 
-function shopView(c) {
+/** The market is its own page; the sheet links to it for this character. */
+function shopLink(c) {
   if (ui.readOnly) return '';
-  if (!ui.shopOpen) return '<button type="button" class="btn" data-act="shop">Open the market</button>';
-  const items = ITEMS.filter((i) => i.kind === ui.shopKind);
-  const grafts = c.gear.filter((g) => gearItem(g).kind === 'graft').length;
-  return `<div class="block">
-    <div class="row spread" style="margin:16px 0 8px"><h3>Market</h3><button type="button" class="btn quiet" data-act="shop">Close the market</button></div>
-    <p class="muted small">${Object.entries(MARKETS).map(([k, m]) => `${m.name}: ${marketOpen(k) ? 'open' : `opens at level ${m.level}`}`).join(' · ')}</p>
-    <div class="seg" role="tablist" aria-label="Kind of item" style="margin-bottom:8px;overflow-x:auto">${Object.keys(KIND_LABEL).map((k) => `<button type="button" role="tab" data-shopkind="${k}" aria-selected="${k === ui.shopKind}">${KIND_LABEL[k]}</button>`).join('')}</div>
-    ${ui.shopKind === 'armour' ? '<p class="muted small">Wear one piece only.</p>' : ''}
-    ${ui.shopKind === 'tool' ? '<p class="muted small">Only one tool counts per roll, on top of a trait.</p>' : ''}
-    ${ui.shopKind === 'graft' ? `<p class="muted small">Permanent and illegal, at most ${MAX_GRAFTS}. Being found with one is +2 Exposure. You have ${grafts}.</p>` : ''}
-    <ul class="rows">${items.map((i) => {
-      const open = marketOpen(i.market);
-      const price = buyPrice(i);
-      const full = i.kind === 'graft' && (grafts >= MAX_GRAFTS || c.gear.some((g) => g.item === i.id));
-      const can = open && c.chips >= price && !full;
-      return `<li><div class="row-main">
-        <span class="row-text"><span class="row-title">${term(i.name)}</span>
-          <span class="row-meta">${itemStats(i)}${i.rules.length ? ` · ${ruleTerms(i.rules)}` : ''} · ${MARKETS[i.market].name}</span></span>
-        <span class="row"><span class="num">${price !== i.price ? `<s class="muted">${i.price}</s> ` : ''}${price}c</span>
-          <button type="button" class="btn ${can ? '' : ''}" data-buy="${i.id}" ${can ? '' : 'disabled'} aria-label="Buy ${esc(i.name)} for ${price}c">${open ? 'Buy' : 'Locked'}</button></span>
-      </div></li>`;
-    }).join('')}</ul>
-  </div>`;
+  return `<a class="btn" href="#/market/${enc(c.id)}">Open the market</a>`;
 }
 
 // ---------- dice counter ----------
@@ -446,7 +425,7 @@ function sheetView(c) {
 
     ${ro ? '' : sect('dice', 'Count your dice', '', counterView(c))}
     ${sect('traits', 'Traits and advances', `${traits.length} traits${free > 0 ? `, ${free} to choose` : ''}`, traitsView(c))}
-    ${sect('gear', 'Gear', `${c.gear.length} items`, `${gearList(c)}${shopView(c)}`)}
+    ${sect('gear', 'Gear', `${c.gear.length} items`, `${gearList(c)}${shopLink(c)}`)}
     ${sect('rules', 'Saved rules', `${(c.savedRules || []).length} saved${active.length ? `, ${active.length} active` : ''}`, savedRulesView(c))}
     ${sect('who', 'Background and ties', bg ? esc(bg.id) : '', `<dl class="facts">
         <dt>Concept</dt><dd>${esc(c.concept) || '—'}</dd>
@@ -588,7 +567,7 @@ export function renderCharacters(el, [id, sectId]) {
       b.disabled = true;
       closeCampaign(); // made from the list, it isn't in a campaign yet
       addCharacter(newCharacter())
-        .then((n) => { ui.shopOpen = false; location.hash = `#/characters/${n.id}`; })
+        .then((n) => { location.hash = `#/characters/${n.id}`; })
         .catch((err) => { b.disabled = false; toast(esc(err.message)); });
       return;
     }
@@ -602,11 +581,10 @@ export function renderCharacters(el, [id, sectId]) {
             .catch((err) => toast(esc(err.message)));
         }
         return;
-      case 'finish': c.created = true; ui.shopOpen = false; toast(`${esc(c.name)} is ready`); commit(); window.scrollTo(0, 0); return;
+      case 'finish': c.created = true; toast(`${esc(c.name)} is ready`); commit(); window.scrollTo(0, 0); return;
       case 'recreate': c.created = false; ui.editing = false; commit(); return;
       case 'edit': ui.editing = !ui.editing; draw(); return;
       case 'print': ui.open = new Set(SECTIONS.filter((s) => s !== 'dice' && s !== 'settings')); draw(); window.print(); return;
-      case 'shop': ui.shopOpen = !ui.shopOpen; draw(); return;
       case 'chips': ui.chipsOpen = !ui.chipsOpen; draw(); if (ui.chipsOpen) el.querySelector('#chip-amt')?.select(); return;
       case 'add-rule': ui.addingRule = true; draw(); el.querySelector('#add-rule input')?.focus(); return;
       case 'cancel-rule': ui.addingRule = false; draw(); return;
@@ -658,17 +636,6 @@ export function renderCharacters(el, [id, sectId]) {
     if (d.ptrait) { c.personalTrait = c.personalTrait === d.ptrait ? '' : d.ptrait; commit(); return; }
 
     // gear
-    if (d.shopkind) { ui.shopKind = d.shopkind; draw(); return; }
-    if (d.buy) {
-      const item = itemById(d.buy);
-      const price = buyPrice(item);
-      if (c.chips < price) return;
-      c.chips -= price;
-      addGear(c, item.id);
-      toast(`Bought ${esc(item.name)} for ${price}c`);
-      commit();
-      return;
-    }
     if (d.sell || d.drop || d.use) {
       const g = c.gear.find((x) => x.id === (d.sell || d.drop || d.use));
       if (!g) return;
