@@ -11,6 +11,7 @@ import {
 import {
   listStories, createStory, putStory, deleteStory, poll, markRead,
 } from './handlers/stories.js';
+import { listNpcs, createNpc, putNpc, deleteNpc } from './handlers/npcs.js';
 
 export const ROUTES = [
   { name: 'me', route: 'me', map: { GET: getMe, PATCH: patchMe } },
@@ -32,6 +33,8 @@ export const ROUTES = [
   // Segments of campaign material (stored as 'story' docs).
   { name: 'stories', route: 'campaigns/{cid}/stories', map: { GET: listStories, POST: createStory } },
   { name: 'story', route: 'campaigns/{cid}/stories/{sid}', map: { PUT: putStory, DELETE: deleteStory } },
+  { name: 'npcs', route: 'campaigns/{cid}/npcs', map: { GET: listNpcs, POST: createNpc } },
+  { name: 'npc', route: 'campaigns/{cid}/npcs/{nid}', map: { PUT: putNpc, DELETE: deleteNpc } },
   { name: 'poll', route: 'campaigns/{cid}/poll', map: { GET: poll } },
   { name: 'read', route: 'campaigns/{cid}/read', map: { POST: markRead } },
 ];

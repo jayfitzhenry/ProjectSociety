@@ -547,7 +547,7 @@ body.player-view .gm-only { display: none !important; }
 .tabs { display: flex; gap: 4px; padding: 3px; background: var(--fill); border-radius: 999px; margin-bottom: var(--s3); overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
 .tabs a {
-  flex: 1 0 auto; display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 0 var(--s2);
+  flex: 1 0 auto; display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 0 var(--s1);
   color: var(--muted); text-decoration: none; font-weight: 600; border-radius: 999px; transition: background .15s, color .15s;
 }
 .tabs a:hover { color: var(--text); }
@@ -576,6 +576,16 @@ body.player-view .gm-only { display: none !important; }
 .segment-view h2 { margin: var(--s4) 0 var(--s1); }
 .dm-section { border-left: 3px solid var(--line-strong); padding-left: var(--s2); }
 .save-status { font-size: var(--t1); color: var(--muted); }
+/* NPCs */
+.npc-card { margin-bottom: var(--s2); }
+.npc-card h2 { margin-bottom: 4px; }
+.npc-stats { margin: var(--s2) 0; }
+.npc-stat { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s1) var(--s2); min-height: var(--tap); margin-bottom: var(--s1); }
+.npc-k { flex: 0 0 64px; color: var(--muted); font-size: var(--t1); font-weight: 500; }
+.npc-k .term { font-size: inherit; }
+.npc-hurt { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 80px; }
+.npc-hurt .bad { color: var(--danger); font-weight: 600; }
+.rows .boxes-track { margin-top: 4px; }
 
 /* crew sheet */
 .tracks { display: grid; gap: var(--s2); margin-bottom: var(--s4); }

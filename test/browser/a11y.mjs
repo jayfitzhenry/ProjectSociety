@@ -177,6 +177,21 @@ await go(dm, `#/c/${cid}/material`);
 await scan(dm, 'Material list (DM)');
 await go(dm, `#/c/${cid}/crew`);
 await scan(dm, 'Crew sheet (DM)');
+await go(dm, `#/c/${cid}/npcs`);
+await scan(dm, 'NPCs: empty (DM)');
+await tap(dm, '[data-act="new"]');
+await wait(800);
+await dm.type('#npc-name', 'Ada Marsh');
+await dm.type('[data-f="role"]', 'Foreman at the pump house');
+await dm.type('[data-f="about"]', 'Soot to the elbows. Never smiles.');
+await dm.type('[data-f="secrets"]', 'Reports to Antioch every Sunday.');
+await tap(dm, '[data-step="hurt"][data-n="1"]');
+await tap(dm, '[data-set="toHit"][data-v="1"]');
+await tap(dm, '[data-act="known"]');
+await wait(800);
+await scan(dm, 'NPC editor (DM)');
+await go(dm, `#/c/${cid}/npcs`);
+await scan(dm, 'NPC list (DM)');
 await go(dm, `#/c/${cid}/notes`);
 await scan(dm, 'Notes');
 await go(dm, '#/account');
@@ -191,6 +206,13 @@ await wait(600);
 await scan(carol, 'Segment (player, with a section just for them)');
 await go(carol, `#/c/${cid}/crew`);
 await scan(carol, 'Crew sheet (player)');
+await go(carol, `#/c/${cid}/npcs`);
+{
+  const seen = await carol.$eval('#campaign-body', (b) => b.textContent);
+  if (!seen.includes('Ada Marsh')) errors.push('carol: a known NPC is missing from the player list');
+  if (seen.includes('Antioch')) errors.push('carol: DM notes about an NPC reached a player');
+}
+await scan(carol, 'NPCs (player)');
 
 await browser.close();
 server.close();

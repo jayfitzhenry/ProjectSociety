@@ -10,13 +10,14 @@ import { session, refreshUser, renderAccount } from './auth.js';
 import { renderCrew } from './crew.js';
 import { renderNotes } from './notes.js';
 import { renderMaterial } from './material.js';
+import { renderNpcs } from './npcs.js';
 import { startPolling, materialUnread } from './poll.js';
 import { newCharacter, readOnlySheet } from './characters.js';
 
 const enc = encodeURIComponent;
 const ROLE = { dm: 'You run it', player: 'Player' };
 
-const TABS = [['material', 'Material'], ['crew', 'Crew'], ['notes', 'Notes'], ['people', 'People']];
+const TABS = [['material', 'Material'], ['crew', 'Crew'], ['npcs', 'NPCs'], ['notes', 'Notes'], ['people', 'People']];
 
 function header(tab) {
   const camp = state.campaign;
@@ -284,6 +285,7 @@ export async function renderCampaign(el, [cid, tab = 'material', ...rest]) {
   const rerender = () => renderCampaign(el, [cid, tab, ...rest]);
   if (tab === 'material') renderMaterial(body, rest);
   else if (tab === 'crew') renderCrew(body);
+  else if (tab === 'npcs') renderNpcs(body, rest);
   else if (tab === 'notes') renderNotes(body, { campaignId: cid });
   else if (tab === 'people' && rest.length === 2 && isDm()) memberSheet(body, rest);
   else { body.innerHTML = peopleView(); bindPeople(body, rerender); }

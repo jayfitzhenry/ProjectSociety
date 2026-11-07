@@ -6,6 +6,7 @@ import { newCharacterDoc } from './characters.js';
 import { newNoteDoc } from './notes.js';
 import { createCampaignFor } from './campaigns.js';
 import { normalizeSegment, readSections } from './stories.js';
+import { npcFields, MAX_NPCS } from './npcs.js';
 import { ensureUser } from './me.js';
 import { membershipId } from '../lib/access.js';
 
@@ -21,7 +22,7 @@ export const exportAll = route(async ({ user }) => {
   // Campaigns you run: the crew sheet and your material.
   const campaigns = [];
   for (const c of (u.campaigns || []).filter((x) => x.role === 'dm')) {
-    const docs = await r.list('campaigns', c.campaignId, { types: ['campaign', 'crew', 'story'] });
+    const docs = await r.list('campaigns', c.campaignId, { types: ['campaign', 'crew', 'story', 'npc'] });
     const campaign = docs.find((d) => d.type === 'campaign');
     if (!campaign) continue;
     const { id, type, campaignId, updatedAt, ...crew } = clean(docs.find((d) => d.type === 'crew') || {});
@@ -31,6 +32,7 @@ export const exportAll = route(async ({ user }) => {
       crew,
       stories: docs.filter((d) => d.type === 'story').map(normalizeSegment)
         .map((s) => ({ title: s.title, sections: s.sections, shared: s.shared, status: s.status })),
+      npcs: docs.filter((d) => d.type === 'npc').map((d) => npcFields(d)),
     });
   }
   return ok({
@@ -55,6 +57,8 @@ export const importAll = route(async ({ request, user }) => {
   const campaignSpecs = campaigns.map((c) => {
     const stories = Array.isArray(c?.stories) ? c.stories : [];
     if (stories.length > LIMITS.stories) throw badRequest(`At most ${LIMITS.stories} stories per campaign.`);
+    const npcs = Array.isArray(c?.npcs) ? c.npcs : [];
+    if (npcs.length > MAX_NPCS) throw badRequest(`At most ${MAX_NPCS} NPCs per campaign.`);
     return {
       name: text(c?.name || 'Imported campaign', { max: 80, what: 'The campaign name' }).trim() || 'Imported campaign',
       crew: payload(c?.crew || {}, 400_000, 'The crew sheet'),
@@ -68,6 +72,8 @@ export const importAll = route(async ({ request, user }) => {
         shared: false,
         status: s?.status === 'archived' ? 'archived' : 'draft',
       })),
+      // Imported NPCs start unknown to players, like imported material.
+      npcs: npcs.map((n) => ({ ...npcFields(n && typeof n === 'object' ? n : {}), known: false })),
     };
   });
 
@@ -78,6 +84,10 @@ export const importAll = route(async ({ request, user }) => {
     for (const s of spec.stories) {
       const t = now();
       await r.create('campaigns', { id: newId(), type: 'story', campaignId: campaign.id, ...s, createdAt: t, updatedAt: t });
+    }
+    for (const n of spec.npcs) {
+      const t = now();
+      await r.create('campaigns', { id: newId(), type: 'npc', campaignId: campaign.id, ...n, createdAt: t, updatedAt: t });
     }
     made.push({ campaign, attach: spec.attach });
   }

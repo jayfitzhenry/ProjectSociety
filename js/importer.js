@@ -34,7 +34,7 @@ export function toImport(data) {
     return {
       characters: (data.characters || []).map(migrateCharacter),
       notes: data.notes || [],
-      campaigns: (data.campaigns || []).map((c) => ({ name: c.name, crew: migrateCrew(c.crew), stories: c.stories || [] })),
+      campaigns: (data.campaigns || []).map((c) => ({ name: c.name, crew: migrateCrew(c.crew), stories: c.stories || [], npcs: c.npcs || [] })),
     };
   }
   if (data && Array.isArray(data.characters)) {

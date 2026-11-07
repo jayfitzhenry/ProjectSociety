@@ -37,7 +37,7 @@ A tabletop RPG (rules as markdown) plus a companion web app on Azure Static Web 
 | `users` | `/id` | user doc, including a copy of their campaign list |
 | `characters` | `/ownerId` | characters |
 | `notes` | `/ownerId` | private notes |
-| `campaigns` | `/campaignId` | `type`: `campaign`, `membership`, `crew`, `story` (a material segment; each section is for the DM, all players or chosen players), `snippet` (old, no longer read; deleted with the campaign); plus `joincode` docs in partition `code:<CODE>` |
+| `campaigns` | `/campaignId` | `type`: `campaign`, `membership`, `crew`, `story` (a material segment; each section is for the DM, all players or chosen players), `npc` (stats and DM notes for the DM only; players see name, role and description once it's marked known), `snippet` (old, no longer read; deleted with the campaign); plus `joincode` docs in partition `code:<CODE>` |
 
 - Normal page loads must be single-partition reads or point reads. No cross-partition queries.
 - Don't add containers without asking: the free tier's throughput is shared.

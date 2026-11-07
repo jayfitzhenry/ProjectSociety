@@ -33,7 +33,7 @@ The bottom bar has five destinations. Search is the magnifier in the top bar, an
 | **Sheet** | Opens on your character: wounds, Shaken, chips and level as big numbers, with your traits, weapons, armour and active rules underneath. Everything else is one tap away in sections: count your dice, traits and advances, gear (with a link to the Market), saved rules, background and ties, notes |
 | **Market** | Everything for sale (weapons, armour, tools, consumables, grafts, services) with prices, checked against your character: what you own, how it compares with your gear, your chips, and which markets your crew has opened. **Buy** takes the chips and adds the item to your gear; **Pay** covers a service |
 | **Rules** | The `.md` files, rendered live and grouped like a wiki (Start here, Core rules, The campaign, Lore) as tiles, with an A to Z topic index on its own page. Underlined terms open their rule in a sheet from the bottom of the screen. **Save** next to a section keeps it on your character |
-| **Campaign** | Opens the campaign you used last. Material, Crew, Notes and People |
+| **Campaign** | Opens the campaign you used last. Material, Crew, NPCs, Notes and People |
 | **Lore** | The world of Allaneus ([worldlore/](worldlore/)), player facing, rendered like a rules page so its terms, sections and search all work. More world pages go in `worldlore/` and in `RULE_DOCS` with `group: 'world', dir: 'worldlore'` |
 | **Search** (top bar) | One box for your sheet, your saved rules, game terms and every rules page, with results grouped by type |
 
@@ -47,6 +47,7 @@ Inside a campaign:
 | :--- | :--- | :--- |
 | **Material** | The segments the DM has shared, with only the sections meant for you (a section just for you says so). New and Updated markers | Write material in segments. Each section is **DM only**, **Players** (everyone) or **Chosen** players; one switch shares the segment. Preview it as players see it. Archive or delete |
 | **Crew** | The crew sheet (read-only), and **Send chips home** to the Pot from your own character | Runs the crew sheet: jobs, Homecoming, Exposure, Trust, projects. Hardship and Raid rolls happen with real dice: the sheet says what to roll and you enter the result. Marks, pay and recovery reach players' characters |
+| **NPCs** | The people the DM has marked as known: name, role and description | Track everyone the crew meets: name, role, description, a stat line like the enemy table (wounds, To Hit, weapon, armour, notes), wounds filled during a fight, and private DM notes. Mark one as known to show players who they are; set them Dead or Gone |
 | **Notes** | Your private notes | Your private notes |
 | **People** | Who's in, your characters here, leave | Join code, remove players, read-only character sheets, rename, delete |
 
