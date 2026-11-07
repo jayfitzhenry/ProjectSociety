@@ -73,7 +73,7 @@ async function scan(p, screen, { openAll = true } = {}) {
 // ---------- a visitor ----------
 const visitor = await newUser('visitor');
 await scan(visitor, 'Rules: contents');
-for (const doc of ['quick_start', 'dice_modifiers', 'dice_system', 'actions', 'equipment', 'lore']) {
+for (const doc of ['quick_start', 'dice_modifiers', 'dice_system', 'actions', 'equipment', 'lore', 'world_houses', 'world_chronicle', 'world_works', 'world_customs', 'world_gazetteer']) {
   await go(visitor, `#/rules/${doc}`);
   await scan(visitor, `Rules: ${doc}`);
 }

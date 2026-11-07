@@ -18,7 +18,7 @@ The rules live in this repo as one markdown file per subsystem. The repo also co
 | [Community](community.md) | The home district and sending chips home |
 | [Exposure & Trust](exposure_and_trust.md) | Staying deniable, and the handler |
 | [Progression](progression.md) | Levels, talents, contacts |
-| [Lore](lore.md) | The world of Allaneus, player facing: the layers, Refinement, the houses, Antioch, history (sections waiting to be written) |
+| [Lore](worldlore/lore.md) | The world of Allaneus, player facing: the overview, with its own pages in [worldlore/](worldlore/) for the houses, the chronicle, life below, belief and custom, and the gazetteer |
 
 Design reviews are tracked in [checklist.md](checklist.md) (not shown in the app).
 
@@ -34,7 +34,7 @@ The bottom bar has five destinations. Search is the magnifier in the top bar, an
 | **Market** | Everything for sale (weapons, armour, tools, consumables, grafts, services) with prices, checked against your character: what you own, how it compares with your gear, your chips, and which markets your crew has opened. **Buy** takes the chips and adds the item to your gear; **Pay** covers a service |
 | **Rules** | The `.md` files, rendered live and grouped like a wiki (Start here, Core rules, The campaign, Lore) as tiles, with an A to Z topic index on its own page. Underlined terms open their rule in a sheet from the bottom of the screen. **Save** next to a section keeps it on your character |
 | **Campaign** | Opens the campaign you used last. Material, Crew, Notes and People |
-| **Lore** | The world of Allaneus ([lore.md](lore.md)), player facing, rendered like a rules page so its terms, sections and search all work. More world pages go in the same group |
+| **Lore** | The world of Allaneus ([worldlore/](worldlore/)), player facing, rendered like a rules page so its terms, sections and search all work. More world pages go in `worldlore/` and in `RULE_DOCS` with `group: 'world', dir: 'worldlore'` |
 | **Search** (top bar) | One box for your sheet, your saved rules, game terms and every rules page, with results grouped by type |
 
 **Saved rules** belong to a character: a title, short text, source and an active switch. Save them from the rules, from a term, or write your own. Active ones show at the top of the sheet.

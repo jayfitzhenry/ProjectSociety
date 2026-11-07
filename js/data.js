@@ -3,7 +3,8 @@
 // equipment.md, character_creation.md, progression.md, community.md and
 // exposure_and_trust.md. When a rule changes in a .md file, update it here too.
 
-// The rules wiki: every page, in reading order, grouped. Each page is a .md file in the repo root.
+// The rules wiki: every page, in reading order, grouped. Each page is a .md file in the repo root,
+// or in the folder named by `dir` (the world lore lives in worldlore/).
 export const RULE_GROUPS = [
   { id: 'start', title: 'Start here' },
   { id: 'rules', title: 'Core rules' },
@@ -21,7 +22,12 @@ export const RULE_DOCS = [
   { id: 'progression', title: 'Progression', group: 'rules' },
   { id: 'community', title: 'Community', group: 'campaign' },
   { id: 'exposure_and_trust', title: 'Exposure & Trust', group: 'campaign' },
-  { id: 'lore', title: 'Lore', group: 'world' },
+  { id: 'lore', title: 'Lore', group: 'world', dir: 'worldlore' },
+  { id: 'world_houses', title: 'The Houses', group: 'world', dir: 'worldlore' },
+  { id: 'world_chronicle', title: 'The Chronicle', group: 'world', dir: 'worldlore' },
+  { id: 'world_works', title: 'Life Below', group: 'world', dir: 'worldlore' },
+  { id: 'world_customs', title: 'Belief and Custom', group: 'world', dir: 'worldlore' },
+  { id: 'world_gazetteer', title: 'The Gazetteer', group: 'world', dir: 'worldlore' },
 ];
 
 // ---------- Glossary ----------
