@@ -5,7 +5,8 @@ import { renderCombat } from './combat.js';
 import { renderCharacters } from './characters.js';
 import { renderCrew } from './crew.js';
 import { renderHome } from './home.js';
-import { initAuth, signedIn, renderAccount, renderSignIn } from './auth.js';
+import { initAuth, signedIn, renderAccount, renderSignIn, session } from './auth.js';
+import { loadCharacters, sync, esc } from './store.js';
 
 const app = document.getElementById('app');
 
@@ -47,7 +48,46 @@ window.addEventListener('ps:signedout', () => {
   location.reload();
 });
 
+// Save status in the header, and the conflict banner.
+function renderSync() {
+  const el = document.getElementById('sync');
+  if (el) {
+    const label = { saved: '☁️ Saved', saving: '⏳ Saving…', error: '⚠️ Not saved', conflict: '⚠️ Conflict' }[sync.status];
+    el.textContent = signedIn() ? label : '';
+    el.title = sync.message || '';
+    el.className = `sync ${sync.status}`;
+  }
+  const banner = document.getElementById('banner');
+  const show = sync.status === 'conflict' || sync.status === 'error';
+  banner.hidden = !show;
+  if (show) {
+    banner.innerHTML = `<span>${sync.status === 'conflict' ? '⚠️' : '📡'} ${esc(sync.message)}</span>
+      <button type="button" class="btn small" data-act="reload">${sync.status === 'conflict' ? 'Reload' : 'Retry'}</button>`;
+  }
+}
+document.getElementById('banner').onclick = (e) => {
+  if (!e.target.closest('[data-act="reload"]')) return;
+  if (sync.status === 'conflict') location.reload();
+  else import('./store.js').then((m) => m.flushNow());
+};
+window.addEventListener('ps:sync', renderSync);
+
+// Something changed underneath the current view (a merged save): redraw unless the player is typing.
+window.addEventListener('ps:remote', () => {
+  const a = document.activeElement;
+  if (!a || !['INPUT', 'TEXTAREA', 'SELECT'].includes(a.tagName)) route();
+});
+
 await initAuth();
+if (session.user) {
+  try {
+    await loadCharacters();
+  } catch (e) {
+    session.error = e;
+    session.user = null;
+  }
+}
 renderAccount();
+renderSync();
 window.addEventListener('hashchange', route);
 route();

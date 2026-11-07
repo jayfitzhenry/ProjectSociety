@@ -5,7 +5,7 @@ import {
 } from './data.js';
 import {
   state, save, esc, toast, log, clamp, community, needPerJob, crewLevel, charLevel, hasContact,
-  replaceState, resetAll, marketOpen,
+  resetLocalCrew, marketOpen,
 } from './store.js';
 import { roll, rollD6, renderRoll, netOf, distribution, pct, signed, poolLabel } from './dice.js';
 
@@ -327,12 +327,10 @@ function manual() {
 
 function dataCard() {
   return `<section class="card" id="save-data">
-    <h3>💾 Save data</h3>
-    <p class="muted small">Everything is saved in this browser automatically. Export a file to back it up or move it to another device.</p>
+    <h3>💾 This crew sheet</h3>
+    <p class="muted small">Characters are saved to your account. The crew sheet stays on this device for now; campaigns will move it to the cloud and share it with your players.</p>
     <div class="actions">
-      <button type="button" class="btn" data-act="export">⬇️ Export</button>
-      <label class="btn">⬆️ Import<input type="file" id="import-file" accept="application/json,.json" hidden></label>
-      <button type="button" class="btn danger" data-act="reset">🗑️ Start a new campaign</button>
+      <button type="button" class="btn danger" data-act="reset">🗑️ Reset the crew sheet</button>
     </div>
   </section>`;
 }
@@ -386,17 +384,6 @@ export function renderCrew(el) {
       }
       commit();
       return;
-    }
-    if (t.id === 'import-file' && t.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const data = JSON.parse(reader.result);
-          if (!data.crew || !Array.isArray(data.characters)) throw new Error('Not a Project Society save file');
-          if (confirm('Replace everything in this browser with the imported file?')) { replaceState(data); toast('⬆️ Imported'); draw(); }
-        } catch (err) { toast(`⚠️ ${esc(err.message)}`); }
-      };
-      reader.readAsText(t.files[0]);
     }
   };
 
@@ -621,17 +608,8 @@ export function renderCrew(el) {
       }
       case 'canceljob': if (confirm('Cancel this job? Exposure already gained stays.')) { c.job = null; commit(); } break;
       case 'penance': c.exposure = 6; c.waterCut = false; c.cisternUsed = 0; log('⚖️ Penance job succeeded. Exposure 6, the water is back, jobs start again.'); commit(); break;
-      case 'export': {
-        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `project-society-${(c.name || 'crew').replace(/\W+/g, '-').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.json`;
-        a.click();
-        URL.revokeObjectURL(a.href);
-        break;
-      }
       case 'reset':
-        if (confirm('Delete every character and reset the crew? Export first if you want a backup.')) { resetAll(); ui.hardship = null; ui.raidCheck = null; draw(); }
+        if (confirm('Reset the crew sheet on this device? Characters are not affected.')) { resetLocalCrew(); ui.hardship = null; ui.raidCheck = null; draw(); }
         break;
       default: break;
     }

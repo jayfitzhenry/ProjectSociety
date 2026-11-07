@@ -35,9 +35,10 @@ export function renderAccount() {
   const el = document.getElementById('account');
   if (!el) return;
   el.innerHTML = session.user
-    ? `<span class="who" title="Signed in with ${session.user.provider === 'aad' ? 'Microsoft' : 'GitHub'}">👤 <span>${esc(session.user.displayName)}</span></span>
+    ? `<span id="sync" class="sync"></span><span class="who" title="Signed in with ${session.user.provider === 'aad' ? 'Microsoft' : 'GitHub'}">👤 <span>${esc(session.user.displayName)}</span></span>
        <a class="signout" href="/.auth/logout?post_logout_redirect_uri=/">Sign out</a>`
     : '<a class="signout" href="#/signin">Sign in</a>';
+  window.dispatchEvent(new CustomEvent('ps:sync'));
 }
 
 export function renderSignIn(el) {

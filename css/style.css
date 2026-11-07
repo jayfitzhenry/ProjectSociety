@@ -534,3 +534,17 @@ mark { background: rgba(255, 204, 0, .4); color: inherit; border-radius: 3px; pa
   .account .who span { display: inline-block; max-width: 7rem; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
 }
 @media print { .account { display: none !important; } }
+
+/* ---------- sync status & banners ---------- */
+.sync { color: var(--muted); font-size: .8rem; }
+.sync.error, .sync.conflict { color: var(--fail); font-weight: 600; }
+.banner {
+  position: sticky; top: 52px; z-index: 19; display: flex; gap: .8rem; align-items: center; justify-content: center; flex-wrap: wrap;
+  padding: .6rem 1rem; background: var(--warn-soft); color: var(--text); font-size: .9rem; border-bottom: .5px solid var(--line);
+}
+.banner[hidden] { display: none; }
+.import-card { box-shadow: inset 0 0 0 2px var(--tint-soft), var(--shadow); }
+@media (max-width: 720px) {
+  .sync { display: none; }
+  .sync.error, .sync.conflict { display: inline; }
+}

@@ -6,6 +6,7 @@ import {
 } from './data.js';
 import {
   state, save, esc, uid, toast, charLevel, maxWounds, crewLevel, marketOpen, buyPrice, sellPrice, gearItem,
+  addCharacter, removeCharacter,
 } from './store.js';
 import { roll, renderRoll, netOf, poolLabel, distribution, pct, signed } from './dice.js';
 
@@ -53,7 +54,7 @@ function listView() {
       <h1>🧰 Characters</h1>
       <div class="actions"><button type="button" class="btn primary" data-act="new">➕ New character</button></div>
     </div>
-    <p class="lead">Crew level <b>${cl}</b>. Characters are saved in this browser. Use <a href="#/crew">Crew › Save data</a> to export or import them.</p>
+    <p class="lead">Crew level <b>${cl}</b>. Characters are saved to your account. Back them up from the <a href="#/">home screen</a>.</p>
     ${chars.length ? `<div class="card-grid">${chars.map((c) => {
       const bg = BACKGROUNDS.find((b) => b.id === c.background);
       const mw = maxWounds(c);
@@ -441,11 +442,10 @@ export function renderCharacters(el, [id]) {
     const c = current();
 
     if (d.act === 'new') {
-      const n = newCharacter();
-      state.characters.push(n);
-      save();
-      ui.shopOpen = false;
-      location.hash = `#/characters/${n.id}`;
+      b.disabled = true;
+      addCharacter(newCharacter())
+        .then((n) => { ui.shopOpen = false; location.hash = `#/characters/${n.id}`; })
+        .catch((err) => { b.disabled = false; toast(`⚠️ ${esc(err.message)}`); });
       return;
     }
     if (!c) return;
@@ -453,9 +453,9 @@ export function renderCharacters(el, [id]) {
     switch (d.act) {
       case 'delete':
         if (confirm(`Delete ${c.name || 'this character'} for good?`)) {
-          state.characters = state.characters.filter((x) => x.id !== c.id);
-          save();
-          location.hash = '#/characters';
+          removeCharacter(c.id)
+            .then(() => { location.hash = '#/characters'; })
+            .catch((err) => toast(`⚠️ ${esc(err.message)}`));
         }
         return;
       case 'finish':
