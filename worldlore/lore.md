@@ -1,6 +1,6 @@
 # 📜 Project Society — Lore
 
-> **The world of Allaneus: a city poured down a mile-deep well, the houses on the rim, and the Works at the bottom where your crew was born.**
+> **The world of Allaneus: a frozen planet, a volcanic crater called the Rim, a city poured down its vents, the houses on top, and the Works at the bottom where your crew was born.**
 
 Everything on this page is for players. Your character knows it, or could find it out by asking around. The rules use these words, and a short version is in [The World in Brief](getting_started.md#-the-world-in-brief).
 
@@ -8,6 +8,7 @@ This page is the overview. Each part of the world has its own page with more det
 
 | Page | What's in it |
 | :--- | :--- |
+| 🌋 [The Rim and the Sky](world_rim.md) | The planet, the vents and the life around them, the Rim and its wells, the tunnels between them, the three moons and the Clean Sky |
 | 🏛️ [The Houses](world_houses.md) | The Monarch, the Seats, the six great houses, and House Antioch in full |
 | 📜 [The Chronicle](world_chronicle.md) | Four hundred years of Allaneus, as the houses tell it and as the Works remembers it |
 | 🔩 [Life Below](world_works.md) | The Works, the Margin and the Sunk: districts, shifts, food, gangs and rivals |
@@ -22,6 +23,9 @@ This page is the overview. Each part of the world has its own page with more det
     Seats of Governor and Master of the Fleet). Names, dates and house details are new: change anything that
     doesn't match the World Bible. The list of new canon to check is in the commit message / PR.
   - Don't name a page world_history.md: app.js redirects that id to the History section of this page.
+  - Updated 2026-11-13 from docs/questions/world-lore-updates.md: the Rim (a 100 km caldera), the vents and
+    their life, the Bores, three moons and the Clean Sky. "The rim" as the Well's edge is now "the Brink",
+    and "Rimside" is now "Topside". Distances are metric. Detail is on world_rim.md.
 -->
 
 ---
@@ -29,18 +33,19 @@ This page is the overview. Each part of the world has its own page with more det
 ## 📑 Contents
 
 1. [Allaneus at a Glance](#-allaneus-at-a-glance)
-2. [The Layers of the City](#-the-layers-of-the-city)
-3. [Refinement](#-refinement)
-4. [The Houses](#-the-houses)
-5. [House Antioch and the Contract](#-house-antioch-and-the-contract)
-6. [Life in the Works](#-life-in-the-works)
-7. [Gangs, Crews and Rivals](#-gangs-crews-and-rivals)
-8. [Chips and Trade](#-chips-and-trade)
-9. [History](#-history)
-10. [Belief and Custom](#-belief-and-custom)
-11. [Places of Note](#-places-of-note)
-12. [People of Note](#-people-of-note)
-13. [Street Talk](#-street-talk)
+2. [The Rim and the Sky](#-the-rim-and-the-sky)
+3. [The Layers of the City](#-the-layers-of-the-city)
+4. [Refinement](#-refinement)
+5. [The Houses](#-the-houses)
+6. [House Antioch and the Contract](#-house-antioch-and-the-contract)
+7. [Life in the Works](#-life-in-the-works)
+8. [Gangs, Crews and Rivals](#-gangs-crews-and-rivals)
+9. [Chips and Trade](#-chips-and-trade)
+10. [History](#-history)
+11. [Belief and Custom](#-belief-and-custom)
+12. [Places of Note](#-places-of-note)
+13. [People of Note](#-people-of-note)
+14. [Street Talk](#-street-talk)
 
 ---
 
@@ -48,22 +53,35 @@ This page is the overview. Each part of the world has its own page with more det
 
 > *Read this aloud at session zero.*
 >
-> Allaneus is a cold, dry world at the edge of the Ascendancy, and nobody would live on it at all if not for **the Well**: a hole in the ground three miles across and a mile deep, warm all the way down, with heat at the bottom that never goes out. Four hundred years ago the Monarch's ships came for that heat, and they built a city down the walls of the Well, one layer on top of the next.
+> Allaneus is a frozen world at the edge of the Ascendancy, and nothing would live on it at all if not for the **vents**: places where the fire underneath breaks through the ice and breathes out heat, air and life. The biggest of them all is **the Rim**, a volcanic crater nearly a hundred kilometres across, crusted over long ago and punched full of holes. Four hundred years ago the Monarch's ships came for that heat, and they built a city down the walls of the vents, one layer on top of the next. The houses call it **the Society**.
 >
-> The noble **houses** live on the rim, in **the Heights**, in clean air and white sunlight, surrounded by **Refinement**: technology so fine it's grown rather than built, and you'd never know it was there. Below them, cut into the upper walls, are **the Terraces**, where their servants live. Halfway down, bridges cross the Well in a great ring called **the Span**, and that's **the Margin**, where up and down do business. Below the Span, the steam begins.
+> The noble **houses** live on top, in **the Heights**, among forests, fields and great glasshouses on the warm crust of the crater, in clean air and white sunlight, surrounded by **Refinement**: technology so fine it's grown rather than built, and you'd never know it was there. Below them, cut into the upper walls of the greatest vent, **the Well**, are **the Terraces**, where their servants live. A third of the way down, bridges ring the Well in a great circle called **the Span**, and that's **the Margin**, where up and down do business. Below the Span, the steam begins.
 >
-> That's **the Works**: foundries, boilers and pressure lines stacked down the walls and across the floor, under a ceiling of steam the locals call **the Murk**. Nobody down there has seen the sun in a while. Your crew was born here. Under the floor are the old drowned mines, **the Sunk**, where anything can be bought.
+> That's **the Works**: foundries, boilers and pressure lines stacked down the walls and across the floor, under a ceiling of steam the locals call **the Murk**. Nobody down there has seen the sun in a while. Your crew was born here. Under the floor are the old drowned mines, **the Sunk**, where anything can be bought. Tunnels at every depth join the Well to the other vents of the Rim, and every tunnel stays in its own layer.
 >
-> Water doesn't fall from the sky on Allaneus. It's hauled in as ice from the frozen plains outside, melted on the rim, and piped down to the Works by the houses. Each district depends on a house for its water and its protection, and pays for both with loyalty, labour and, when the house asks, deniable work.
+> Water doesn't fall from the sky on Allaneus. It's hauled in as ice from the frozen plains outside, melted at the top of the Well, and piped down to the Works by the houses. Each district depends on a house for its water and its protection, and pays for both with loyalty, labour and, when the house asks, deniable work.
 
-**The Well** is the whole world, as far as most people are concerned. "Allaneus" means the planet, the city and the Well all at once, because there's nothing else on the planet worth naming.
+**The Rim** is the whole world, as far as most people are concerned, and **the Well** is the whole Rim. "Allaneus" means the planet and the city at once, because nothing else on the planet has a name most people know.
 
-- **Size.** Around two million people live in the Well. Fewer than thirty thousand of them live in the Heights. Nobody has ever counted the Works properly.
-- **The sky.** From the rim: pale, high and cold, with a small white sun and one rust-red moon called **the Ember**. From the Works: the underside of the Murk, glowing orange where the furnaces light it.
-- **The air.** In the Heights it smells of cut flowers and cold. In the Works it smells of coal smoke, hot iron, wet brick and, near the floor vents, rotten eggs.
-- **The weather.** The Murk drips. Steam rises, cools and falls back as a fine, warm, sooty drizzle the Works calls **the Weep**. It never really stops.
-- **Outside.** Beyond the rim is **the Pale**: hundreds of miles of frozen, windswept stone and glacier. Nothing grows out there. The only people who go are the ice-haulers, and the only roads are theirs.
-- **Beyond the sky.** Allaneus is one world of many in the **Ascendancy**, ruled by the **Monarch** from a world nobody in the Works has seen. Ships come down to the yards on the rim a few times a year. To a Works family, other worlds are about as real as the Monarch: a face on a chip.
+- **Size.** Around five million people live in the Rim, two million of them in the Well. Fewer than forty thousand live in the Heights. Nobody has ever counted the Works properly.
+- **The sky.** From the Heights: pale, high and cold, with a small white sun and **three moons** that never all set: the white **Salt**, the rust-red **Ember** and the small, fast **Shard**. Now and then a glittering swarm crosses the sky: **the Sweep**, the nets that keep the sky clean. From the Works: the underside of the Murk, glowing orange where the furnaces light it.
+- **The air.** Vents make it. Near a vent it's warm and thick enough. Far from one it's thin and cold. In the Heights it smells of cut flowers and ventwood. In the Works it smells of coal smoke, hot iron, wet brick and, near the floor vents, rotten eggs.
+- **The weather.** The Murk drips. Steam rises, cools and falls back as a fine, warm, sooty drizzle the Works calls **the Weep**. It never really stops. Every few weeks the ground shudders.
+- **Outside.** Beyond the mountains of the Rimwall is **the Pale**: hundreds of kilometres of frozen, windswept stone and glacier, dotted with small wild vents called **the Greens**. The only people who go are the ice-haulers, and the only roads are theirs.
+- **Beyond the sky.** Allaneus is one world of many in the **Ascendancy**, ruled by the **Monarch** from a world nobody in the Works has seen. Ships come down to the Skyquay on the Rimwall a few times a year. To a Works family, other worlds are about as real as the Monarch: a face on a chip.
+
+---
+
+## 🌋 The Rim and the Sky
+
+The short version. Everything else is in [The Rim and the Sky](world_rim.md).
+
+- **The vents.** Allaneus is frozen on top and molten underneath. Wherever the heat breaks through, it brings warmth, minerals and gases, and the red-green **breathmoss** around every vent mouth turns the gases into air. All native life on Allaneus started at a vent. From orbit the vents are green spots on the ice, mostly round the equator and along **the Seams**, the cracks between the world's plates.
+- **The Rim.** The mouth of a super volcano, nearly a hundred kilometres across, ringed by the mountains of **the Rimwall**. Its floor, **the Crust**, crusted over long ago. It's warm underfoot, and the Heights cover it with ventwood forests, grain fields and the Conservatory's glasshouses. Every few weeks it **shudders**, and every shudder brings new ore up into the walls.
+- **The wells.** Dozens of vents punch through the Crust. Some are over ten kilometres wide, and some seem to have no bottom. The biggest you can live in is **the Well**, at the centre, where the Society began and your crew was born. **Cinderwell** is Varre's, **the Cradle** is Aurel's, **the Maw** is too hot for anyone, and **the Hollow** went cold two hundred years ago.
+- **The Bores.** Tunnels join the wells, and each tunnel runs at the depth of one layer: Galleries for the Terraces, Crossings for the Margin, Runs for the Works, flooded old bores for the Sunk. You can go sideways to anywhere in your own layer. Going up still means a gate.
+- **The moons.** The **Salt** is the Crown's mine. The **Ember** is Varre's. The **Shard** holds the Netwrights who keep the sky clean, and Corvane's penal mine.
+- **The Clean Sky.** Earth, the first world, choked its sky with rubbish. Allaneus never will: great **Nets** sweep its orbit, and the Master of the Fleet answers for every bolt left up there.
 
 ---
 
@@ -71,7 +89,7 @@ This page is the overview. Each part of the world has its own page with more det
 
 | Layer | Who lives there | What it feels like |
 | :--- | :--- | :--- |
-| ✨ **The Heights** | The noble houses and their households | Quiet, clean and grown. Doors open only for those who belong |
+| ✨ **The Heights** | The noble houses and their households, on the Crust | Quiet, clean and grown. Doors open only for those who belong |
 | 🎩 **The Terraces** | Servants of the houses, and the well-off | Respectable, watchful, and always looking up |
 | 🤝 **The Margin** | Fixers, traders and go-betweens | Where the upper and lower layers meet and do business |
 | 🔩 **The Works** | Labourers, gangs and their families | Heat, noise and steam. Home |
@@ -85,10 +103,11 @@ This page is the overview. Each part of the world has its own page with more det
 | 🚧 **The Lockgates** | Checkpoints where the Terraces meet the Heights, kept by the Greycoats (the city watch). Papers, Livery or a bribe |
 | 🪜 **The Thousand Steps** | The public stairs from the Works floor to the Span. Anyone can climb them. Above the Span you need a pass |
 | 🔧 **The stacks** | Climbing the outside of the pressure lines and chimney stacks. Illegal, dangerous, and how fitters and thieves get anywhere they like |
+| 🚇 **The Bores** | Tunnels to the other wells of the Rim. They only go sideways, within one layer. Anyone can use their own layer's bores. Using another layer's means finding a way in first |
 
 ### ✨ The Heights
 
-The top of society, and home of the noble houses. The Heights spread across the plateau around the Well's mouth: wide estates, glasshouses, galleries and gardens that seem to grow out of the stone. Over the busiest parts arches **the Veil**, a canopy of living glass that keeps the cold out and eats the smoke that rises from below. Under the Veil the air is warm and the light is always kind.
+The top of the Society, and home of the noble houses. The Heights spread across **the Crust**, the warm floor of the Rim, around the mouths of the vents: wide estates, ventwood forests, Aurel's grain fields, and the great glasshouses where Refinement is grown. Their heart is **the Brink**, the edge of the Well, where the Charter Houses first built. Over the busiest parts of the Brink arches **the Veil**, a canopy of living glass that keeps the wind out and eats the smoke that rises from below. Under the Veil the air is warm and the light is always kind.
 
 Refinement is everywhere here, and you hardly see any of it. Doors open as you approach if you belong, and stay shut if you don't. Lamps brighten when someone speaks and dim when they leave. Clothes keep their wearer warm, and mend. There are no gauges, pipes or rivets anywhere. Refined locks no Works tool can open, and the guards notice anyone who doesn't belong.
 
@@ -96,7 +115,7 @@ A bribe here costs more than a month's wages in the Works, and an official who t
 
 ### 🎩 The Terraces
 
-Below the Heights, cut in stepped ledges into the upper walls of the Well, live the people who serve the houses: stewards, clerks, footmen, tutors and the merchants rich enough to sit close to power. Streets run along the ledges with the drop on one side, and every window faces inward, across the Well, so everyone can see everyone.
+Below the Heights, cut in stepped ledges into the upper walls of the Well and the other living wells, and joined by the tiled tunnels of **the Galleries**, live the people who serve the houses: stewards, clerks, footmen, tutors and the merchants rich enough to sit close to power. Streets run along the ledges with the drop on one side, and every window faces inward, across the Well, so everyone can see everyone.
 
 Every Terraces household is tied to a house, and wears its colours somewhere: a ribbon, a button, a door painted the right shade. The Terraces run on **references**: a letter from your last employer is worth more than your name. Lose your place in a house and nobody else will take you on. That's how the Works gets most of its Fallen Servants.
 
@@ -104,19 +123,19 @@ Terraces folk look down on the Works and up at the Heights, and they're frighten
 
 ### 🤝 The Margin
 
-The Margin is a place and a way of doing business. The place is **the Span**: a ring of iron bridges, galleries and market halls hung across the Well about a third of the way down, right where the Murk begins. The light from above runs out here, and the steam from below runs out too. It's the one place where a Works face and a Terraces coat can share a table.
+The Margin is a place and a way of doing business. The place is **the Span**: a ring of iron bridges, galleries and market halls hung round the walls of the Well about a third of the way down, right where the Murk begins, with **the Crossings** running from it to every other well in the Rim. The light from above runs out here, and the steam from below runs out too. It's the one place where a Works face and a Terraces coat can share a table.
 
 The Margin has one rule, **the Margin Peace**: no violence on the Span, no arrests on the Span, and no house business done in the open. The houses agreed to it because they all need somewhere to buy what they can't be seen buying. Fixers keep the Peace themselves. Break it and every door on the Span closes to you, for good. More in [Life Below](world_works.md#-the-margin).
 
 ### 🔩 The Works
 
-The industrial lower layer: foundries, boilers, pump houses and miles of pressure lines, stacked down the lower walls of the Well and spread across its floor. At the very bottom, the **Kindling**, the great deep boilers, drink the heat that never goes out. Everything in the city that moves, moves on steam from the Works: the Hoists, the pumps, the lamps of the Span, even the houses' own fountains.
+The industrial lower layer: foundries, boilers, pump houses and kilometres of pressure lines, stacked down the lower walls of the Well and spread across its floor, two kilometres below the Brink. In the middle of the floor, over the open throat of the vent, the **Kindling**, the great deep boilers, drink the heat that never goes out. The Works doesn't stop at the Well, either: freight tunnels called **the Runs** carry it on to the foundries of Cinderwell, the vat-farms of the Cradle, and every other well with people in it. Everything in the city that moves, moves on steam from the Works: the Hoists, the pumps, the lamps of the Span, even the houses' own fountains.
 
 The Works is divided into hundreds of **districts**, each with its own gang and each tied to a house for its water. Your crew grew up in one of them. The Works builds what the Heights won't grow: hulls for the fleet, engines, pipe, brick, cloth, fuel, and the ice-haulers' crawlers. A shift is twelve hours, and the bells and hooters tell the time, because there's no day or night under the Murk. More in [Life in the Works](#-life-in-the-works).
 
 ### 🛶 The Sunk
 
-Beneath the Works floor lie the mines the first settlers dug, long since drowned in **bitterwater**: warm, salty and poisonous to drink. The Sunk is a maze of half-flooded galleries, old pump halls and cellars, moved through by barge, rope and ladder. Smugglers move goods through it, fences sell what can't be sold upstairs, lenders cover a district's debts at a price, and cleaners make problems disappear.
+The Works floor isn't the bottom of the Well. It's a crust of old cooled rock over a vent that goes on down further than anyone has measured. In that crust lie the mines the first settlers dug, long since drowned in **bitterwater**: warm, salty and poisonous to drink. The Sunk is a maze of half-flooded galleries, old pump halls and cellars, moved through by barge, rope and ladder. Smugglers move goods through it, fences sell what can't be sold upstairs, lenders cover a district's debts at a price, and cleaners make problems disappear.
 
 Nobody rules the Sunk. A handful of powers share it: the ferrymen who know the channels, the lenders who own half the Works' debts, and the fences who deal in Refinement. Visiting is more expensive than it is dangerous, as long as you pay the ferry, keep to the lit channels, and don't go deeper than the lamps. More in [Life Below](world_works.md#-the-sunk).
 
@@ -133,9 +152,9 @@ Refinement is the technology of the upper classes, and much of it is **grown** r
 
 ### Where it comes from
 
-All Refinement on Allaneus is grown in one place: **the Conservatory**, a vast dome of living glass on the rim. It belongs to the Crown, not to any house. Its **Keepers** are sworn to the Monarch, wear plain green, take no house name, and grow Refinement to order for whichever house pays. They start every Refined thing from **seed-stock** that the Conservatory guards more closely than the Mint guards chips.
+All Refinement on Allaneus is grown in one place: **the Conservatory**, a cluster of vast glasshouses of living glass on the Crust beside the Well, warmed by a vent of their own. It belongs to the Crown, not to any house. Its **Keepers** are sworn to the Monarch, wear plain green, take no house name, and grow Refinement to order for whichever house pays. They start every Refined thing from **seed-stock** that the Conservatory guards more closely than the Mint guards chips.
 
-- **Is it alive?** Not the way a person is, and not quite the way a plant is. Refined things are warm to the touch. They work best close to people. A Refined coat left in a cupboard for years goes dull and stiff, and a graft fits better the longer it's worn. The Keepers call caring for them **tending**, and every great household has servants who do nothing else.
+- **Is it alive?** Not the way a person is, and not quite the way a plant is. Works folk who've seen breathmoss up close say polish feels the same: warm, a little damp, and busy. Refined things are warm to the touch. They work best close to people. A Refined coat left in a cupboard for years goes dull and stiff, and a graft fits better the longer it's worn. The Keepers call caring for them **tending**, and every great household has servants who do nothing else.
 - **Why the Works can't have it.** The law says Refinement must be tended by those trained to it, and that it's dangerous in untrained hands. The Works says the real reason is simpler: if the Works had it, it wouldn't need the houses.
 - **Grafts.** In the Heights, grafts are as ordinary as spectacles. House folk are grafted young, live long, heal clean, and rarely look their age. Works folk say you can tell a noble by how still they stand.
 
@@ -143,7 +162,7 @@ All Refinement on Allaneus is grown in one place: **the Conservatory**, a vast d
 
 Every child in the Works knows this story, and every Keeper says it isn't true.
 
-> When the Well was new, the first Refinement wasn't brought from the Throne-world. It was grown, down here, in the warm at the bottom, by a Bonded woman called **the Gardener**, who tended a strange seed she'd found in the rock. She grew a coat for her son so he wouldn't burn in the Kindling. The houses heard, and came down, and took the seed and the coat and the Gardener with them, up to the rim. She never came back down. But she left a cutting somewhere in the Works, and one day it'll flower.
+> When the Well was new, the first Refinement wasn't brought from the Throne-world. It was grown, down here, in the warm at the bottom, by a Bonded woman called **the Gardener**, who tended a strange seed she'd found in the rock. She grew a coat for her son so he wouldn't burn in the Kindling. The houses heard, and came down, and took the seed and the coat and the Gardener with them, up to the Heights. She never came back down. But she left a cutting somewhere in the Works, and one day it'll flower.
 
 When someone in the Works says *"when the Gardener's cutting flowers"*, they mean *never*, or *when things are finally fair*, depending on who's saying it.
 
@@ -162,9 +181,9 @@ Above the houses is the **Monarch**, who rules the Ascendancy from the Throne-wo
 | Seat | What it runs | Held by |
 | :--- | :--- | :--- |
 | 👑 **Governor of Allaneus** | The city itself, the Great Pumps, and the final word on any dispute between houses | **Antioch** |
-| ⚓ **Master of the Fleet** | The Skyquay, the fleet yards, and every ship and cargo that leaves the world | **Antioch** |
-| ⚖️ **Warden of the Well** | The Greycoats (the city watch), the Lockgates, the courts and the prison | **Corvane** |
-| 🌾 **Steward of the Granaries** | The grain lifts, the vat-farms and the Works' ration boards | **Aurel** |
+| ⚓ **Master of the Fleet** | The Skyquay, the fleet yards, every ship and cargo that leaves the world, and the Clean Sky | **Antioch** |
+| ⚖️ **Warden of the Well** | The Greycoats (the city watch), the Lockgates, the courts, the prison and the Shardworks | **Corvane** |
+| 🌾 **Steward of the Granaries** | The grain fields of the Crust, the grain lifts, the vat-farms and the Works' ration boards | **Aurel** |
 | 🕯️ **Keeper of the Lamps** | The gas mains, the lamps of the Span and the Terraces, and the city's printing presses | **Lysander** |
 
 A Seat is held only as long as the Monarch allows. Every few decades, the Monarch sends an **Assessor** from the Throne-world to decide whether each house still deserves its Seats. The last came sixty-four years ago. **This year, one is coming.**
@@ -176,10 +195,10 @@ Six great houses hold the Heights, with dozens of lesser houses sworn to them. I
 | House | Colours | Controls | In the Works, people say |
 | :--- | :--- | :--- | :--- |
 | 💧 **Antioch** | Slate blue and silver | Water, ice, the fleet. Governor | *"Late, but they come."* |
-| 🔥 **Varre** | Black and ember orange | Coal, fuel oil, the foundry districts | *"Varre keeps you warm, and keeps the receipt."* |
+| 🔥 **Varre** | Black and ember orange | Coal, fuel oil, the foundry districts, the Ember's mines | *"Varre keeps you warm, and keeps the receipt."* |
 | 🕯️ **Lysander** | White and gold | Gas, light, the presses | *"If Lysander didn't print it, it didn't happen."* |
 | ⚖️ **Corvane** | Grey and iron | The law, the watch, the prison | *"Greycoats don't ask. They write it down."* |
-| 🌾 **Aurel** | Wheat gold and green | Grain, bread, the ration boards | *"Aurel feeds you, and counts the crumbs."* |
+| 🌾 **Aurel** | Wheat gold and green | Grain fields, bread, the ration boards | *"Aurel feeds you, and counts the crumbs."* |
 | 🥀 **Calyx** | Deep violet and black | The Hanging Gardens, the dead of the Heights | *"Calyx buries the Heights. Nobody knows who buries Calyx."* |
 
 Everything about each house, its head, its crews and what it wants, is in [The Houses](world_houses.md).
@@ -198,7 +217,7 @@ Everything about each house, its head, its crews and what it wants, is in [The H
 
 ### What Antioch is
 
-Antioch is the youngest of the great houses and the richest. Three generations ago the Antiochs were **ice-haulers**: a family of crawler-drivers who dragged glacier ice across the Pale and sold the meltwater. They bought more crawlers, then the ice roads, then the melt-houses on the rim, then a share in the Monarch's fleet. In **351 AC** the Monarch made them a noble house. The old houses have never forgiven them for it.
+Antioch is the youngest of the great houses and the richest. Three generations ago the Antiochs were **ice-haulers**: a family of crawler-drivers who dragged glacier ice across the Pale and sold the meltwater. They bought more crawlers, then the ice roads, then the melt-houses on the Brink, then a share in the Monarch's fleet. In **351 AC** the Monarch made them a noble house. The old houses have never forgiven them for it.
 
 Today Antioch holds two Seats, **Governor** and **Master of the Fleet**, and more of the Works' water than any other house. Its motto is ***"We Carry."*** In the Works, people add *"on our backs."*
 
@@ -248,7 +267,7 @@ There's no day or night under the Murk, so the Works runs on **bells**. **First 
 
 ### Food
 
-Most families eat **grey loaf** (Aurel's ration bread), **cellar-cap** (a pale mushroom grown in old basements), **eel** from the Sunk's channels when there's money, and **pump tea**, which is boiled water and bitterleaf. Hot fried dough sold off a boiler-top is the closest thing to a treat. Fresh fruit comes from the Heights' glasshouses and costs more than most people earn in a week.
+Most families eat **grey loaf** (Aurel's ration bread, from the grain fields on the Crust), **cellar-cap** (a pale mushroom grown in old basements), **eel** from the Sunk's channels when there's money, and **pump tea**, which is boiled water and bitterleaf. Hot fried dough sold off a boiler-top is the closest thing to a treat, unless someone's caught **scuttlers**, the little vent crabs that live in the warm cracks of the walls. Fresh fruit comes from the Heights' glasshouses and costs more than most people earn in a week.
 
 ### Rest day
 
@@ -295,7 +314,7 @@ The first gangs were **pump clubs**: neighbours who took turns guarding the pump
 | 🕯️ **The Lampless** | Lysander's crew. You never see them. You see what they printed about you the next morning |
 | 🌾 **The Gleaners** | A crew who work for whoever pays, mostly Aurel. They take a little more than the job asked for, every time |
 | 🪦 **The Quiet Boys** | Nobody knows which house they work for. They wear violet, and the people they visit don't talk afterwards |
-| 🐀 **The Underlings** | A raiding gang with no district, living in the dry galleries of the upper Sunk. They hit the edges of Antioch's streets more every year |
+| 🐀 **The Underlings** | A raiding gang with no district, living in the dry galleries of the upper Sunk. They come up out of the old bores, hit the edges of Antioch's streets, and go back down. More every year |
 
 More gangs, rivals and the law in [Life Below](world_works.md#-gangs-and-rivals).
 
@@ -305,7 +324,7 @@ More gangs, rivals and the law in [Life Below](world_works.md#-gangs-and-rivals)
 
 The currency of Allaneus is the **chip**: a small token of Refined brass alloy, about the size of a thumbnail, with the Monarch's face on one side and the Seat that issued it on the other. The alloy can't be made in the Works, so chips can't be forged by hand. Every chip that comes down from the Heights is a little piece of Refinement in a Works pocket.
 
-Chips are **grown**, not struck, at the **Crown Mint** beside the Conservatory. They're warm in the hand, and they don't tarnish. In the Works people say *"chips remember"*, and won't take one from a dead person's pocket without saying sorry.
+Chips are **grown**, not struck, at the **Crown Mint** beside the Conservatory, from metal mined on the Salt, the great white moon. Works kids say every chip is a crumb of the Loaf. They're warm in the hand, and they don't tarnish. In the Works people say *"chips remember"*, and won't take one from a dead person's pocket without saying sorry.
 
 ### What a chip is worth
 
@@ -337,17 +356,20 @@ The story of Allaneus: the houses, the Works, and how your district came to depe
 
 | When | What happened |
 | :--- | :--- |
-| **0 AC** | 📜 **The Charter.** The Monarch grants the Well to seven **Charter Houses**. Their ships land on the rim |
-| **0–40 AC** | ⛏️ **The Descent.** The **Bonded**, labourers shipped in from other worlds, dig and build the city down the walls of the Well |
-| **41 AC** | 🔥 **The Kindling is lit.** The first deep boilers tap the heat at the bottom. Steam reaches the rim |
+| **0 AC** | 📜 **The Charter.** The Monarch grants the Rim to seven **Charter Houses**. Their ships land on the Crust, beside the Well |
+| **0–40 AC** | ⛏️ **The Descent.** The **Bonded**, labourers shipped in from other worlds, dig and build the city down the walls of the Well, and drive the first **bores** across to the other wells |
+| **41 AC** | 🔥 **The Kindling is lit.** The first deep boilers tap the heat at the Well's floor. Steam reaches the Heights |
 | **c. 60 AC** | 💎 **The Conservatory opens**, and the first Refinement is grown on Allaneus. The Works has its own story about that |
 | **112 AC** | ⛓️ **The Unbinding.** The Monarch frees the Bonded. With nowhere to go, they stay. The first pump clubs form |
+| **129 AC** | 🔴 **The Ember Lease.** Varre is granted the mines of the red moon |
 | **231–236 AC** | 🪟 **The War of Glass**, the only open war between the houses. The Monarch ends it and forbids another. Since then, houses fight with crews |
+| **c. 244 AC** | 🌲 **The Hollow goes cold.** House Hollin's well crusts over in less than a year. Soon after, Hollin is gone from the histories |
 | **318–319 AC** | 🚱 **The Long Shift and the Dry Year.** The Works stops the Kindling. The houses stop the water. Thousands die. The **Water Compacts** bind each district to a house |
 | **351 AC** | ⚓ **Antioch is raised** from ice-haulers to a noble house |
 | **366 AC** | 🥀 **The Fall of Mereth.** A Charter House collapses. Antioch buys its Compacts, and your district with them |
 | **381 AC** | ⚓ Antioch takes the Seat of **Master of the Fleet** from House Varre |
 | **397 AC** | 👑 Antioch takes the Seat of **Governor** |
+| **405 AC** | 🫨 **The Great Shudder.** The worst quake in living memory opens **the Newmouth**, a new vent in Aurel's fields. The Keepers fence it off |
 | **409 AC** | 😷 **The Grey Cough** goes through the lower Works. The clinics never quite recover |
 | **411 AC** | 📯 Word comes that the Monarch is sending an **Assessor** to judge the Seats, the first in sixty-four years |
 | **412 AC** | 🗝️ **Now.** The houses are desperate to look strong and to make their rivals look weak. Every house wants a crew. Your crew takes its first job |
@@ -361,7 +383,7 @@ What ordinary Works folk believe about all this, and how much of it is true, is 
 The Heights and the Works don't believe the same things.
 
 - **The Heights** honour **the Ascendancy** itself: the Monarch as the living law, and the houses as the Monarch's chosen. A noble's faith looks a lot like good manners. The toast at every Heights table is *"Long may the Monarch ascend."*
-- **The Works** lives by **the Mother Below**: the heat at the bottom of the Well that never goes out. She keeps the boilers lit and the Works warm, and now and then she takes someone. Nobody prays to her exactly. You thank her, you warn her, and you don't waste her.
+- **The Works** lives by **the Mother Below**: the fire under the Rim that never goes out. The vents are where she breathes, the breathmoss is her breath, and the shudders are her turning over in her sleep. She keeps the boilers lit and the Works warm, and now and then she takes someone. Nobody prays to her exactly. You thank her, you warn her, and you don't waste her.
 
 ### Customs everyone in the Works knows
 
@@ -371,6 +393,8 @@ The Heights and the Works don't believe the same things.
 - **Dried flowers.** In the Heights, mourning means pressed flowers, from the Hanging Gardens, sent by House Calyx. A dried flower left on your table means someone is grieving, or wants you to think so.
 - **Banking Night.** Once a year, the Kindling is banked for repairs, and for one night the Works is cold and silent. Families sit with their dead and say their names.
 - **Highwater.** Once a year, Antioch opens every valve in its districts and the water runs free in the streets for an hour. Kids dance in it. Old people fill every pot they own.
+- **Easy, Mother.** When the ground shudders, put a hand flat on the floor and say it.
+- **Wishing on the Sweep.** When the Nets cross the sky, make a wish. In the Works, you climb as high as you can to see it, and keep the wish to yourself.
 
 Festivals, funerals, weddings, luck and manners are all in [Belief and Custom](world_customs.md).
 
@@ -382,14 +406,16 @@ A few places every crew hears about. The full list is in [The Gazetteer](world_g
 
 | Place | Layer | What it is |
 | :--- | :--- | :--- |
-| 🌿 **The Conservatory** | Heights | The Crown's dome of living glass, where every piece of Refinement on Allaneus is grown |
-| ⚓ **The Skyquay** | Heights | Antioch's fleet yards on the rim, where ships come down from the sky |
+| 🌿 **The Conservatory** | Heights | The Crown's glasshouses of living glass, where every piece of Refinement on Allaneus is grown |
+| ⚓ **The Skyquay** | Heights | Antioch's fleet yards high on the Rimwall, where ships come down from the sky |
 | 🥀 **The Hanging Gardens** | Heights | House Calyx's gardens, built over the dead of the Heights |
+| 🔴 **The Maw** | The Crust | The biggest vent in the Rim. Too hot to live in, and nobody has found its bottom |
+| 🔀 **The Crossings** | Margin | The tunnels that join the Span to every other well, under the Margin Peace |
 | ⛓️ **The Drop** | Terraces | Corvane's prison: iron cells hung on chains over the Well |
 | 🌉 **The Span** | Margin | The ring of bridges across the Well. Neutral ground, under the Margin Peace |
 | 💧 **The Great Pumps** | Works | Antioch's pumping station, the heart of the Works' water. The Gauger-General's seat |
 | 🥊 **The Kettle** | Works | A boiler hall turned fighting pit. Every Slack Day, someone's champion bleeds |
-| 🔥 **The Kindling** | Works | The deep boilers at the bottom of the Well, where the Mother Below is closest |
+| 🔥 **The Kindling** | Works | The deep boilers in the middle of the Well's floor, where the Mother Below is closest |
 | 🛶 **Gutterlight** | Sunk | The floating market where stolen Refinement is bought and sold |
 | ⛪ **The Drowned Chapel** | Sunk | A flooded hall from the Bonded days, where the Sunk's lenders meet and nobody draws a blade |
 
@@ -420,7 +446,13 @@ Words you'll hear in the Works.
 | Word | Meaning |
 | :--- | :--- |
 | **Upstairs** | The Terraces and the Heights |
-| **Rimside** | The Heights. *"Gone rimside"*: got a job up there, or got above yourself |
+| **Topside** | The Heights. *"Gone topside"*: got a job up there, or got above yourself |
+| **The Rim** | The crater, and everything in it. The whole world, as far as most people care |
+| **The Crust** | The warm floor of the Rim, where the Heights are |
+| **The Brink** | The edge of the Well, where the oldest houses live |
+| **The Society** | The houses' word for all of it, every layer in its place. Said in the Works with a sneer |
+| **Bores** | The tunnels between the wells. *"Sideways, never up."* |
+| **The Runs** | The Works' freight bores, with steam rail down the middle |
 | **Refined** | Upper-class technology, or anything made of it |
 | **Livery** | A house's uniform. Wearing it opens doors |
 | **The handler** | The crew's contact in a house's household |
@@ -430,7 +462,13 @@ Words you'll hear in the Works.
 | **The Need** | What the district must have after every job, just to get by |
 | **The Murk** | The ceiling of steam over the Works |
 | **The Weep** | The warm, sooty drizzle that falls out of the Murk |
-| **The Mother**, **the Mother Below** | The heat at the bottom of the Well |
+| **The Mother**, **the Mother Below** | The fire under the Rim |
+| **The Mother's breath** | Breathmoss, the red-green moss that makes the air |
+| **A shudder** | A quake. *"Easy, Mother."* |
+| **A lung** | A breathing mask packed with breathmoss, for going far from a vent |
+| **The Loaf**, **the Coal**, **the Sliver** | The three moons: the Salt, the Ember and the Shard |
+| **The Sweep** | The Nets crossing the sky, glittering. Make a wish |
+| **Up the Shard** | Sent to Corvane's penal mine on the smallest moon |
 | **Bleed the line** | Let off a little steam for luck. Also: let off some anger before it bursts something |
 | **Water runs** | Hello. Also: everything's fine. The answer is *"till it don't"* |
 | **Up the stack** | Dead and burned. *"She went up the stack last Slack Day."* |

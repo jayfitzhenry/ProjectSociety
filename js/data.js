@@ -23,6 +23,7 @@ export const RULE_DOCS = [
   { id: 'community', title: 'Community', group: 'campaign' },
   { id: 'exposure_and_trust', title: 'Exposure & Trust', group: 'campaign' },
   { id: 'lore', title: 'Lore', group: 'world', dir: 'worldlore' },
+  { id: 'world_rim', title: 'The Rim and the Sky', group: 'world', dir: 'worldlore' },
   { id: 'world_houses', title: 'The Houses', group: 'world', dir: 'worldlore' },
   { id: 'world_chronicle', title: 'The Chronicle', group: 'world', dir: 'worldlore' },
   { id: 'world_works', title: 'Life Below', group: 'world', dir: 'worldlore' },

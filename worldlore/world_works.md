@@ -7,6 +7,8 @@ Everything on this page is for players: the Works, where your crew grew up, the 
 <!--
   FOR THE AUTHOR: drafted 2026-11-07. District names, gangs, crews and Sunk figures are new canon.
   The "Your District" tables are optional session-zero prompts and add no rules.
+  Updated 2026-11-13 for the Rim: the Runs, the Crossings, Railhead and the Railers, the Hollin Wall, the Greens
+  and the Unsworn are new.
 -->
 
 ---
@@ -29,19 +31,20 @@ Everything on this page is for players: the Works, where your crew grew up, the 
 
 ## 🏭 The Works
 
-The Works fills the bottom two-thirds of the Well: the lower walls, stacked with tenements and foundries in ledges and galleries, and the floor, a crowded plain of boiler halls, slag heaps, rail yards and streets. Above it all hangs **the Murk**, the ceiling of steam that starts just below the Span. Furnace light turns its underside orange. Nobody in the Works sees the sun unless they climb.
+The Works fills the bottom two-thirds of the Well: the lower walls, stacked with tenements and foundries in ledges and galleries, and the floor, two kilometres below the Brink and twelve across, a crowded plain of boiler halls, slag heaps, rail yards and streets. It doesn't stop there. The **Runs**, the Works' own tunnels, carry it on into every other well of the Rim that has people in it. Above it all hangs **the Murk**, the ceiling of steam that starts just below the Span. Furnace light turns its underside orange. Nobody in the Works sees the sun unless they climb.
 
 It's divided into **districts**, hundreds of them, each a few streets around a pump house, each with a gang and a house. District borders are older than any map. They're marked by gang colours tied to the pipes, by painted valve wheels, and by where the pressure changes: step over the line and the water tastes different.
 
-### The three Works
+### The four Works
 
-People talk about the Works as if it were one place. It's really three.
+People talk about the Works as if it were one place. It's really four.
 
 | Part | Where | What it's like |
 | :--- | :--- | :--- |
 | 🧱 **The Walls** | The ledges and galleries cut into the lower walls of the Well | Tenements stacked ten high, linked by iron stairs and rope bridges. Cooler, cleaner, and a long way to fall. The better-off Works districts are up here, near the Span |
-| 🏭 **The Floor** | The bottom of the Well | Foundries, rail yards, boiler halls, slag. Hot, loud and crowded. Most districts are down here |
-| 🔥 **The Deep Floor** | The centre of the floor, around the Kindling | So hot the Weep turns back to steam before it lands. Only stokers live here, and not for long |
+| 🏭 **The Floor** | The floor of the Well, two kilometres down | Foundries, rail yards, boiler halls, slag. Hot, loud and crowded. Most districts are down here |
+| 🔥 **The Deep Floor** | The centre of the floor, around the Kindling and the Throat | So hot the Weep turns back to steam before it lands. Only stokers live here, and not for long |
+| 🚂 **The Runs** | The freight bores to the other wells | Steam trains down the middle, shanty districts along the sides, and long dark stretches nobody holds. Carters know them. Raiders know them better. Go far enough and you're in Cinderwell or the Cradle, and the gangs there don't know you |
 
 ---
 
@@ -54,12 +57,13 @@ Everything the Heights won't grow. Every trade has its own district, its own pri
 | 🔥 **Stokers** | Feed and tend the Kindling's deep boilers | *"Stokers don't get old. They get done."* |
 | 🔧 **Line fitters** | Keep the pressure lines running, crawling through ducts and up pipe stacks | Fitters climb anything. Every thief wants to be a fitter, and most fitters are thieves |
 | 🫕 **Foundry hands** | Pour brass and iron, haul slag | Hands like boot leather. Mostly Varre's people |
-| ⛏️ **Seam-cutters** | Mine coal from the deep walls | Varre's again. They come up black and they come up coughing |
+| ⛏️ **Seam-cutters** | Mine coal and ore from the deep walls, mostly in Cinderwell | Varre's again. They come up black and they come up coughing, and after every big shudder they race each other for the new seams |
 | 🛠️ **Yard crews** | Build hulls and crawler frames for the Skyquay and the ice roads | Antioch's. The best-paid trade in the Works, and they know it |
 | 🧵 **Mill hands** | Spin and weave cloth in the steam mills | Mostly women and kids. The mills never stop |
 | 🧱 **Brickers** | Fire bricks from Well-clay | Every building in the Works is theirs |
 | 🚂 **Carters** | Drive steam carts and freight crawlers between districts | Know every checkpoint and every shortcut |
-| 🍞 **Vat-tenders** | Tend Aurel's vat-farms under the rim | The only Works folk who work near daylight. They come home smelling of yeast |
+| 🍞 **Vat-tenders** | Tend Aurel's vat-farms in the walls of the Cradle | The only Works folk who work near daylight. They come home smelling of yeast |
+| 🌾 **Field gangs** | Bring in Aurel's harvest on the Crust, by day pass | The only Works folk who see the sky every year. They come back sunburned and quiet |
 | 🕯️ **Lamplighters** | Light and mend the gas lamps on the Span | Lysander's. They hear everything, and they're paid to |
 
 **Who it's all for.** The yards build the ships that carry Antioch's cargo off the world. The foundries make the pipes that carry the water. The mills make the cloth the Terraces wear. And the Kindling drives all of it. When the Heights says the city runs itself, it means the Works runs it.
@@ -94,6 +98,8 @@ The one day nobody works, if they can help it. People sleep late, then:
 ### Weather
 
 It's always warm and always wet. The **Weep** falls out of the Murk day and night: fine, black, warm drizzle that marks every collar by half bell. Near the Deep Floor it's hot enough to scald. On the Walls it's cool. When the Pale outside has a hard frost, the Murk drops lower and the Works gets darker for a week. People call that **a low sky**, and tempers get short.
+
+Every few weeks the ground **shudders**: cups rattle, the pipes knock, and a shower of Weep comes loose from the Murk all at once. Everyone puts a hand flat on the floor and says *"Easy, Mother"*, and then goes to check the gauge.
 
 ---
 
@@ -138,17 +144,17 @@ Your district is named at session zero, and it's yours to invent. If the table w
 | **5** | Gutter | End |
 | **6** | Rope | Walk |
 
-Real districts include **Cistern Row**, **Slagside**, **the Coils**, **Cinderhill**, **Tallow Steps**, **Ninefold**, **Brasswater**, **Gutter's End**, **the Ropewalk**, **Kettle Hill** and **Low Mereth**.
+Real districts in the Well include **Cistern Row**, **Slagside**, **the Coils**, **Ninefold**, **Brasswater**, **Gutter's End**, **the Ropewalk**, **Kettle Hill** and **Low Mereth**. In the other wells there's **Cinderhill** (Cinderwell), **Tallow Steps** (the Cradle), and **Railhead**, the shanty district at the halfway point of the Run to Cinderwell.
 
 ### What it's known for
 
 | 1D6 | The district… |
 | :---: | :--- |
 | **1** | …built the ship hulls for the Skyquay, until the yards moved. Half its men still go up the Hoists each morning to work for Antioch |
-| **2** | …has the best pigeon flyers in the Works. Birds from here have reached the rim |
+| **2** | …has the best pigeon flyers in the Works. Birds from here have reached the Crust and come back with seeds on their feet |
 | **3** | …sits right on the Antioch–Varre border. The water's Antioch's. The heat's Varre's. Nobody's sure whose people are |
 | **4** | …lost half its people in the Grey Cough. The empty tenements are full of squatters, ghosts and opportunity |
-| **5** | …has an old Bonded shrine in the wall, older than the pump house, that nobody knows the meaning of |
+| **5** | …has an old Bonded shrine in the wall, older than the pump house, that nobody knows the meaning of. Behind it is a bricked-up bore |
 | **6** | …produced a famous pit fighter, and has never let anyone forget it |
 
 ### Its problem
@@ -161,6 +167,8 @@ Real districts include **Cistern Row**, **Slagside**, **the Coils**, **Cinderhil
 | **4** | The **ration board** is split down the middle, and both halves have friends with knives |
 | **5** | The **pressure** has been dropping a little more every month, and Antioch says nothing's wrong |
 | **6** | A neighbouring district has just **turned** to another house, and wants company |
+
+If your district isn't in the Well, say which well and which Run joins it to the Span. Everything else works the same.
 
 ---
 
@@ -188,11 +196,12 @@ Every district has one gang. It keeps order, settles arguments, collects rent an
 | :--- | :--- | :--- | :--- |
 | 🔥 **The Slagborn** | Slagside | Varre | The biggest gang in the Works. Burn-scarred and proud. Their water is bad and they know where the good water is |
 | 🌀 **The Coilers** | The Coils | Varre | Old Hosk's gang. Respected everywhere. They'd rather trade than fight, but they can fight |
-| 🌾 **The Sheaves** | Tallow Steps | Aurel | Well-fed, by Works standards. Aurel looks after them, and they look down on everyone else |
+| 🌾 **The Sheaves** | Tallow Steps, in the Cradle | Aurel | Well-fed, by Works standards. Aurel looks after them, and they look down on everyone else |
 | 🕯️ **The Wicks** | Brasswater | Lysander | Lamplighters' gang, up on the Walls near the Span. Sell information to anyone |
 | ⚖️ **The Ninefold** | Ninefold | Corvane | The only gang that Greycoats leave alone. Everyone wonders what it costs them |
 | 🪦 **Low Mereth** | Low Mereth | None | The last district that never signed with anyone after Mereth fell. Dry, poor, and still there. Nobody understands how |
-| 🐀 **The Underlings** | None | None | Raiders living in the dry upper galleries of the Sunk. More of them every year. They hit Antioch's districts hardest |
+| 🐀 **The Underlings** | None | None | Raiders living in the dry upper galleries of the Sunk, moving through the old bores. More of them every year. They hit Antioch's districts hardest |
+| 🚂 **The Railers** | Railhead | Whoever's paying this month | The gang of the Cinderwell Run. They take a toll on every train, and sell passage to anyone who wants to travel the Runs unseen |
 
 ### Rival crews
 
@@ -213,7 +222,7 @@ Every house has crews, and the good ones have names.
 
 ## ⚖️ The Law Below the Span
 
-Officially, the law is House Corvane's, and the **Greycoats** enforce it. In practice, Greycoats rarely come below the Span except in force: thirty of them, with carbines, to make an arrest or put down a riot. When they come, the street empties.
+Officially, the law is House Corvane's, and the **Greycoats** enforce it. In practice, Greycoats rarely come below the Span except in force: thirty of them, with carbines, to make an arrest or put down a riot. When they come, the street empties. The worst they can do to you is not the Drop. It's the Shardworks, Corvane's mine on the smallest moon. Being **sent up the Shard** is ten years, and most people don't do all ten.
 
 The rest of the time, the law in the Works is **the gang's**.
 
@@ -232,9 +241,9 @@ The Margin is two things: a place, **the Span**, and a way of doing business tha
 
 ### The Span
 
-A ring of iron bridges, galleries and market halls, hung across the Well about a third of the way down, on chains and girders anchored in the walls. It's half a mile wide in places and three miles round. The top of the Murk laps at its underside, so the lower galleries are wet with the Weep, and the upper galleries see a little grey daylight from above. Gas lamps burn on every corner, day and night: Lysander's.
+A ring of iron bridges, galleries and market halls, hung round the walls of the Well about a third of the way down, on chains and girders anchored in the rock. It's nearly forty kilometres round and juts a kilometre out from the walls in places, and the open middle of the Well yawns inside it. The top of the Murk laps at its underside, so the lower galleries are wet with the Weep, and the upper galleries see a little grey daylight from above. Gas lamps burn on every corner, day and night: Lysander's.
 
-The Thousand Steps reach it from below. The Hoists stop at it on their way up. Everyone can get to the Span, which is the point.
+The Thousand Steps reach it from below. The Hoists stop at it on their way up. The Crossings bring in everyone from the other wells. Everyone can get to the Span, which is the point.
 
 | Place on the Span | What it is |
 | :--- | :--- |
@@ -242,14 +251,15 @@ The Thousand Steps reach it from below. The Hoists stop at it on their way up. E
 | 🍺 **The Halfway House** | A tavern built where the north bridges meet. Every fixer in the Margin drinks here, and the back room is where the Brokers' Table sits |
 | 🪝 **Hook Street** | The lowest gallery, wet with the Weep. Cheap bars, cheap rooms, Specialist dealers, and the Margin's doctors who don't ask questions |
 | 📜 **The Exchange** | Where the houses' factors trade cargo, grain and water shares. Terraces only, in theory |
-| 🌉 **The Long Bridge** | The only bridge that crosses the whole Well. Duels are fought on it at dawn, by people who think dawn matters |
+| 🌉 **The Long Bridge** | The only bridge that crosses the whole Well: twelve kilometres of iron and cable, held up by the tallest stacks on the floor. Duels are fought on it at dawn, by people who think dawn matters |
+| 🔀 **The Crossings** | The Margin-level bores to the other wells. Market stalls, inns and tollhouses line them, and the Margin Peace holds all the way along |
 
 ### The Margin Peace
 
 The houses agreed it after the War of Glass, and it's held for nearly two hundred years:
 
-1. **No violence on the Span.** No blades drawn, no shots fired, no one thrown off.
-2. **No arrests on the Span.** Greycoats can walk the Span. They can't take anyone off it.
+1. **No violence on the Span**, or in the Crossings. No blades drawn, no shots fired, no one thrown off.
+2. **No arrests on the Span**, or in the Crossings. Greycoats can walk them. They can't take anyone off them.
 3. **No house business in the open.** Liveried come to the Span out of Livery, and everybody pretends not to recognise them.
 
 Nobody enforces the Peace with soldiers. The **Brokers' Table**, the oldest fixers on the Span, enforces it with something worse: if you break the Peace, every fixer, dealer and doorkeeper in the Margin stops doing business with you, forever. Crews that have broken the Peace don't last long. They can't sell anything, buy anything or meet anyone.
@@ -262,7 +272,7 @@ Fixers find buyers, make introductions, carry messages, arrange meetings and vou
 
 ## 🛶 The Sunk
 
-Under the Works floor are the mines the Bonded dug, and the galleries they lived in, and the pump halls that once kept the water out. When the deep pumps were abandoned in the Quiet Century, the **bitterwater** came up: warm, salty, faintly glowing in places, and poisonous to drink. It filled the lower galleries completely, and the upper ones up to the waist. That's the Sunk.
+The Works floor is a crust of old rock laid over the throat of the vent. In that crust are the mines the Bonded dug, the galleries they lived in, the pump halls that once kept the water out, and the **old bores**, the first tunnels to the other wells. When the deep pumps were abandoned in the Quiet Century, the **bitterwater** came up: warm, salty, faintly glowing in places, and poisonous to drink. It filled the lower galleries completely, and the upper ones up to the waist. That's the Sunk, and because the old bores flooded too, the Sunk runs under the whole Rim.
 
 ### Getting around
 
@@ -288,12 +298,13 @@ Nobody rules the Sunk. Power is shared, uneasily, between a few kinds of people:
 | ⛪ **The Drowned Chapel** | A Bonded hall, half underwater. The lenders meet here, and nobody draws a blade inside |
 | 🚪 **Mereth's Gate** | A great iron door in the deep galleries, stamped with Mereth's crown and welded shut. Nobody knows what Mereth kept down there |
 | 🌀 **The Sump** | The lowest open water. The ferrymen won't go past it |
+| 🧱 **The Hollin Wall** | Where the old bore to the Hollow ends in a wall of brick and iron, laid in the 240s AC. Water seeps through it. Sometimes, ferrymen say, so does light |
 
 ### The rules of the Sunk
 
 1. **Pay the ferry.** Always, and before you get on.
 2. **Keep to the lamps.** A lamp means somebody's watching the channel. No lamp means nobody is.
-3. **Don't go deeper than the Sump.** The galleries go down further than the Bonded ever dug. People who go looking don't come back, or come back wrong.
+3. **Don't go deeper than the Sump.** Below it, the galleries open into the throat of the vent, and go down further than the Bonded ever dug. People who go looking don't come back, or come back wrong. The things the ferrymen call **grims** come up from there.
 4. **Don't drink the water.** Obviously.
 
 **Is it dangerous?** For a crew that pays, keeps to the lamps and minds its manners, the Sunk is mostly **expensive**. For a crew that owes a lender, it's dangerous. For a crew that crosses a ferryman, it's fatal.
@@ -302,9 +313,11 @@ Nobody rules the Sunk. Power is shared, uneasily, between a few kinds of people:
 
 ## 🧊 The Pale and the Haulers
 
-Outside the Well is **the Pale**: frozen stone plains and glaciers, hundreds of miles of them, under a white sky. The wind never stops, and the cold kills in an hour. Nothing grows. Nothing lives out there.
+Outside the Rimwall is **the Pale**: frozen stone plains and glaciers, hundreds of kilometres of them, under a white sky. The wind never stops, the air is thin, and the cold kills in an hour. Nothing grows, except at **the Greens**: small wild vents strung along the Seams, each a patch of breathmoss and steam in the ice. See [The Rim and the Sky](world_rim.md#-the-pale-and-the-greens).
 
-Nothing, except the **ice-haulers**: Antioch's crawler crews, who drive great diesel crawlers along the **ice roads** to the glaciers, cut ice, and drag it back to the melt-houses on the rim. A run takes weeks. Crawlers break down, and the crew has to fix them in the open. Some don't come back. Haulers are Works-born, paid like Terraces clerks, and loyal to each other before anything else, Antioch included.
+The people who know the Pale are the **ice-haulers**: Antioch's crawler crews, who drive great diesel crawlers out through the **Icegate** and along the **ice roads** to the glaciers, cut ice, and drag it back across the Crust on the **Haul Road** to the melt-houses on the Brink. A run takes weeks. The roads go from Green to Green, because a crew needs somewhere to breathe and warm its engine, and haulers call those stops **wayvents**. Crawlers break down, and the crew has to fix them in the open, breathing through a **lung**. Some don't come back. Haulers are Works-born, paid like Terraces clerks, and loyal to each other before anything else, Antioch included.
+
+Haulers trade with people the houses say don't exist: **the Unsworn**, families who left the Society and live on the Greens. A hauler who talks about the Unsworn upstairs doesn't drive again.
 
 Most Works folk will never see the Pale. But every Works family knows where its water comes from, and every crew that does a job for Antioch is, in the end, working for the ice.
 

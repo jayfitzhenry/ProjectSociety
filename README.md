@@ -18,7 +18,7 @@ The rules live in this repo as one markdown file per subsystem. The repo also co
 | [Community](community.md) | The home district and sending chips home |
 | [Exposure & Trust](exposure_and_trust.md) | Staying deniable, and the handler |
 | [Progression](progression.md) | Levels, talents, contacts |
-| [Lore](worldlore/lore.md) | The world of Allaneus, player facing: the overview, with its own pages in [worldlore/](worldlore/) for the houses, the chronicle, life below, belief and custom, and the gazetteer |
+| [Lore](worldlore/lore.md) | The world of Allaneus, player facing: the overview, with its own pages in [worldlore/](worldlore/) for the Rim and the sky, the houses, the chronicle, life below, belief and custom, and the gazetteer |
 
 Design reviews are tracked in [checklist.md](checklist.md) (not shown in the app).
 

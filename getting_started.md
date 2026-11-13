@@ -49,8 +49,8 @@ Just enough of the setting to read the rules. The *Project Society — World Bib
 
 | Term | What it means in play |
 | :--- | :--- |
-| 🏙️ **Allaneus** | The setting. Its currency is the **chip** |
-| ✨ **The Heights** | The top of society, home of the noble **houses**. Bribes cost 40c, and failing one gets the crew reported |
+| 🏙️ **Allaneus** | The setting: a frozen world kept alive by its heat vents. The game happens in **the Rim**, a vast volcanic crater whose vents hold the city, layer on layer. Its currency is the **chip** |
+| ✨ **The Heights** | The top of the Society, on the warm crust above the vents, and home of the noble **houses**. Bribes cost 40c, and failing one gets the crew reported |
 | 🎩 **The Terraces** | Below the Heights. Servants of the houses, and the well-off. The **Courtier** trait works here |
 | 🤝 **The Margin** | Where the upper and lower layers meet and trade. Fixers work here |
 | 🔩 **The Works** | The industrial lower layer: foundries, boilers and pressure lines. The crew's home |

@@ -339,6 +339,7 @@ const DOC_ICONS = {
   community: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
   exposure_and_trust: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   lore: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+  world_rim: '<path d="M2 20h20"/><path d="M4 20l4-8 3 3 2-4 3 2 4 7"/><circle cx="17" cy="5" r="2"/>',
   world_houses: '<path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6"/>',
   world_chronicle: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   world_works: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/>',

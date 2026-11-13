@@ -8,6 +8,8 @@ Everything on this page is for players. These are the things your character grew
   FOR THE AUTHOR: drafted 2026-11-07. Faiths, festivals and customs are new canon to check against the World Bible.
   Dried flowers are given a public meaning here (Calyx's mourning custom). That's deliberate: it lets the
   handler's "dried flower" tell land in play without explaining it.
+  Updated 2026-11-13 for the Rim: the Society, Earth and the Clean Sky, the Mother's breath, two new Line Saints,
+  Field Days, Sweep Night, Three Lamps and the new sayings are new.
 -->
 
 ---
@@ -34,9 +36,13 @@ The Heights don't worship a god. They honour **the Ascendancy** itself: the idea
 
 It is, Works folk point out, a very convenient faith for the people at the top.
 
+On Allaneus the Ascendancy has a shape you can see. The houses call the whole layered city **the Society**: the Heights on the Crust in the light, the Terraces below them, and so on down, each layer in its place and each layer's tunnels running sideways, never up. To a noble, the Society is the Ascendancy in miniature. To the Works, it's a very long way to climb.
+
+- **Earth and the Clean Sky.** The oldest story the Ascendancy tells is of **Earth**, the first world, which choked its own sky with rubbish until no ship could leave. The moral, in the Heights, is that order is everything and waste is a kind of sin. Keepers tell it to every noble child. The Works heard it second-hand, and took a different moral: that the people at the top can ruin everything, and the people at the bottom are the ones stuck with it.
+
 - **In practice**, a noble's faith looks a lot like good manners. Being calm, generous in public, unhurried and correct is how a noble shows they belong where they are. Losing your temper, being seen to need money, or being seen to work is close to a sin.
 - **The toast.** Every Heights dinner begins with the host raising a glass: *"Long may the Monarch ascend."* Everyone answers: *"And all with them."*
-- **The Seat Hall.** The nearest thing the Heights has to a temple: the hall on the rim where the Monarch's writs are read aloud and the Seats are granted. Nobles marry there, and every heir is presented there at sixteen.
+- **The Seat Hall.** The nearest thing the Heights has to a temple: the hall on the Brink where the Monarch's writs are read aloud and the Seats are granted. Nobles marry there, and every heir is presented there at sixteen.
 - **The Keepers.** The Conservatory's Keepers are the closest thing the Ascendancy has to priests. They give up their names to serve the Monarch, and they bless every newborn noble's first graft.
 
 ---
@@ -45,18 +51,22 @@ It is, Works folk point out, a very convenient faith for the people at the top.
 
 The faith of the Works, if it's a faith at all.
 
-The heat at the bottom of the Well has never gone out. It keeps the boilers lit, the water warm and the Works alive. Ever since the Bonded first reached the floor, Works folk have spoken of it as a person: **the Mother Below**, or just **the Mother**.
+The fire under the Rim has never gone out. It keeps the boilers lit, the water warm and the Works alive. Ever since the Bonded first reached the floor of the Well, Works folk have spoken of it as a person: **the Mother Below**, or just **the Mother**.
+
+The whole Rim is her. The vents are where she breathes. The red-green breathmoss round every vent is **her breath**, made into air. The **Maw**, the great vent nobody can live in, is **her mouth**. The shudders are her turning over in her sleep. And the Hollow, the well that went cold, is where she turned her back.
 
 She's generous and dangerous, like a real mother in a hard district. She keeps you warm. She feeds the Kindling. And now and then a boiler bursts, or a line blows, or a stoker stays down too long, and she takes someone. Nobody blames her for it. It's her share.
 
 - **Nobody prays to her exactly.** You thank her, you warn her, and you don't waste her. Wasting heat, water or steam for no reason is bad luck. Letting a fire go out is worse.
 - **She can't be bought.** Works folk say the houses have chips and the Mother doesn't want any. That's the one thing that makes her better than the houses.
 - **She's always listening.** You can hear her in the pipes: the ticking and knocking of the pressure lines at night. Kids are told the knocking is the Mother counting who's been good.
-- **Where she's closest.** At the Kindling. Stokers keep a little shrine on every boiler: a twist of wire, a burned-out chip, a name. Nobody touches another stoker's shrine.
+- **Where she's closest.** At the Kindling, by the Throat. Stokers keep a little shrine on every boiler: a twist of wire, a burned-out chip, a name. Nobody touches another stoker's shrine.
+- **When she stirs.** When the ground shudders, put a hand flat on the floor and say *"Easy, Mother."* Old people say the shudders have been getting closer together. Old people always say that.
+- **Her breath.** Breathmoss grows on the Works' pipes and walls wherever there's warmth and damp. Scraping it off for no reason is bad luck. Burning it is worse. A sprig of breathmoss in a jar by the door keeps a home's air sweet, and a baby's first breath is said to be the Mother's gift.
 
 ### What the Keepers say
 
-The Keepers of the Conservatory say the heat at the bottom of the Well is just heat, and that the Mother Below is a story for children. Works folk notice that Keepers never go down to the Kindling, and that the Conservatory's own heat comes up from it in a pipe.
+The Keepers of the Conservatory say the fire under the Rim is just a sleeping volcano, and that the Mother Below is a story for children. Works folk notice that Keepers never go down to the Kindling, that the Conservatory is built over a vent of its own, and that the Keepers have listening posts all over the Crust to hear the Mother turning over.
 
 ---
 
@@ -71,6 +81,8 @@ The Works doesn't have priests, but it has **saints**: Works people who died sav
 | 🩹 **Sister Nan** | Ran the first pump-house clinic in the Grey Cough of 409 AC, and caught it on the last day | A cup with a cross on it | The sick. The ones who stay to help |
 | 🏃 **The Runner** | A child who carried a warning through three districts during a raid. Nobody remembers her name | An arrow with a tail | Messages. Getting there in time |
 | 🛶 **Ferry Jory** | A ferryman who took a barge of children out of the Sunk during the Kettle flood, and went back for more | A boat with an eye | Lost people. Bad water. Getting home |
+| 🚂 **Brakeman Sol** | A carter who held a runaway ore train on the Cinderwell Run in the Great Shudder of 405 AC, long enough for the people in the Run to get clear. The roof came down on him | A wheel with a bar through it | Getting through a tunnel. Things that won't stop |
+| 🧊 **Hauler Bryn** | A hauler who gave her lung to a crawler-mate on the Pale in the Long Winter, and walked to the next Green without one. She didn't make it | Three dots in a line, like wayvents | Breath. Cold. Long journeys |
 
 Touching a saint's mark before you do something dangerous is common. Chalking a new saint's mark, for someone the district lost recently, is how the Works decides who's a saint. Some districts have their own saints nobody else has heard of.
 
@@ -81,14 +93,18 @@ Touching a saint's mark before you do something dangerous is common. Chalking a 
 | When | Festival | What happens |
 | :--- | :--- | :--- |
 | ❄️ **First frost on the Pale** | 💃 **The Season begins** | The Heights' round of balls, races and weddings. Every Terraces servant works double. Every crew gets busy |
-| 🌑 **Midwinter** | 🕯️ **Lanternfall** | Lysander lights every lamp on the Span at once, then puts them out one by one, from the edges in, until only the Lantern on the rim is shining. Then it lights them all again. The Margin's biggest night of the year. Pickpockets love it |
+| 🌑 **Midwinter** | 🕯️ **Lanternfall** | Lysander lights every lamp on the Span at once, then puts them out one by one, from the edges in, until only the Lantern on the Brink is shining. Then it lights them all again. The Margin's biggest night of the year. Pickpockets love it |
 | 🔇 **Late winter** | 🌑 **Banking Night** | The Kindling is banked for its yearly repairs, and for one night the Works is cold and silent. Families sit with their dead, say their names, and keep each other warm. Nobody works. Nobody fights. Breaking Banking Night is unforgivable |
 | 🧊 **The thaw** | 💍 **The Season ends** | The last ball of the Season, at the Seat Hall. Engagements are announced. The Gazette prints a special edition |
 | 💧 **Early summer** | 🌊 **Highwater** | Every water house opens every valve in its districts, and the water runs free in the streets for an hour. Kids dance in it. Old people fill every pot they own. Antioch's Highwater is the biggest, and the Governor's portrait is carried round each district on a cart |
-| ☀️ **Midsummer** | 📜 **Charter Day** | The anniversary of the Charter. The Heights holds a procession along the rim. The Works gets an extra ration, and a speech nobody listens to |
+| ☀️ **Midsummer** | 📜 **Charter Day** | The anniversary of the Charter. The Heights holds a procession along the Brink. The Works gets an extra ration, and a speech nobody listens to |
 | 🍂 **Late summer** | 🌱 **Gardener's Eve** | Not a holiday upstairs. In the Works, kids plant seeds in cracks in the walls and pretend one of them is the Gardener's cutting. Nothing ever grows. They do it anyway |
+| 🌾 **Harvest** | 🧺 **Field Days** | Twice a year Aurel brings in the Sowings, and Works field gangs go up on day passes to cut the grain. It's hard work, and it's the only time most of them see the sky. They come back sunburned, and bring the district a sheaf for the Hall |
+| 🍁 **Autumn** | ✨ **Sweep Night** | The Great Net crosses straight over the Rim at night, a river of slow glitter from one side of the sky to the other. The Heights hold parties on the Crust. In the Works, people climb the stacks and the Thousand Steps to the Span's upper galleries to see a piece of it, and everyone makes a wish without saying it out loud |
 
 **Slack Day**, one day in ten, is the only regular holiday the Works gets.
+
+**Three Lamps.** Once every few years all three moons are full and in the sky together. The Heights call it Three Lamps, and the year's grandest weddings are timed for it. The Works can't see it, but always knows when it is, and no crew takes a job that night: *"Three lamps, no shadows."*
 
 ---
 
@@ -99,7 +115,7 @@ Touching a saint's mark before you do something dangerous is common. Chalking a 
 - **Birth.** A noble child is blessed by a Keeper and given its first graft within a month, usually something small: a fingertip that will always know its own house's doors.
 - **Coming of age.** At sixteen, every heir is **presented** at the Seat Hall during the Season. Antioch heirs must drive an ice road first.
 - **Marriage.** An alliance between houses, written up as a contract by the lawyers of both, and announced at the end of the Season. Love is optional, and usually arrives later, if at all.
-- **Death.** House Calyx takes the body into **the Hanging Gardens**, and a year later a new tree is growing there. Calyx sends a **pressed flower** from the Gardens to every house in mourning, and the family keeps it in a glass case. In the Heights, a dried flower means grief, or remembrance, or *"we know what you did"*, depending on the flower.
+- **Death.** House Calyx takes the body into **the Hanging Gardens**, and a year later a new tree is growing there. Old houses get roses or oaks, old stock from other worlds. New money gets ventwood, and pretends not to mind. Calyx sends a **pressed flower** from the Gardens to every house in mourning, and the family keeps it in a glass case. In the Heights, a dried flower means grief, or remembrance, or *"we know what you did"*, depending on the flower.
 
 ### Below
 
@@ -124,6 +140,8 @@ Every crew has its rituals. These are the ones everyone knows.
 - **Don't say the word "last".** *"One last job"* is the most dangerous sentence in the Works.
 - **Leave the light on.** Someone at home keeps a lamp burning until the crew comes back. If the lamp goes out on its own, someone's in trouble.
 - **No polish on the way out.** A lot of crews won't carry Refined gear out of the district, only pick it up on the way. Old superstition: polish can tell where home is.
+- **Three lamps, no shadows.** Never work a job when all three moons are full. Nobody can say why. Nobody tests it.
+- **Watch the glasswings.** Before a job in another well, look at the vent mouth from the Span or the Crossings. If the glasswings aren't flying, the Mother's in a mood. Go another day.
 
 ---
 
@@ -160,6 +178,8 @@ What every Works kid knows, and what a Terraces servant sent down for the first 
 - **Don't touch a stoker's shrine**, a gang mark or a saint's mark that isn't yours to touch.
 - **Pay the Keyholder's due**, even when you're doing well. Especially when you're doing well.
 - **Never say "Bonded"** to someone who wasn't born in the Works. Never let someone upstairs say it to you.
+- **Ask before you ride.** In the Runs, every stretch of track belongs to someone. Pay the toll at the first tollhouse, or the next train might not stop for you.
+- **Leave the moss.** Don't scrape breathmoss off someone else's wall. That's their air.
 
 ---
 
@@ -185,6 +205,13 @@ What people say, and what they mean by it.
 | *"Bleed the line."* | Calm down before you burst something |
 | *"Dry year on you."* | The worst curse in the Works. People have died for saying it |
 | *"Long may the Monarch ascend."* | The Heights' toast. Said in the Works only as a joke, and only quietly |
+| *"Easy, Mother."* | Said with a hand on the floor when the ground shudders. Also: calm down |
+| *"Sideways, never up."* | The bores. Also: you can go anywhere you like, as long as you stay where you are |
+| *"Sent up the Shard."* | Sentenced to Corvane's moon mine. Also: gone, and not coming back soon |
+| *"Reaching for the Loaf."* | Wanting what you'll never get. The Loaf is the Salt, the big white moon |
+| *"Wish on the Sweep."* | Hope for the best. Usually said by someone who's stopped hoping |
+| *"Three lamps, no shadows."* | Nowhere to hide. Don't do it tonight |
+| *"Breathe easy."* | Go well. Said to anyone going out past the Rimwall, and to anyone going upstairs |
 
 ---
 
